@@ -1,6 +1,6 @@
 
 <div id="my-side-nav" class="sidenav container" style="width:75px; overflow: visible;">
-    <button  class="nav-toggle-btn" onclick="toggleNav()"><i id="nav-btn-arrow" class="fas fa-chevron-right" style="color: gray;"></i></button>
+    <a  class="nav-toggle-btn" onclick="toggleNav()"><i id="nav-btn-arrow" class="fas fa-chevron-right" style="color: gray;"></i></a>
 
     <div id="nav-header" class="mb-5" style="">
         <img src="/image/chef-icon-white.png" alt="" style="color:gray; display: block; margin-left: auto; margin-right: auto; width: 50%;">
