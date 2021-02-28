@@ -1,0 +1,134 @@
+body {
+    font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    color: white;
+    
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 12px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: white;
+    /* display: block; */
+    transition: 0.3s;
+    
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+#main {
+    transition: margin-left .5s;
+    padding: 16px;
+    min-height: 100vh;
+    background-color:#f5f5f5!important; 
+}
+.nav-toggle-btn {
+    border: 1px solid white;
+    position: absolute;
+    right: 0;
+    top: 151px;
+    width: 32px;
+    height: 32px;
+    transform: translate(50%,-50%);
+    border-radius: 50%;
+    cursor: pointer;
+    background: #fff;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,.1);
+    z-index: 99;
+    padding: 0;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+}
+
+.link-title{
+    position: relative; 
+    right: -50px;
+    
+}
+
+.rotated { 
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.dropdown-item-setting {
+    color: black !important;
+}
+
+.link-container {
+    display:flex; 
+    align-items: center;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-left: 1.2rem;
+}
+
+.dropbtn {
+    background-color: #111;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    width: 100%;
+
+  }
+  
+  .dropup {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropup-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    bottom: 50px;
+    z-index: 1;
+  }
+  
+  .dropup-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropup-content a:hover {background-color: #ccc}
+  
+  .dropup:hover .dropup-content {
+    display: block;
+  }
+  
+  .dropup:hover .dropbtn {
+    background-color: black;
+  }
