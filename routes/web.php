@@ -21,4 +21,9 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+Route::middleware(['auth'])->group(function () {
+    Route::group(['prefix' => 'purchases'], function () {
+        Route::get('/create', 'PurchaseController@create');
+    });
+});
 require __DIR__.'/auth.php';

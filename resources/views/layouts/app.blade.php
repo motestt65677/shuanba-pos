@@ -13,14 +13,15 @@
         <!-- Styles -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <link rel="stylesheet" href="/css/navbar.css">
-        <link rel="stylesheet" href="css/all.css">
-        <link rel="stylesheet" href="semantic-ui/semantic.css">
+        <link rel="stylesheet" href="/css/all.css">
+        <link rel="stylesheet" href="/semantic-ui/semantic.css">
+        @yield('custom_css')
 
         {{-- <link rel="stylesheet" href="bootstrap5/bootstrap.min.css"> --}}
 
 
         <!-- Scripts -->
-        <script src="{{ asset('js/app.js') }}" defer></script>
+        {{-- <script src="{{ asset('js/app.js') }}" defer></script> --}}
 
 
     </head>
@@ -37,12 +38,13 @@
 
             <!-- Page Content -->
             <main id="main" style="margin-left:75px;">
-                {{ $slot }}
+                @yield('content')
             </main>
         </div>
-        <script src="js/jquery-3.5.1.slim.min.js"></script>
-        <script src="js/all.js" ></script>
-        <script src="semantic-ui/semantic.js" ></script>
+        <script src="/js/jquery-3.5.1.slim.min.js"></script>
+        <script src="/js/all.js" ></script>
+        <script src="/semantic-ui/semantic.js" ></script>
+        @yield('custom_js')
 
         {{-- <script src="bootstrap5/bootstrap.min.js" ></script> --}}
 

@@ -26,7 +26,7 @@
             </a>
         </div>
         <div>
-            <a href="/dashboard" class="link-container">
+            <a href="/purchases/create" class="link-container">
                 <i class="fas fa-cubes fa-fw"></i>
                 <span class="link-title" >庫存清單</span>
             </a>
