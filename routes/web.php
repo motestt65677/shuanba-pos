@@ -22,8 +22,17 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
-    Route::group(['prefix' => 'purchases'], function () {
-        Route::get('/create', 'PurchaseController@create');
+    Route::group(['middleware' => ['webUser']], function() {
+        Route::group(['prefix' => 'purchases'], function () {
+            Route::get('/create', 'PurchaseController@create');
+            Route::post('/store', 'PurchaseController@store');
+
+        });
+
+        Route::group(['prefix' => 'materials'], function () {
+            Route::post('/queryData', 'MaterialController@queryData');
+        });
     });
+
 });
 require __DIR__.'/auth.php';

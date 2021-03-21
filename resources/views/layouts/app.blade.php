@@ -8,13 +8,18 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
+        {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"> --}}
 
         <!-- Styles -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <link rel="stylesheet" href="/css/navbar.css">
         <link rel="stylesheet" href="/css/all.css">
         <link rel="stylesheet" href="/semantic-ui/semantic.css">
+        <link rel="stylesheet" href="/datetimepicker/jquery.datetimepicker.css">
+        <link rel="stylesheet" type="text/css" href="/DataTables/datatables.min.css">
+
+        {{-- <link rel="stylesheet" type="text/css" href="/select2/select2.css"> --}}
+
         @yield('custom_css')
 
         {{-- <link rel="stylesheet" href="bootstrap5/bootstrap.min.css"> --}}
@@ -41,9 +46,19 @@
                 @yield('content')
             </main>
         </div>
-        <script src="/js/jquery-3.5.1.slim.min.js"></script>
+        {{-- <script src="{{ asset('js/app.js') }}" ></script> --}}
+
+        <script src="/js/jquery-3.6.0.js"></script>
         <script src="/js/all.js" ></script>
+        <script src="/js/tool.js" ></script>
+        {{-- <script src="/select2/select2.js"></script> --}}
+
         <script src="/semantic-ui/semantic.js" ></script>
+        <script src="/datetimepicker/jquery.datetimepicker.full.min.js" ></script>
+        <script type="text/javascript" charset="utf8" src="/DataTables/datatables.min.js"></script>
+        <script>
+            jQuery.datetimepicker.setLocale('zh-TW');
+        </script>
         @yield('custom_js')
 
         {{-- <script src="bootstrap5/bootstrap.min.js" ></script> --}}
