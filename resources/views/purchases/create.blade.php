@@ -8,11 +8,14 @@
 </style>
 @endsection
 @section('content')
-    <div style="text-align:right;">
-        <button id="submit" class="ui button primary" type="submit">Submit</button>
-    </div>
+
+
 
     <div class="ui form">
+        <div style="text-align:right;">
+            <button id="recent_record_btn" class="ui button ">近五筆進貨原料</button>
+            <button id="submit" class="ui button primary submit">完成</button>
+        </div>
         <div class=" fields">
             <div class="eight wide field disabled">
                 <label>單據編號</label>
@@ -20,7 +23,7 @@
             </div>
             <div class="eight wide field disabled">
                 <label>金額</label>
-                <input id="total" type="text" value="100">
+                <input id="total" type="text" value="0">
             </div>
 
         </div>
@@ -51,7 +54,7 @@
             </div>
         </div>
        
-        <div class=" fields">
+        <div class="fields">
             <div class="sixteen wide field">
                 <label>備註一</label>
                 <input id="note1" type="text" >
@@ -79,6 +82,31 @@
         </table>
     </div>
 
+
+
+
+
+    <div id="recent_record_modal" class="ui large modal">
+        <i class="close icon"></i>
+        <div class="header">
+            近五筆進貨原料
+        </div>
+        <div class="content">
+            <table id="thisTable" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>產品編號</th>
+                        <th>產品名稱</th>
+                        <th>單位</th>
+                        <th>數量</th>
+                        <th>單價</th>
+                        <th>金額</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
     {{-- <div id="confirm_reset_modal" class="ui modal">
         <i class="close icon"></i>
         <div class="header">
@@ -102,6 +130,56 @@
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    //bind table
+    let data_table = $('#thisTable').DataTable({
+        ajax: {
+            url: "/purchases/queryPurchaseItems",
+            dataSrc: 'data',
+            data:{
+                search: {"count": 5},
+                order: {"id": "desc"}
+            },
+            type: "POST",
+            // beforeSend: showLoading
+        },
+        columns: [
+            { data: null, orderable:false, className: 'dt-body-center'}, 
+            { data: "material_no", orderable:false, className: 'dt-body-center'},
+            { data: "material_name", orderable:false, className: 'dt-body-center'},
+            { data: "material_unit", orderable:false, className: 'dt-body-center'},
+            { data: "amount", orderable:false, className: 'dt-body-center'},
+            { data: "unit_price", orderable:false, className: 'dt-body-center'},
+            { data: "total", orderable:false, className: 'dt-body-center'},
+        ],
+        paging: false,
+        searching: false,
+        info: false,
+        language: {
+            url: "/DataTables/localisation/zh_TW.json",
+            zeroRecords: "查無紀錄"
+        },
+        // paging: true,
+        fixedHeader: true,
+        fnInitComplete: function(oSettings, json) {
+            // hideLoading();
+        }
+    });
+    data_table.on( 'order.dt search.dt', function () {
+        data_table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+
+    //validation setting
+    $('.ui.form').form.settings.prompt.empty = "請填寫{name}";
+    $('.ui.form').form({
+        inline : true,
+        fields: {
+            payment_type: 'empty',
+            purchase_date: 'empty',
         }
     });
 
@@ -145,59 +223,65 @@
     })
 
     $("#submit").click(function(){
-        let data = {
-            "purchase_date": $("#purchase_date").val(),
-            "supplier": $("#supplier").val(),
-            "payment_type": $("#payment_type").val(),
-            "note1": $("#note1").val(),
-            "note2": $("#note2").val(),
-            "items": []
-        };
+        if( $('.ui.form').form('is valid')) {
+            let data = {
+                "purchase_date": $("#purchase_date").val(),
+                "supplier": $("#supplier").val(),
+                "payment_type": $("#payment_type").val(),
+                "note1": $("#note1").val(),
+                "note2": $("#note2").val(),
+                "items": []
+            };
 
-        var table = document.getElementById("purchase_items");
-        var items = [];
-        for (var i = 0, row; row = table.rows[i]; i++) {
-        //iterate through rows
-        //rows would be accessed using the "row" variable assigned in the for loop
-            // console.log(row);
-            const data_item_id = $(row).find("[data-item-id]");
-            const data_amount = $(row).find("[data-amount]");
-            const data_unit_price = $(row).find("[data-unit-price]");
+            var table = document.getElementById("purchase_items");
+            var items = [];
+            for (var i = 0, row; row = table.rows[i]; i++) {
+            //iterate through rows
+            //rows would be accessed using the "row" variable assigned in the for loop
+                // console.log(row);
+                const data_item_id = $(row).find("[data-item-id]");
+                const data_amount = $(row).find("[data-amount]");
+                const data_unit_price = $(row).find("[data-unit-price]");
 
-            // console.log(data_item_id);
-            if(data_item_id.length > 0){
-                if(data_amount[0].value == 0)
-                    continue;
-                if(data_unit_price[0].value == 0)
-                    continue;
-                const item_id = data_item_id[0].value;
-                const amount = data_amount[0].value;
-                const unit_price = data_unit_price[0].value;
+                // console.log(data_item_id);
+                if(data_item_id.length > 0){
+                    if(data_amount[0].value == 0)
+                        continue;
+                    if(data_unit_price[0].value == 0)
+                        continue;
+                    const item_id = data_item_id[0].value;
+                    const amount = data_amount[0].value;
+                    const unit_price = data_unit_price[0].value;
 
-                const this_item = {"item_id": item_id, "amount": amount, "unit_price": unit_price};
-                items.push(this_item);
-                // console.log(data_item_id[0]);
-                // console.log(data_item_id[0].value);
+                    const this_item = {"item_id": item_id, "amount": amount, "unit_price": unit_price};
+                    items.push(this_item);
+                    // console.log(data_item_id[0]);
+                    // console.log(data_item_id[0].value);
+                }
+                // console.log($($(row).data("unit")).get(0));
+                
             }
-            // console.log($($(row).data("unit")).get(0));
+            data.items = items;
+            $.ajax({
+                type: "POST",
+                url: "/purchases/store",
+                contentType: "application/json",
+                dataType: "json",
+                // beforeSend: showLoading,
+                // complete: hideLoading,
+                data: JSON.stringify(data),
+                success: function(response) {
+                    console.log(response);
+                    alert("登錄完成")
+                    window.location.href = "/purchases/create";
+                },
+                error: function(response) {
+                    // console.log(response);
+                }
+            });
             
         }
-        data.items = items;
-        $.ajax({
-            type: "POST",
-            url: "/purchases/store",
-            contentType: "application/json",
-            dataType: "json",
-            // beforeSend: showLoading,
-            // complete: hideLoading,
-            data: JSON.stringify(data),
-            success: function(response) {
-                // window.location.href = "/pettyCash";
-            },
-            error: function(response) {
-                // console.log(response);
-            }
-        });
+
         
     })
 
@@ -205,6 +289,9 @@
     let material_select;
     let row_number = 0;
 
+    $("#recent_record_btn").click(function(){
+        $('#recent_record_modal').modal('show')
+    })
 
     $("#add_item_btn").click(function(){
         const table_name = "purchase_items";
@@ -232,6 +319,7 @@
                 input.min = 0;
                 input.value = 0;
                 input.setAttribute("data-amount", "");
+                input.addEventListener("change", update_row_price, false);
                 td.appendChild(input);
             }else if (thisColumn == "unit_price"){
                 const input = document.createElement("input");
@@ -239,10 +327,13 @@
                 input.min = 0;
                 input.value = 0;
                 input.setAttribute("data-unit-price", "");
+                input.addEventListener("change", update_row_price, false);
                 td.appendChild(input);
             }else if (thisColumn == "total"){
                 // td.setAttribute("data-total", "");
-                td.appendChild(document.createTextNode("0"));
+                const span = document.createElement("span");
+                span.setAttribute("data-total-price", "");
+                td.appendChild(span);
             }
 
             tr.appendChild(td);
@@ -255,12 +346,12 @@
         })
     })
 
-    // $("#supplier").onChange(function(){
-        
 
-    // })
-    function query_materials(){
-        
+    function update_row_price(){
+        const row_amount = $(this).parent().parent().find("[data-amount]")[0];
+        const row_unit_price = $(this).parent().parent().find("[data-unit-price]")[0];
+        const row_total_price = $(this).parent().parent().find("[data-total-price]")[0];
+        row_total_price.innerHTML = parseFloat(row_amount.value) * parseFloat(row_unit_price.value);
     }
     function set_material_select(callback){
         $.ajax({

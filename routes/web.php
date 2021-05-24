@@ -26,7 +26,7 @@ Route::middleware(['auth'])->group(function () {
         Route::group(['prefix' => 'purchases'], function () {
             Route::get('/create', 'PurchaseController@create');
             Route::post('/store', 'PurchaseController@store');
-
+            Route::post('/queryPurchaseItems', 'PurchaseController@queryPurchaseItems');
         });
 
         Route::group(['prefix' => 'materials'], function () {

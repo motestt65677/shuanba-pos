@@ -28,6 +28,32 @@ class PurchaseService
         }
         return $char . $year . $month . $numStr;
     }
+
+    public function queryPurchaseItems($search = null, $order = null){
+        $query = DB::table('purchase_items')
+        ->select(
+            DB::raw("IFNULL((SELECT `material_no` FROM `materials` WHERE `id`=`purchase_items`.`material_id` ), '') AS `material_no`"),
+            DB::raw("IFNULL((SELECT `name` FROM `materials` WHERE `id`=`purchase_items`.`material_id` ), '') AS `material_name`"),
+            DB::raw("IFNULL((SELECT `unit` FROM `materials` WHERE `id`=`purchase_items`.`material_id` ), '') AS `material_unit`"),
+            'amount',
+            'unit_price',
+            'total',
+        );
+        if(isset($search["count"]))
+            $query->take($search["count"]);
+
+        foreach($order as $key=>$value){
+            $query->orderBy($key, $value);
+        }
+
+        $items = $query->get();
+        foreach($items as $item){
+            $item->amount = round($item->amount);
+            $item->unit_price = round($item->unit_price);
+            $item->total = round($item->total);
+        }
+        return $items;
+    }
     
 
 }

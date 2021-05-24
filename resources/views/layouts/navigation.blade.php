@@ -6,7 +6,6 @@
         <img src="/image/chef-icon-white.png" alt="" style="color:gray; display: block; margin-left: auto; margin-right: auto; width: 50%;">
     </div>
     <div id="nav-body" style="overflow-x:hidden;"> 
-        
         <div>
             <a href="/dashboard" class="link-container">
                 <i class="fas fa-stopwatch fa-fw"></i>
@@ -27,11 +26,11 @@
         </div>
         <div>
             <a href="/purchases/create" class="link-container">
-                <i class="fas fa-cubes fa-fw"></i>
-                <span class="link-title" >庫存清單</span>
+                {{-- <i class="fas fa-cubes fa-fw"></i> --}}
+                <i class="cart plus icon"></i>
+                <span class="link-title" >廠商進貨維護</span>
             </a>
         </div>
-        
     </div>
     <div id="nav-footer" class="container" style="position: absolute; bottom: 1em; color: white;">
         <div class="dropup" style="width: 100%;">

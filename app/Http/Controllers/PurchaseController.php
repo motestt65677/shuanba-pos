@@ -56,5 +56,12 @@ class PurchaseController extends Controller
 
         $purchase->total = $puchase_total;
         $purchase->save();
+
+        return \Response::json(["status"=> 200]);
+    }
+
+    public function queryPurchaseItems(Request $request){
+        $items = $this->purchaseService->queryPurchaseItems($request["search"], $request["order"]);
+        return \Response::json(["data"=> $items]);
     }
 }
