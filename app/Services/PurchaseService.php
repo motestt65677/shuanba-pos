@@ -38,6 +38,7 @@ class PurchaseService
             'amount',
             'unit_price',
             'total',
+            'created_at'
         );
         if(isset($search["count"]))
             $query->take($search["count"]);
@@ -51,6 +52,8 @@ class PurchaseService
             $item->amount = round($item->amount);
             $item->unit_price = round($item->unit_price);
             $item->total = round($item->total);
+            $item->created_date = substr($item->created_at, 0, 10);
+
         }
         return $items;
     }

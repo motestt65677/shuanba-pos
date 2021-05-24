@@ -102,6 +102,7 @@
                         <th>數量</th>
                         <th>單價</th>
                         <th>金額</th>
+                        <th>核准日期</th>
                     </tr>
                 </thead>
             </table>
@@ -146,13 +147,14 @@
             // beforeSend: showLoading
         },
         columns: [
-            { data: null, orderable:false, className: 'dt-body-center'}, 
-            { data: "material_no", orderable:false, className: 'dt-body-center'},
-            { data: "material_name", orderable:false, className: 'dt-body-center'},
-            { data: "material_unit", orderable:false, className: 'dt-body-center'},
-            { data: "amount", orderable:false, className: 'dt-body-center'},
-            { data: "unit_price", orderable:false, className: 'dt-body-center'},
-            { data: "total", orderable:false, className: 'dt-body-center'},
+            { data: null, orderable:false, className: 'dt-body-center dt-head-center'}, 
+            { data: "material_no", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "material_name", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "material_unit", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "amount", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "unit_price", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "total", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "created_date", orderable:false, className: 'dt-body-center dt-head-center'},
         ],
         paging: false,
         searching: false,
