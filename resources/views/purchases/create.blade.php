@@ -8,10 +8,8 @@
 </style>
 @endsection
 @section('content')
-
-
-
     <div class="ui form">
+        <h3>廠商進貨維護</h3>
         <div style="text-align:right;">
             <button id="recent_record_btn" class="ui button ">近五筆進貨原料</button>
             <button id="submit" class="ui button primary submit">完成</button>
@@ -31,7 +29,7 @@
         <div class=" fields">
             <div class="six wide field">
                 <label>單據日期</label>
-                <input id="purchase_date" type="text" value="">
+                <input id="voucher_date" type="text" value="">
             </div>
             <div class="six wide field">
                 <label>廠商</label>
@@ -102,7 +100,7 @@
                         <th>數量</th>
                         <th>單價</th>
                         <th>金額</th>
-                        <th>核准日期</th>
+                        <th>建立日期</th>
                     </tr>
                 </thead>
             </table>
@@ -128,12 +126,12 @@
 
 @section('custom_js')
 <script>
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+$(document).ready(function(){
     //bind table
     let data_table = $('#thisTable').DataTable({
         ajax: {
@@ -144,7 +142,8 @@
                 order: {"id": "desc"}
             },
             type: "POST",
-            // beforeSend: showLoading
+            beforeSend: showLoading,
+            complete: hideLoading
         },
         columns: [
             { data: null, orderable:false, className: 'dt-body-center dt-head-center'}, 
@@ -181,11 +180,13 @@
         inline : true,
         fields: {
             payment_type: 'empty',
-            purchase_date: 'empty',
+            voucher_date: 'empty',
+            supplier: 'empty',
+
         }
     });
 
-    $('#purchase_date').datetimepicker({
+    $('#voucher_date').datetimepicker({
         timepicker:false,
         format: 'Y-m-d',
         // minDate: firstDay,
@@ -193,7 +194,7 @@
         scrollMonth : false
     });
 
-    $('#purchase_date').val(getymd());
+    $('#voucher_date').val(getymd());
     // $("#supplier").select2();
     $('#supplier').dropdown();
     $('#supplier').change(function(){
@@ -227,7 +228,7 @@
     $("#submit").click(function(){
         if( $('.ui.form').form('is valid')) {
             let data = {
-                "purchase_date": $("#purchase_date").val(),
+                "voucher_date": $("#voucher_date").val(),
                 "supplier": $("#supplier").val(),
                 "payment_type": $("#payment_type").val(),
                 "note1": $("#note1").val(),
@@ -286,11 +287,8 @@
 
         
     })
-
-
     let material_select;
     let row_number = 0;
-
     $("#recent_record_btn").click(function(){
         $('#recent_record_modal').modal('show')
     })
@@ -347,8 +345,7 @@
             fullTextSearch: true
         })
     })
-
-
+    
     function update_row_price(){
         const row_amount = $(this).parent().parent().find("[data-amount]")[0];
         const row_unit_price = $(this).parent().parent().find("[data-unit-price]")[0];
@@ -388,6 +385,9 @@
         });
         return true;
     }
+});
+    
+
 
     
 

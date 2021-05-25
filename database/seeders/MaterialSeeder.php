@@ -24,7 +24,7 @@ class MaterialSeeder extends Seeder
         //     "address" => ""
         // ],
         $suppliers = [
-            "S20210310001" => [
+            "F001" => [
                 "name" => "勤億(雞蛋)",
                 "materials" => [
                     "M20210310001" => [
@@ -32,10 +32,9 @@ class MaterialSeeder extends Seeder
                         "unit" => "個",
                         "unit_price" => "6.2",
                     ]
-
                 ]
             ],
-            "S20210310002" => [
+            "F002" => [
                 "name" => "美食家",
                 "materials" => [
                     "M20210310002" => [
@@ -50,7 +49,7 @@ class MaterialSeeder extends Seeder
                     ]
                 ]
             ],
-            "S20210310003" => [
+            "F003" => [
                 "name" => "金賀水產",
                 "materials" => [
                     "M20210310005" => [
@@ -91,3 +90,4 @@ class MaterialSeeder extends Seeder
         }
     }
 }
+

@@ -10,6 +10,6 @@ class Purchase extends Model
     use HasFactory;
     protected $table = "purchases";
     protected $fillable = [
-        'prep_by', 'branch_id', 'purchase_no', 'payment_type', 'total', 'note1', 'note2'
+        'prep_by', 'branch_id', 'supplier_id', 'voucher_date', 'purchase_no', 'payment_type', 'total', 'note1', 'note2', 'is_paid'
     ];
 }

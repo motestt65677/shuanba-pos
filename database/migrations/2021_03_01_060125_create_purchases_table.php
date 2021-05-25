@@ -17,6 +17,7 @@ class CreatePurchasesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('prep_by')->nullable();
             $table->unsignedBigInteger('branch_id')->nullable();
+            $table->date('voucher_date');
             $table->string('purchase_no', 12);
             $table->string('payment_type', 10)->comment('付款方式 cash, monthly');
             $table->decimal('total', 13, 2)->nullable()->default(0);
@@ -34,7 +35,6 @@ class CreatePurchasesTable extends Migration
             $table->decimal('total', 13, 2)->nullable()->default(0);
             $table->string('note1')->nullable();
             $table->timestamps();
-
         });
 
         Schema::create('materials', function (Blueprint $table) {
@@ -52,7 +52,7 @@ class CreatePurchasesTable extends Migration
 
         Schema::create('suppliers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('supplier_no', 12);
+            $table->string('supplier_no', 4);
             $table->string('name');
             $table->string('phone', 20)->nullable();
             $table->string('cellphone', 20)->nullable();

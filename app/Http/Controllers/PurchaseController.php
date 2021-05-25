@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
 use App\Models\Material;
 use App\Models\Purchase;
 use App\Models\Supplier;
@@ -17,7 +18,13 @@ class PurchaseController extends Controller
         $this->purchaseService = app()->make('PurchaseService');
 
 	}
-    //
+    public function index(Request $request)
+    {
+        return view('purchases.index')->with([
+            "yearMonthSelect" => $this->purchaseService->getYearMonthSelect(),
+            "nowMonthYear" => (new DateTime())->format('Y-m'),
+        ]);
+    }
     public function create(Request $request)
     {
         return view('purchases.create')->with([
@@ -32,6 +39,8 @@ class PurchaseController extends Controller
         $purchase = Purchase::create([
             "prep_by" => $user->id,
             "branch_id" => $user->branch_id,
+            "supplier_id" => $request->supplier,
+            "voucher_date" => $request->voucher_date,
             "purchase_no" => $this->purchaseService->newPurchaseNo(),
             "payment_type" => $request->payment_type,
             "note1" => $request->note1,
@@ -60,8 +69,21 @@ class PurchaseController extends Controller
         return \Response::json(["status"=> 200]);
     }
 
+    public function queryPurchases(Request $request){
+        $items = $this->purchaseService->queryPurchases($request["search"], $request["order"]);
+        return \Response::json(["data"=> $items]);
+    }
+
     public function queryPurchaseItems(Request $request){
         $items = $this->purchaseService->queryPurchaseItems($request["search"], $request["order"]);
         return \Response::json(["data"=> $items]);
+    }
+
+    public function paid(Request $request){
+
+        foreach($request->ids as $id){
+            Purchase::where("id", $id)->update(["is_paid" => true]);
+        }
+        return \Response::json(["status"=> "200"]);
     }
 }

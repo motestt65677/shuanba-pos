@@ -31,8 +31,15 @@
 
     </head>
     <body class="font-sans antialiased">
+        <div id="loader" class="ui segment" style="position:fixed; height:100vh; width: 100%; z-index: 1000; opacity: 50%; border: 0;">
+            <p></p>
+            <div class="ui active dimmer">
+                <div class="ui loader"></div>
+            </div>
+        </div>
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
+
 
             <!-- Page Heading -->
             {{-- <header class="bg-white shadow">
@@ -79,6 +86,15 @@
                     document.getElementById("my-side-nav").style.width = "250px";
                     document.getElementById("main").style.marginLeft = "250px";
                 }
+            }
+            function showLoading(){
+                $("#loader").show();
+                // $("#loader").modal("show");
+            }
+            function hideLoading(){
+                setTimeout(function(){$("#loader").hide(); }, 500);
+                setTimeout(function(){$("#loader").hide(); }, 1000);
+                setTimeout(function(){$("#loader").hide(); }, 1500);
             }
             $("#logout").click(function(){
                 $("#logout-form").submit();

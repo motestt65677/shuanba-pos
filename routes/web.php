@@ -24,9 +24,15 @@ Route::get('/dashboard', function () {
 Route::middleware(['auth'])->group(function () {
     Route::group(['middleware' => ['webUser']], function() {
         Route::group(['prefix' => 'purchases'], function () {
+            Route::get('/index', 'PurchaseController@index');
+
             Route::get('/create', 'PurchaseController@create');
             Route::post('/store', 'PurchaseController@store');
+            Route::post('/queryPurchases', 'PurchaseController@queryPurchases');
             Route::post('/queryPurchaseItems', 'PurchaseController@queryPurchaseItems');
+            Route::post('/paid', 'PurchaseController@paid');
+
+
         });
 
         Route::group(['prefix' => 'materials'], function () {
