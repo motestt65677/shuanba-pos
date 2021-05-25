@@ -27,7 +27,7 @@ class MaterialSeeder extends Seeder
             "F001" => [
                 "name" => "勤億(雞蛋)",
                 "materials" => [
-                    "M20210310001" => [
+                    "M0001" => [
                         "name" => "機能蛋",
                         "unit" => "個",
                         "unit_price" => "6.2",
@@ -37,12 +37,12 @@ class MaterialSeeder extends Seeder
             "F002" => [
                 "name" => "美食家",
                 "materials" => [
-                    "M20210310002" => [
+                    "M0002" => [
                         "name" => "王子麵",
                         "unit" => "40/箱",
                         "unit_price" => "170",
                     ],
-                    "M20210310004" => [
+                    "M0003" => [
                         "name" => "久代大角螺",
                         "unit" => "3kg",
                         "unit_price" => "255",
@@ -52,17 +52,17 @@ class MaterialSeeder extends Seeder
             "F003" => [
                 "name" => "金賀水產",
                 "materials" => [
-                    "M20210310005" => [
+                    "M0004" => [
                         "name" => "海鯛雙背",
                         "unit" => "250/300",
                         "unit_price" => "250",
                     ],
-                    "M20210310006" => [
+                    "M0005" => [
                         "name" => "船凍小龍蝦",
                         "unit" => "300/350-15隻",
                         "unit_price" => "740",
                     ],
-                    "M20210310007" => [
+                    "M0006" => [
                         "name" => "七星鱸魚片",
                         "unit" => "300/400",
                         "unit_price" => "350",

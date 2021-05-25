@@ -79,6 +79,13 @@ class PurchaseController extends Controller
         return \Response::json(["data"=> $items]);
     }
 
+    public function queryPurchaseItemsWithSupplier(Request $request){
+        $items = $this->purchaseService->queryPurchaseItemsWithSupplier($request["search"], $request["order"]);
+        return \Response::json(["data"=> $items]);
+    }
+
+    
+
     public function paid(Request $request){
 
         foreach($request->ids as $id){

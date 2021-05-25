@@ -40,7 +40,7 @@ class CreatePurchasesTable extends Migration
         Schema::create('materials', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('supplier_id')->nullable();
-            $table->string('material_no', 12);
+            $table->string('material_no', 5);
             $table->string('name');
             $table->string('big_category')->nullable();
             $table->string('med_category')->nullable();

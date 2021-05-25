@@ -8,34 +8,47 @@
 </style>
 @endsection
 @section('content')
-<h3>廠商進貨分析</h3>
-<div style="text-align: right; margin: 1rem;">
-    <button id="paid" class="ui button primary submit ">單據付款</button>
+
+<h3 class="ui block header" style="position:inline-block;">
+    廠商進貨分析
+</h3>
+
+<div class="ui vertical segment">
+    <div class="ui grid" style="margin-bottom: 1rem;">
+        <div class="four column row">
+            <div class="left floated column">
+                <select id="year_month_select" class="ui search selection dropdown">
+                    @foreach($yearMonthSelect as $item)
+                        @if($item == $nowMonthYear)
+                            <option value="{{$item}}" selected>{{$item}}</option>
+                        @elseif($item < $nowMonthYear)
+                            <option value="{{$item}}">{{$item}}</option>
+                        @endif
+                    @endforeach
+                </select>
+            </div>
+            <div class="right floated column" style="text-align:right;">
+                <button id="paid" class="ui button primary submit ">單據付款</button>
+            </div>
+        </div>
+    </div>
+
+    <table id="thisTable" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>單據編號</th>
+                <th>廠商編號</th>
+                <th>廠商名稱</th>
+                <th>付款方式</th>
+                <th>付款狀態</th>
+                <th>單據日期</th>
+                <th>應付金額</th>
+            </tr>
+        </thead>
+    </table>
 </div>
-<select id="year_month_select" class="ui search selection dropdown">
-    @foreach($yearMonthSelect as $item)
-        @if($item == $nowMonthYear)
-            <option value="{{$item}}" selected>{{$item}}</option>
-        @elseif($item < $nowMonthYear)
-            <option value="{{$item}}">{{$item}}</option>
-        @endif
-    @endforeach
-</select>
-<table id="thisTable" class="display" style="width:100%">
-    <thead>
-        <tr>
-            <th></th>
-            <th></th>
-            <th>單據編號</th>
-            <th>廠商編號</th>
-            <th>廠商名稱</th>
-            <th>付款方式</th>
-            <th>付款狀態</th>
-            <th>單據日期</th>
-            <th>應付金額</th>
-        </tr>
-    </thead>
-</table>
 @endsection
 
 @section('custom_js')

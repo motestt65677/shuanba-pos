@@ -8,8 +8,9 @@
 </style>
 @endsection
 @section('content')
+<h3 class="ui block header">廠商進貨維護</h3>
+
     <div class="ui form">
-        <h3>廠商進貨維護</h3>
         <div style="text-align:right;">
             <button id="recent_record_btn" class="ui button ">近五筆進貨原料</button>
             <button id="submit" class="ui button primary submit">完成</button>
