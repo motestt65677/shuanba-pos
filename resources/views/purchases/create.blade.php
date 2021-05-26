@@ -299,6 +299,7 @@ $(document).ready(function(){
         const columns = ["#", "item_id", "unit", "amount", "unit_price", "total"];
         const body = document.getElementById(table_name).getElementsByTagName('tbody')[0];
         const tr = document.createElement("tr");
+        let select;
         tr.setAttribute("data-tr", "");
         row_number += 1;
         for(let i = 0; i < columns.length; i++){
@@ -308,9 +309,11 @@ $(document).ready(function(){
             if(thisColumn == "#"){
                 td.appendChild(document.createTextNode(row_number));
             }else if (thisColumn == "item_id"){
-                const select = material_select.cloneNode(true);
+                select = material_select.cloneNode(true);
                 select.setAttribute("data-item-id", "");
+                select.addEventListener("change", update_unit_price, false);
                 td.appendChild(select);
+                // $(select).trigger('change');
             }else if (thisColumn == "unit"){
                 // td.setAttribute("data-unit", "");
                 td.appendChild(document.createTextNode("個"));
@@ -338,6 +341,8 @@ $(document).ready(function(){
             }
 
             tr.appendChild(td);
+
+
         }
         $("#purchase_items tbody").append(tr);
         // document.getElementById("purchase_items").appendChild(tr);
@@ -345,6 +350,15 @@ $(document).ready(function(){
             // clearable: true,
             fullTextSearch: true
         })
+
+        // console.log(select);
+        if ("createEvent" in document) {
+            var evt = document.createEvent("HTMLEvents");
+            evt.initEvent("change", false, true);
+            select.dispatchEvent(evt);
+        }
+        else
+            select.fireEvent("onchange");
     })
     
     function update_row_price(){
@@ -353,7 +367,19 @@ $(document).ready(function(){
         const row_total_price = $(this).parent().parent().find("[data-total-price]")[0];
         row_total_price.innerHTML = parseFloat(row_amount.value) * parseFloat(row_unit_price.value);
     }
+
+    function update_unit_price(){
+        const row_item = this;
+        let selected_option = $(this).find(":selected")[0];
+        if(selected_option == undefined)
+            selected_option = this.options[0];
+        const unit_price = selected_option.getAttribute('data_unit_price');
+        const row_unit_price = $(this).parent().parent().parent().find("[data-unit-price]")[0];
+        row_unit_price.value = unit_price;
+    }
+
     function set_material_select(callback){
+
         $.ajax({
             type: "POST",
             url: "/materials/queryData",
@@ -364,17 +390,19 @@ $(document).ready(function(){
             // complete: hideLoading,
             data: JSON.stringify(
                 {
-                    supplier_id: $("#supplier").val()
+                    search: {supplier_id: $("#supplier").val()}
                 }
             ),
             success: function(materials) {
                 const select = document.createElement("select");
                 select.classList = "ui search selection dropdown";
+
                 for(var i = 0; i < materials.length; i++){
                     const this_material = materials[i];
                     const option = document.createElement("option");
-                    option.value = this_material.id;
-                    option.innerHTML = this_material.name;
+                    option.value = this_material.material_id;
+                    option.innerHTML = this_material.material_name;
+                    option.setAttribute('data_unit_price', this_material.material_unit_price);
                     select.appendChild(option);
                 }
                 material_select = select;
