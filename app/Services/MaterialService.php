@@ -17,7 +17,7 @@ class MaterialService
 
         $sql = "SELECT RIGHT(material_no,4) AS num FROM `materials`
                 WHERE material_no LIKE '{$char}%'
-                ORDER BY purchase_no DESC
+                ORDER BY material_no DESC
                 LIMIT 1
         ";
         $rt = DB::select($sql);

@@ -46,7 +46,13 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::group(['prefix' => 'suppliers'], function () {
+            Route::get('/{id}/edit', 'SupplierController@edit');
             Route::get('/index', 'SupplierController@index');
+            Route::get('/create', 'SupplierController@create');
+
+            Route::post('/store', 'SupplierController@store');
+            Route::post('/update', 'SupplierController@update');
+            Route::post('/delete', 'SupplierController@delete');
             Route::post('/queryData', 'SupplierController@queryData');
         });
         

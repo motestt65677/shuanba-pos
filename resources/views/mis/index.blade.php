@@ -279,31 +279,6 @@ $(document).ready(function(){
         }
         return table;
     }
-    // function bind_supplier_select(){
-    //     $.ajax({
-    //         type: "POST",
-    //         url: "/suppliers/queryData",
-    //         contentType: "application/json",
-    //         dataType: "json",
-    //         beforeSend: showLoading,
-    //         complete: hideLoading,
-    //         // data: JSON.stringify(data),
-    //         success: function(response) {
-    //             let select = document.getElementById('supplier');
-    //             select.innerHTML = "";
-    //             for(let i = 0; i < response.length; i++){
-    //                 let this_supplier = response[i];
-    //                 let option = document.createElement('option');
-    //                 option.value = this_supplier.supplier_id;
-    //                 option.innerHTML = this_supplier.supplier_no + '(' + this_supplier.supplier_name + ')';
-    //                 select.appendChild(option);
-    //             }
-    //         },
-    //         error: function(response) {
-    //             // console.log(response);
-    //         }
-    //     });
-    // }
 });
 
 

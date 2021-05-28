@@ -16,3 +16,7 @@ function getymd(){
     var date = new Date();
     return formatDate(date);
 }
+
+function get_url_id(){
+    return location.pathname.split('/')[2]
+}

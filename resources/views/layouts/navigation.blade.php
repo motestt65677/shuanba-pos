@@ -35,7 +35,7 @@
                 </div>
         
                 <div>
-                    <a href="/vendors/index" class="link-container">
+                    <a href="/suppliers/index" class="link-container">
                         {{-- <i class="fas fa-cubes fa-fw"></i> --}}
                         <i class="far fa-address-card"></i>
                         <span class="link-title" >廠商管理</span>

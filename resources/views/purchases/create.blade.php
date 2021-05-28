@@ -209,15 +209,13 @@ $(document).ready(function(){
             set_material_select(function(){
                 $("#add_item_btn").trigger('click');
             });
-        
-
         } else {
             set_material_select(function(){
                 $("#add_item_btn").trigger('click');
             });
         }
-
     })
+
 
     $('#payment_type').dropdown({
         // clearable: true,
@@ -423,15 +421,19 @@ $(document).ready(function(){
             complete: hideLoading,
             // data: JSON.stringify(data),
             success: function(response) {
+                const data = response["data"];
                 let select = document.getElementById('supplier');
                 select.innerHTML = "";
-                for(let i = 0; i < response.length; i++){
-                    let this_supplier = response[i];
+                for(let i = 0; i < data.length; i++){
+                    let this_supplier = data[i];
                     let option = document.createElement('option');
                     option.value = this_supplier.supplier_id;
                     option.innerHTML = this_supplier.supplier_no + '(' + this_supplier.supplier_name + ')';
                     select.appendChild(option);
                 }
+                set_material_select(function(){
+                    $("#add_item_btn").trigger('click');
+                });
             },
             error: function(response) {
                 // console.log(response);
