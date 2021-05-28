@@ -73,6 +73,7 @@
 
         <script>
             var navOpen = false;
+            hideLoading()
             function toggleNav(){
                 if(navOpen){
                     navOpen = false;

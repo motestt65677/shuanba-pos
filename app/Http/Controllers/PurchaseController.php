@@ -16,6 +16,8 @@ class PurchaseController extends Controller
     public function __construct()
 	{
         $this->purchaseService = app()->make('PurchaseService');
+        $this->materialService = app()->make('MaterialService');
+
 
 	}
     public function index(Request $request)
@@ -92,5 +94,76 @@ class PurchaseController extends Controller
             Purchase::where("id", $id)->update(["is_paid" => true]);
         }
         return \Response::json(["status"=> "200"]);
+    }
+
+    public function bulk_import(Request $request){
+        $purchaseDict = [];
+        if(count($request->purchases) <= 0)
+            return \Response::json(["status"=> "200", "error"=> "no purchases"]);
+
+
+
+        $supplier = Supplier::where("name", $request->purchases[0]["supplier"])->first();
+        if(!$supplier)
+            return \Response::json(["status"=> "200", "error"=> "no supplier found"]);
+
+        foreach($request->purchases as $purchase){
+            if(!isset($purchaseDict[$purchase["purchase_date"]])){
+                $purchaseDict[$purchase["purchase_date"]] = [];
+            } 
+            array_push($purchaseDict[$purchase["purchase_date"]], $purchase);
+        }
+
+        $user = $request->user;
+        $returnPurchaseItems = [];
+        foreach($purchaseDict as $key => $purchase){
+            if (DateTime::createFromFormat('m/d', $key) === false) {
+                return \Response::json(["status"=> "200", "error"=> "date format error"]);
+            }
+            $voucherDate = DateTime::createFromFormat('m/d', $key);
+            $thisPurchase = Purchase::create([
+                "prep_by" => $user->id,
+                "branch_id" => $user->branch_id,
+                "supplier_id" => $supplier->id,
+                "voucher_date" => $voucherDate,
+                "purchase_no" => $this->purchaseService->newPurchaseNo(),
+                "payment_type" => "monthly",
+                "note1" => "",
+                "note2" => "",
+            ]);
+
+            $puchase_total = 0;
+            $keepPurchase = false;
+            foreach($purchase as $item){
+                $material = Material::where("name", $item["material_name"])->first();
+                if($item["amount"] == 0 || $item["unit_price"] == 0){
+                    $item["status"] = "amount or unit price is 0";
+                } else if (!$material){
+                    $item["status"] = "material not found";
+                }else {
+                    $purchaseItem = PurchaseItem::create([
+                        "purchase_id" => $thisPurchase->id,
+                        "material_id" => $material->id,
+                        "amount" => $item["amount"],
+                        "unit_price" => $item["unit_price"],
+                        "total" => $item["total"]
+                    ]);
+                    $puchase_total += $item["total"];
+                    $item["status"] = "success";
+                    $keepPurchase = true;
+                }
+                array_push($returnPurchaseItems, $item);
+            }
+
+            if($keepPurchase){
+                $thisPurchase->total = $puchase_total;
+                $thisPurchase->save();
+            } else {
+                $thisPurchase->delete();
+            }
+        }
+        
+
+        return \Response::json(["status"=> "200", "purchase_items"=>$returnPurchaseItems]);
     }
 }

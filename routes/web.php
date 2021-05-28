@@ -33,14 +33,25 @@ Route::middleware(['auth'])->group(function () {
 
             
             Route::post('/paid', 'PurchaseController@paid');
+            Route::post('/bulk_import', 'PurchaseController@bulk_import');
 
         });
 
         Route::group(['prefix' => 'materials'], function () {
+            Route::get('/index', 'MaterialController@index');
             Route::post('/queryData', 'MaterialController@queryData');
         });
         Route::group(['prefix' => 'purchase_items'], function () {
             Route::get('/index', 'PurchaseItemController@index');
+        });
+
+        Route::group(['prefix' => 'suppliers'], function () {
+            Route::get('/index', 'SupplierController@index');
+            Route::post('/queryData', 'SupplierController@queryData');
+        });
+        
+        Route::group(['prefix' => 'mis'], function () {
+            Route::get('/index', 'MisController@index');
         });
     });
 

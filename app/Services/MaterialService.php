@@ -8,7 +8,26 @@ use Illuminate\Support\Facades\DB;
 
 class MaterialService
 {
-    
+    public function newMaterialNo(){
+        $year = date("Y");
+        $month = date("m");
+
+        $numStr = "0001";
+        $char = "M";
+
+        $sql = "SELECT RIGHT(material_no,4) AS num FROM `materials`
+                WHERE material_no LIKE '{$char}%'
+                ORDER BY purchase_no DESC
+                LIMIT 1
+        ";
+        $rt = DB::select($sql);
+        if(count($rt) == 1){
+            $int = (int)$rt["0"]->num;
+            $int += 1;
+            $numStr = substr("00000".(string)$int, -4);
+        }
+        return $char . $numStr;
+    }
 
     public function queryData($search = [], $order = []){
         $query = DB::table('materials')

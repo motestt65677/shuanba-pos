@@ -14,6 +14,10 @@ class MaterialController extends Controller
         $this->materialService = app()->make('MaterialService');
 	}
 
+    public function index(Request $request){
+        return view('materials.index');
+    }
+
     public function queryData(Request $request)
     {
         $materials = $this->materialService->queryData($request->search);

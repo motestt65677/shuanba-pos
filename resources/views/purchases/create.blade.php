@@ -12,7 +12,7 @@
 
     <div class="ui form">
         <div style="text-align:right;">
-            <button id="recent_record_btn" class="ui button ">近五筆進貨原料</button>
+            <button id="recent_record_btn" class="ui button ">近五筆輸入原料</button>
             <button id="submit" class="ui button primary submit">完成</button>
         </div>
         <div class=" fields">
@@ -34,12 +34,8 @@
             </div>
             <div class="six wide field">
                 <label>廠商</label>
-
                 <select name="" id="supplier" class="ui search selection dropdown">
-                    <option value=""></option>
-                    @foreach($suppliers as $supplier)
-                        <option value="{{$supplier->id}}">{{$supplier->supplier_no}}({{$supplier->name}})</option>
-                    @endforeach
+
                 </select>
             </div>
             <div class="six wide field">
@@ -101,7 +97,7 @@
                         <th>數量</th>
                         <th>單價</th>
                         <th>金額</th>
-                        <th>建立日期</th>
+                        <th>輸入日期</th>
                     </tr>
                 </thead>
             </table>
@@ -134,6 +130,7 @@ $.ajaxSetup({
 });
 $(document).ready(function(){
     //bind table
+
     let data_table = $('#thisTable').DataTable({
         ajax: {
             url: "/purchases/queryPurchaseItems",
@@ -197,6 +194,7 @@ $(document).ready(function(){
 
     $('#voucher_date').val(getymd());
     // $("#supplier").select2();
+    bind_supplier_select();
     $('#supplier').dropdown();
     $('#supplier').change(function(){
         if($("#supplier").val() != ""){
@@ -413,6 +411,32 @@ $(document).ready(function(){
             }
         });
         return true;
+    }
+
+    function bind_supplier_select(){
+        $.ajax({
+            type: "POST",
+            url: "/suppliers/queryData",
+            contentType: "application/json",
+            dataType: "json",
+            beforeSend: showLoading,
+            complete: hideLoading,
+            // data: JSON.stringify(data),
+            success: function(response) {
+                let select = document.getElementById('supplier');
+                select.innerHTML = "";
+                for(let i = 0; i < response.length; i++){
+                    let this_supplier = response[i];
+                    let option = document.createElement('option');
+                    option.value = this_supplier.supplier_id;
+                    option.innerHTML = this_supplier.supplier_no + '(' + this_supplier.supplier_name + ')';
+                    select.appendChild(option);
+                }
+            },
+            error: function(response) {
+                // console.log(response);
+            }
+        });
     }
 });
     
