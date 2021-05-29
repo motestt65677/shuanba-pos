@@ -38,8 +38,17 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::group(['prefix' => 'materials'], function () {
+
+            Route::get('/{id}/edit', 'MaterialController@edit');
             Route::get('/index', 'MaterialController@index');
+            Route::get('/create', 'MaterialController@create');
+
+            Route::post('/store', 'MaterialController@store');
+            Route::post('/update', 'MaterialController@update');
+            Route::post('/delete', 'MaterialController@delete');
             Route::post('/queryData', 'MaterialController@queryData');
+
+
         });
         Route::group(['prefix' => 'purchase_items'], function () {
             Route::get('/index', 'PurchaseItemController@index');

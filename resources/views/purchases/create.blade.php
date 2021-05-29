@@ -389,8 +389,10 @@ $(document).ready(function(){
                     search: {supplier_id: $("#supplier").val()}
                 }
             ),
-            success: function(materials) {
+            success: function(response) {
+                const materials = response["data"]
                 const select = document.createElement("select");
+                
                 select.classList = "ui search selection dropdown";
 
                 for(var i = 0; i < materials.length; i++){

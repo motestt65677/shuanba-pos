@@ -33,12 +33,16 @@ class MaterialService
         $query = DB::table('materials')
         ->select(
             "materials.id AS material_id",
+            "materials.material_no AS material_no",
             "materials.name AS material_name",
-            "materials.unit_price AS material_unit_price"
-
+            "materials.unit AS material_unit",
+            "materials.unit_price AS material_unit_price",
+            DB::raw("IFNULL((SELECT `name` FROM `suppliers` WHERE `id`=`materials`.`supplier_id` ), '') AS `supplier_name`"),
+            DB::raw("IFNULL((SELECT `supplier_no` FROM `suppliers` WHERE `id`=`materials`.`supplier_id` ), '') AS `supplier_no`"),
+            "supplier_id AS supplier_id"
         );
-        if(isset($search["supplier_id"]))
-            $query->where("materials.supplier_id", $search["supplier_id"]);
+        if(isset($search["material_id"]))
+            $query->where("materials.id", $search["material_id"]);
         // if(isset($search["count"]))
         //     $query->take($search["count"]);
 
@@ -47,12 +51,9 @@ class MaterialService
         }
 
         $items = $query->get();
-        // foreach($items as $item){
-        //     $item->item_amount = round($item->item_amount);
-        //     $item->item_unit_price = round($item->item_unit_price);
-        //     $item->item_total = round($item->item_total);
-        //     // $item->created_date = substr($item->created_at, 0, 10);
-        // }
+        foreach($items as $item){
+            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
+        }
         return $items;
     }
 

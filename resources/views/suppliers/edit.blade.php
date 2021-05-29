@@ -17,7 +17,7 @@
         <div class=" fields">
             <div class="eight wide field disabled">
                 <label>廠商編號</label>
-                <input type="text" value="AUTONUM">
+                <input id="supplier_no" type="text" value="">
             </div>
             <div class="eight wide field">
                 <label>廠商名稱</label>
@@ -93,6 +93,9 @@ $(document).ready(function(){
                 $("#supplier_address").val(supplier["supplier_address"]);
                 $("#supplier_note1").val(supplier["supplier_note1"]);
                 $("#supplier_tax_id").val(supplier["supplier_tax_id"]);
+                $("#supplier_no").val(supplier["supplier_no"]);
+
+                
             }
 
             // window.location.href = "/suppliers/index";

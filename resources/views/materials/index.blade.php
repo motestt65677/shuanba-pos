@@ -10,10 +10,10 @@
 @section('content')
 
 <h3 class="ui block header" style="position:inline-block;">
-    廠商維護
+    材料維護
 </h3>
 <div style="text-align:right;">
-    <a id="submit" class="ui button primary submit" href="/suppliers/create">新增廠商</a>
+    <a id="submit" class="ui button primary submit" href="/materials/create">新增材料</a>
     <button id="delete_btn" class="ui button negative">刪除</button>
 </div>
 <div class="ui vertical segment">
@@ -22,13 +22,11 @@
             <tr>
                 <th></th>
                 <th></th>
-                <th>廠商編號</th>
-                <th>廠商名稱</th>
-                <th>電話</th>
-                <th>手機</th>
-                <th>統一編號</th>
-                <th>地址</th>
-                <th>備註</th>
+                <th>廠商</th>
+                <th>材料編號</th>
+                <th>材料名稱</th>
+                <th>單位</th>
+                <th>單價</th>
             </tr>
         </thead>
     </table>
@@ -44,10 +42,11 @@ $(document).ready(function(){
         }
     });
 
+    
     //bind table
     let data_table = $('#thisTable').DataTable({
         ajax: {
-            url: "/suppliers/queryData",
+            url: "/materials/queryData",
             dataSrc: 'data',
             // data: function(d){
             //     const search = {payment_type: "monthly", voucher_year_month: $('#year_month_select').val()}
@@ -75,14 +74,11 @@ $(document).ready(function(){
                 width: "3%"
             },
             { data: null, orderable:false, className: 'dt-body-center dt-head-center'}, 
-            { data: "supplier_no", orderable:false, className: 'dt-body-center dt-head-center'},
-            { data: "supplier_name", orderable:false, className: 'dt-body-center dt-head-center'},
-            { data: "supplier_phone", orderable:false, className: 'dt-body-center dt-head-center'},
-            { data: "supplier_cellphone", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
-            { data: "supplier_tax_id", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
-            { data: "supplier_address", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
-            { data: "supplier_note1", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
-
+            { data: "supplier_name_and_no", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "material_no", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "material_name", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
+            { data: "material_unit", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
+            { data: "material_unit_price", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
         ],
         paging: false,
         // searching: false,
@@ -105,11 +101,10 @@ $(document).ready(function(){
 
     $('#thisTable tbody').on('dblclick', 'tr', function () {
         var data = data_table.row( this ).data();
-        window.location.href = "/suppliers/" + data["supplier_id"] + "/edit";
+        window.location.href = "/materials/" + data["material_id"] + "/edit";
     } );
     
     $("#delete_btn").click(function(){
-
         const all_data = data_table.rows().data();
         let checked_row_id = [];
         data_table.rows().every(function(index, element) {
@@ -117,7 +112,7 @@ $(document).ready(function(){
             //eq(col # of checkbox)
             let checkbox = row.find('td').eq(0).children("input:checkbox");
             if(checkbox.prop("checked")){
-                checked_row_id.push(all_data[index]["supplier_id"]);
+                checked_row_id.push(all_data[index]["material_id"]);
             }
         });
 
@@ -125,11 +120,11 @@ $(document).ready(function(){
             if(confirm("確定要刪除?")){
 
                 let data = {
-                    "supplier_ids": checked_row_id,
+                    "material_ids": checked_row_id,
                 };
                 $.ajax({
                     type: "POST",
-                    url: "/suppliers/delete",
+                    url: "/materials/delete",
                     contentType: "application/json",
                     dataType: "json",
                     beforeSend: showLoading,
@@ -153,7 +148,8 @@ $(document).ready(function(){
                         // console.log(response);
                     }
                 });
-            }
+                }
+
         } 
     })
 });
