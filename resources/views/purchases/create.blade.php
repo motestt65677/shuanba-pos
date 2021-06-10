@@ -12,7 +12,7 @@
 
     <div class="ui form">
         <div style="text-align:right;">
-            <button id="recent_record_btn" class="ui button ">近五筆輸入原料</button>
+            <button id="recent_record_btn" class="ui button ">近五筆輸入材料</button>
             <button id="submit" class="ui button primary submit">完成</button>
         </div>
         <div class=" fields">
@@ -68,7 +68,7 @@
         <table id="purchase_items" style="width:100%; text-align:center;" class="ui celled table">
             <tr>
                 <th>序號</th>
-                <th>產品</th>
+                <th>材料</th>
                 <th>單位</th>
                 <th>數量</th>
                 <th>單價</th>
@@ -84,15 +84,15 @@
     <div id="recent_record_modal" class="ui large modal">
         <i class="close icon"></i>
         <div class="header">
-            近五筆進貨原料
+            近五筆進貨材料
         </div>
         <div class="content">
             <table id="thisTable" class="display" style="width:100%">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>產品編號</th>
-                        <th>產品名稱</th>
+                        <th>材料編號</th>
+                        <th>材料名稱</th>
                         <th>單位</th>
                         <th>數量</th>
                         <th>單價</th>
@@ -111,7 +111,7 @@
         <div class="image content">
 
             <div class="description">
-                變更廠商會把設定過的產品刪除，確定要變更嗎？
+                變更廠商會把設定過的材料刪除，確定要變更嗎？
             </div>
         </div>
         <div class="actions">
@@ -332,6 +332,7 @@ $(document).ready(function(){
             }else if (thisColumn == "total"){
                 // td.setAttribute("data-total", "");
                 const span = document.createElement("span");
+                span.innerHTML = 0;
                 span.setAttribute("data-total-price", "");
                 td.appendChild(span);
             }

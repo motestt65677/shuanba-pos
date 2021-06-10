@@ -45,10 +45,23 @@
                     <a href="/materials/index" class="link-container">
                         {{-- <i class="fas fa-cubes fa-fw"></i> --}}
                         <i class="fas fa-carrot"></i>
-                        <span class="link-title" >原料管理</span>
+                        <span class="link-title" >材料管理</span>
                     </a>
                 </div>
-
+                <div>
+                    <a href="/material_sets/index" class="link-container">
+                        {{-- <i class="fas fa-cubes fa-fw"></i> --}}
+                        <i class="fas fa-file-import"></i>
+                        <span class="link-title" >進貨產品管理</span>
+                    </a>
+                </div>
+                <div>
+                    <a href="/closings/index" class="link-container">
+                        {{-- <i class="fas fa-cubes fa-fw"></i> --}}
+                        <i class="fas fa-calculator"></i>
+                        <span class="link-title" >進耗存別關帳</span>
+                    </a>
+                </div>
                 <div>
                     <a href="/mis/index" class="link-container">
                         {{-- <i class="fas fa-cubes fa-fw"></i> --}}

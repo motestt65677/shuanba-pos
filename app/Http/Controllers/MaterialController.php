@@ -19,7 +19,6 @@ class MaterialController extends Controller
     public function queryData(Request $request)
     {
         $materials = $this->materialService->queryData($request->search);
-        Log::info($materials);
         return \Response::json(["data"=> $materials]);
     }
 

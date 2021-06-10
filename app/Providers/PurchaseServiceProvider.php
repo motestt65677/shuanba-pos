@@ -26,6 +26,14 @@ class PurchaseServiceProvider extends ServiceProvider
         $this->app->singleton('SupplierService', function ($app) {
             return new \App\Services\SupplierService($app);
         });
+
+        $this->app->singleton('ClosingService', function ($app) {
+            return new \App\Services\ClosingService($app);
+        });
+
+        $this->app->singleton('OrderService', function ($app) {
+            return new \App\Services\OrderService($app);
+        });
     }
 
     /**

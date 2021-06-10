@@ -5,6 +5,9 @@
     /* tr{
         border: 1px solid black;
     } */
+    td{
+        cursor:pointer;
+    }
 </style>
 @endsection
 @section('content')
@@ -102,7 +105,15 @@ $(document).ready(function(){
             cell.innerHTML = i+1;
         } );
     } ).draw();
-
+    data_table.on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            data_table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    } );
     $('#thisTable tbody').on('dblclick', 'tr', function () {
         var data = data_table.row( this ).data();
         window.location.href = "/suppliers/" + data["supplier_id"] + "/edit";

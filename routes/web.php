@@ -64,6 +64,22 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/delete', 'SupplierController@delete');
             Route::post('/queryData', 'SupplierController@queryData');
         });
+
+        Route::group(['prefix' => 'closings'], function () {
+            Route::get('/index', 'ClosingController@index');
+            Route::post('/queryClosings', 'ClosingController@queryClosings');
+        });
+
+        Route::group(['prefix' => 'material_sets'], function () {
+            Route::get('/{id}/edit', 'MaterialSetController@edit');
+            Route::get('/index', 'MaterialSetController@index');
+            Route::get('/create', 'MaterialSetController@create');
+
+            Route::post('/store', 'MaterialSetController@store');
+            Route::post('/update', 'MaterialSetController@update');
+            Route::post('/delete', 'MaterialSetController@delete');
+            Route::post('/queryData', 'MaterialSetController@queryData');
+        });
         
         Route::group(['prefix' => 'mis'], function () {
             Route::get('/index', 'MisController@index');

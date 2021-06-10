@@ -17,7 +17,6 @@
         <link rel="stylesheet" href="/semantic-ui/semantic.css">
         <link rel="stylesheet" href="/datetimepicker/jquery.datetimepicker.css">
         <link rel="stylesheet" type="text/css" href="/DataTables/datatables.min.css">
-
         {{-- <link rel="stylesheet" type="text/css" href="/select2/select2.css"> --}}
 
         @yield('custom_css')
@@ -93,8 +92,8 @@
                 // $("#loader").modal("show");
             }
             function hideLoading(){
-                setTimeout(function(){$("#loader").hide(); }, 500);
-                setTimeout(function(){$("#loader").hide(); }, 1000);
+                // setTimeout(function(){$("#loader").hide(); }, 500);
+                // setTimeout(function(){$("#loader").hide(); }, 1000);
                 setTimeout(function(){$("#loader").hide(); }, 1500);
             }
             $("#logout").click(function(){

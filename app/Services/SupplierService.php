@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 class SupplierService
 {
     
-    public function newMaterialNo(){
+    public function newSupplierNo(){
 
         $numStr = "0001";
         $char = "F";
@@ -51,12 +51,14 @@ class SupplierService
         }
 
         $items = $query->get();
-        // foreach($items as $item){
-        //     $item->item_amount = round($item->item_amount);
-        //     $item->item_unit_price = round($item->item_unit_price);
-        //     $item->item_total = round($item->item_total);
-        //     // $item->created_date = substr($item->created_at, 0, 10);
-        // }
+        foreach($items as $item){
+            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
+
+            // $item->item_amount = round($item->item_amount);
+            // $item->item_unit_price = round($item->item_unit_price);
+            // $item->item_total = round($item->item_total);
+            // $item->created_date = substr($item->created_at, 0, 10);
+        }
         return $items;
     }
 

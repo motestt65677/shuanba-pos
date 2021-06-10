@@ -10,10 +10,10 @@
 @section('content')
 
 <h3 class="ui block header" style="position:inline-block;">
-    材料維護
+    進貨產品管理
 </h3>
 <div style="text-align:right;">
-    <a id="submit" class="ui button primary submit" href="/materials/create">新增材料</a>
+    <a id="submit" class="ui button primary submit" href="/material_sets/create">新增進貨產品</a>
     <button id="delete_btn" class="ui button negative">刪除</button>
 </div>
 <div class="ui vertical segment">
@@ -23,10 +23,11 @@
                 <th></th>
                 <th></th>
                 <th>廠商</th>
-                <th>材料編號</th>
+                <th>產品名稱</th>
+                <th>產品單價</th>
                 <th>材料名稱</th>
-                <th>單位</th>
-                <th>單價</th>
+                <th>材料數量</th>
+                <th>材料單價</th>
             </tr>
         </thead>
     </table>
@@ -46,7 +47,7 @@ $(document).ready(function(){
     //bind table
     let data_table = $('#thisTable').DataTable({
         ajax: {
-            url: "/materials/queryData",
+            url: "/material_sets/queryData",
             dataSrc: 'data',
             // data: function(d){
             //     const search = {payment_type: "monthly", voucher_year_month: $('#year_month_select').val()}
@@ -75,9 +76,10 @@ $(document).ready(function(){
             },
             { data: null, orderable:false, className: 'dt-body-center dt-head-center'}, 
             { data: "supplier_name_and_no", orderable:false, className: 'dt-body-center dt-head-center'},
-            { data: "material_no", orderable:false, className: 'dt-body-center dt-head-center'},
-            { data: "material_name", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
-            { data: "material_unit", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
+            { data: "set_name", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "set_unit_price", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
+            { data: "material_name_and_no", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
+            { data: "material_count", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
             { data: "material_unit_price", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
         ],
         paging: false,
@@ -111,7 +113,7 @@ $(document).ready(function(){
 
     $('#thisTable tbody').on('dblclick', 'tr', function () {
         var data = data_table.row( this ).data();
-        window.location.href = "/materials/" + data["material_id"] + "/edit";
+        window.location.href = "/material_sets/" + data["set_id"] + "/edit";
     } );
     
     $("#delete_btn").click(function(){
@@ -122,44 +124,32 @@ $(document).ready(function(){
             //eq(col # of checkbox)
             let checkbox = row.find('td').eq(0).children("input:checkbox");
             if(checkbox.prop("checked")){
-                checked_row_id.push(all_data[index]["material_id"]);
+                checked_row_id.push(all_data[index]["set_id"]);
             }
         });
 
         if(checked_row_id.length > 0){
             if(confirm("確定要刪除?")){
-
                 let data = {
-                    "material_ids": checked_row_id,
+                    "set_ids": checked_row_id,
                 };
                 $.ajax({
                     type: "POST",
-                    url: "/materials/delete",
+                    url: "/material_sets/delete",
                     contentType: "application/json",
                     dataType: "json",
                     beforeSend: showLoading,
                     complete: hideLoading,
                     data: JSON.stringify(data),
                     success: function(response) {
-                        if(response["error"].length > 0){
-                            if(response["error"].length > 0){
-                                let message = "錯誤訊息 \r\n";
-                                for(let i = 0; i < response["error"].length; i++){
-                                    message += response["error"][i] + "\r\n";
-                                }
-                                alert(message);
-                            }
-                        } else {
-                            alert("刪除成功");
-                        }
+                        alert("刪除成功");
                         data_table.ajax.reload(hideLoading);
                     },
                     error: function(response) {
                         // console.log(response);
                     }
                 });
-                }
-
+            }
         } 
     })
 });

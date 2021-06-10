@@ -11,6 +11,10 @@
 <h3 class="ui block header">編輯材料</h3>
 <div class="ui form">
     <div style="text-align:right;">
+        <a class="ui button" href="/materials/index">
+            <i class="left chevron icon"></i>
+            返回
+        </a>
         <button id="submit" class="ui button primary submit">儲存</button>
     </div>
     <div class=" fields">

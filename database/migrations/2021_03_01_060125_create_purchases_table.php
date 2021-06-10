@@ -45,8 +45,7 @@ class CreatePurchasesTable extends Migration
             $table->string('big_category')->nullable();
             $table->string('med_category')->nullable();
             $table->string('unit', 100);
-            $table->integer('unit_price')->default(0);
-            $table->integer('stock')->default(0);
+            $table->decimal('unit_price', 13, 2)->default(0);
             $table->timestamps();
         });
 
