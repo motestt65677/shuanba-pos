@@ -69,6 +69,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/index', 'ClosingController@index');
             Route::post('/queryClosings', 'ClosingController@queryClosings');
         });
+        Route::group(['prefix' => 'closing_items'], function () {
+            Route::post('/queryItems', 'ClosingItemController@queryItems');
+        });
 
         Route::group(['prefix' => 'material_sets'], function () {
             Route::get('/{id}/edit', 'MaterialSetController@edit');
