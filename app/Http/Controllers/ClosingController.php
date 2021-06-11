@@ -19,7 +19,7 @@ class ClosingController extends Controller
     }
 
     public function queryClosings(Request $request){
-        $this->closingService->closeMonth();
+        // $this->closingService->closeMonth();
         $items = $this->closingService->queryClosings($request["search"], $request["order"]);
         return \Response::json(["data"=> $items]);
     }

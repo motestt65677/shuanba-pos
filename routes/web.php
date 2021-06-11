@@ -37,6 +37,14 @@ Route::middleware(['auth'])->group(function () {
 
         });
 
+        Route::group(['prefix' => 'purchase_items'], function () {
+            Route::get('/index', 'PurchaseItemController@index');
+        });
+
+        Route::group(['prefix' => 'orders'], function () {
+            Route::post('/bulk-import-qlieer-orders', 'OrderController@bulkImportQlieer');
+        });
+
         Route::group(['prefix' => 'materials'], function () {
 
             Route::get('/{id}/edit', 'MaterialController@edit');
@@ -50,9 +58,7 @@ Route::middleware(['auth'])->group(function () {
 
 
         });
-        Route::group(['prefix' => 'purchase_items'], function () {
-            Route::get('/index', 'PurchaseItemController@index');
-        });
+
 
         Route::group(['prefix' => 'suppliers'], function () {
             Route::get('/{id}/edit', 'SupplierController@edit');
