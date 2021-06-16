@@ -78,8 +78,9 @@ class MaterialService
         );
         if(isset($search["set_id"]))
             $query->where("material_sets.id", $search["set_id"]);
-        // if(isset($search["supplier_id"]))
-        //     $query->where("materials.supplier_id", $search["supplier_id"]);
+
+        if(isset($search["supplier_id"]))
+            $query->where("material_sets.supplier_id", $search["supplier_id"]);
 
         // if(isset($search["count"]))
         //     $query->take($search["count"]);

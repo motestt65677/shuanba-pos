@@ -21,7 +21,7 @@
                 <input type="text" value="AUTONUM">
             </div>
             <div class="eight wide field disabled">
-                <label>金額</label>
+                <label>總金額</label>
                 <input id="total" type="text" value="0">
             </div>
 
@@ -49,13 +49,13 @@
             </div>
         </div>
        
-        <div class="fields">
+        <div class="fields" style="display:none;">
             <div class="sixteen wide field">
                 <label>備註一</label>
                 <input id="note1" type="text" >
             </div>
         </div>
-        <div class=" fields">
+        <div class=" fields" style="display:none;">
             <div class="sixteen wide field">
                 <label>備註二</label>
                 <input id="note2" type="text" >
@@ -63,18 +63,27 @@
         </div>
     </div>
 
-    <div class="col-sm-12">
+    <div class="col-sm-12" >
         <button id="add_item_btn" class="ui primary basic button disabled">+</button>
         <table id="purchase_items" style="width:100%; text-align:center;" class="ui celled table">
-            <tr>
-                <th>序號</th>
-                <th>材料</th>
-                <th>單位</th>
-                <th>數量</th>
-                <th>單價</th>
-                <th>金額</th>
-            </tr>
+            <thead>
+                <tr>
+                    <th>序號</th>
+                    <th>廠商材料</th>
+                    <th>廠商材料數量</th>
+                    <th>材料</th>
+                    <th>單位</th>
+                    <th>數量</th>
+                    <th>單價</th>
+                    <th>金額</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
         </table>
+
+
     </div>
 
 
@@ -202,18 +211,13 @@ $(document).ready(function(){
         } else {
             $("#add_item_btn").addClass("disabled");
         }
+        // set_material_set_select();
 
         if($("[data-tr]").length != 0){
             row_number = 0;
             $("[data-tr]").remove();
-            set_material_select(function(){
-                $("#add_item_btn").trigger('click');
-            });
-        } else {
-            set_material_select(function(){
-                $("#add_item_btn").trigger('click');
-            });
-        }
+        } 
+        set_row_dropdowns();
     })
 
 
@@ -271,7 +275,7 @@ $(document).ready(function(){
                 // complete: hideLoading,
                 data: JSON.stringify(data),
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     alert("登錄完成")
                     window.location.href = "/purchases/create";
                 },
@@ -285,6 +289,8 @@ $(document).ready(function(){
         
     })
     let material_select;
+    let material_set_select;
+
     let row_number = 0;
     $("#recent_record_btn").click(function(){
         $('#recent_record_modal').modal('show')
@@ -292,10 +298,11 @@ $(document).ready(function(){
 
     $("#add_item_btn").click(function(){
         const table_name = "purchase_items";
-        const columns = ["#", "item_id", "unit", "amount", "unit_price", "total"];
+        const columns = ["#", "material_set", "material_set_count", "item_id", "unit", "amount", "unit_price", "total"];
         const body = document.getElementById(table_name).getElementsByTagName('tbody')[0];
         const tr = document.createElement("tr");
         let select;
+
         tr.setAttribute("data-tr", "");
         row_number += 1;
         for(let i = 0; i < columns.length; i++){
@@ -307,7 +314,7 @@ $(document).ready(function(){
             }else if (thisColumn == "item_id"){
                 select = material_select.cloneNode(true);
                 select.setAttribute("data-item-id", "");
-                select.addEventListener("change", update_unit_price, false);
+                select.onchange = update_unit_price;
                 td.appendChild(select);
                 // $(select).trigger('change');
             }else if (thisColumn == "unit"){
@@ -319,7 +326,9 @@ $(document).ready(function(){
                 input.min = 0;
                 input.value = 0;
                 input.setAttribute("data-amount", "");
-                input.addEventListener("change", update_row_price, false);
+                input.oninput = material_amount_changed;
+                input.onchange = material_amount_changed;
+
                 td.appendChild(input);
             }else if (thisColumn == "unit_price"){
                 const input = document.createElement("input");
@@ -327,7 +336,9 @@ $(document).ready(function(){
                 input.min = 0;
                 input.value = 0;
                 input.setAttribute("data-unit-price", "");
-                input.addEventListener("change", update_row_price, false);
+                input.oninput = material_unit_price_changed;
+                input.onchange = material_unit_price_changed;
+
                 td.appendChild(input);
             }else if (thisColumn == "total"){
                 // td.setAttribute("data-total", "");
@@ -335,6 +346,29 @@ $(document).ready(function(){
                 span.innerHTML = 0;
                 span.setAttribute("data-total-price", "");
                 td.appendChild(span);
+            } else if (thisColumn == "material_set"){
+                const set_select = material_set_select.cloneNode(true);
+                set_select.onchange = material_set_changed;
+
+                // set_select.addEventListener("change", update_unit_price, false);
+                td.appendChild(set_select);
+            } else if (thisColumn == "material_set_count"){
+                const input = document.createElement("input");
+                input.setAttribute("data-set-count", "");
+                input.type = "number";
+                input.min = 0;
+                input.value = 0;
+                input.oninput = material_set_count_changed;
+                input.onchange = material_set_count_changed;
+
+                const div = document.createElement("div");
+                div.className = "ui disabled input";
+                div.appendChild(input);
+                // input.className = "ui disabled input";
+                // input.disabled = true;
+                // input.setAttribute("data-set-count", "");
+                // input.addEventListener("change", update_row_price, false);
+                td.appendChild(div);
             }
 
             tr.appendChild(td);
@@ -358,11 +392,28 @@ $(document).ready(function(){
             select.fireEvent("onchange");
     })
     
-    function update_row_price(){
-        const row_amount = $(this).parent().parent().find("[data-amount]")[0];
-        const row_unit_price = $(this).parent().parent().find("[data-unit-price]")[0];
-        const row_total_price = $(this).parent().parent().find("[data-total-price]")[0];
+    function update_row_price(row){
+        const row_amount = $(row).parent().parent().find("[data-amount]")[0];
+        const row_unit_price = $(row).parent().parent().find("[data-unit-price]")[0];
+        const row_total_price = $(row).parent().parent().find("[data-total-price]")[0];
         row_total_price.innerHTML = parseFloat(row_amount.value) * parseFloat(row_unit_price.value);
+        
+    }
+    function update_total(){
+        let total = 0;
+        $("[data-total-price]").each(function(){
+            total += parseFloat($(this).html());
+        })
+        $("#total").val(total);
+    }
+
+    function material_unit_price_changed(){
+        update_row_price(this);
+        update_total();
+    }
+    function material_amount_changed(){
+        update_row_price(this);
+        update_total();
     }
 
     function update_unit_price(){
@@ -375,7 +426,7 @@ $(document).ready(function(){
         row_unit_price.value = unit_price;
     }
 
-    function set_material_select(callback){
+    function set_material_select(){
 
         $.ajax({
             type: "POST",
@@ -405,7 +456,48 @@ $(document).ready(function(){
                     select.appendChild(option);
                 }
                 material_select = select;
-                callback();
+            },
+            error: function(response) {
+                // console.log(response);
+            }
+        });
+        return true;
+    }
+    function set_material_set_select(){
+        return $.ajax({
+            type: "POST",
+            url: "/material_sets/queryData",
+            contentType: "application/json",
+            dataType: "json",
+            // async: false,
+            // beforeSend: showLoading,
+            // complete: hideLoading,
+            data: JSON.stringify(
+                {
+                    search: {supplier_id: $("#supplier").val()}
+                }
+            ),
+            success: function(response) {
+                const sets = response["data"]
+                const select = document.createElement("select");
+                
+                select.classList = "ui search selection dropdown";
+
+                const option = document.createElement("option");
+                option.value = "";
+                option.innerHTML = "";
+                select.appendChild(option);
+
+                for(var i = 0; i < sets.length; i++){
+                    const this_set = sets[i];
+                    const option = document.createElement("option");
+                    option.value = this_set.set_id;
+                    option.innerHTML = this_set.set_name;
+                    option.setAttribute('data-material-count', this_set.material_count);
+                    option.setAttribute('data-material-id', this_set.material_id);
+                    select.appendChild(option);
+                }
+                material_set_select = select;
             },
             error: function(response) {
                 // console.log(response);
@@ -415,7 +507,7 @@ $(document).ready(function(){
     }
 
     function bind_supplier_select(){
-        $.ajax({
+        return $.ajax({
             type: "POST",
             url: "/suppliers/queryData",
             contentType: "application/json",
@@ -434,15 +526,61 @@ $(document).ready(function(){
                     option.innerHTML = this_supplier.supplier_no + '(' + this_supplier.supplier_name + ')';
                     select.appendChild(option);
                 }
-                set_material_select(function(){
-                    $("#add_item_btn").trigger('click');
-                });
+                $("#add_item_btn").removeClass("disabled");
+                
+                set_row_dropdowns();                
+
             },
             error: function(response) {
                 // console.log(response);
             }
         });
     }
+
+    function material_set_changed(){
+        const material_set_select = $(this).find("option:selected");
+        const material_select = $(this).parent().parent().parent().find("[data-item-id]");
+        const set_count_input = $(this).parent().parent().parent().find("[data-set-count]");
+
+        if(material_set_select.length > 0){
+
+            
+            const material_id = material_set_select.data("material-id")
+            material_select.val(material_id).change();
+
+            set_count_input.parent().removeClass("disabled");
+            set_count_input.val("1").change();
+            
+            
+
+            // set_count.value = $(this).find("option:selected").data("material-count");
+        }
+
+    }
+
+    function material_set_count_changed(){
+        const tr = $(this).parent().parent().parent();
+        console.log(tr[0]);
+        const material_set_select = tr.find("option:selected");
+        const set_count_input = tr.find("[data-set-count]");
+        const material_count_per_item = material_set_select.data("material-count");
+        const material_count = material_count_per_item * set_count_input.val();
+        const material_amount_input = tr.find("[data-amount]");
+        material_amount_input.val(material_count).change();
+    }
+
+    
+
+    async function set_row_dropdowns(){
+        await set_material_select();
+        await set_material_set_select();
+        setTimeout(function(){
+            $("#add_item_btn").trigger('click')
+        }, "500");
+    }
+
+
+
 });
     
 
