@@ -41,6 +41,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/index', 'PurchaseItemController@index');
         });
 
+        Route::group(['prefix' => 'import_conversions'], function () {
+            Route::post('/queryData', 'ImportConversionController@queryData');
+        });
+
         Route::group(['prefix' => 'orders'], function () {
             Route::post('/bulk-import-qlieer-orders', 'OrderController@bulkImportQlieer');
         });

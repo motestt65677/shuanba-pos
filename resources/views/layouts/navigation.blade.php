@@ -14,21 +14,18 @@
             <div id="nav-body" style="overflow-x:hidden;"> 
                 <div>
                     <a href="/purchases/create" class="link-container">
-                        {{-- <i class="fas fa-cubes fa-fw"></i> --}}
                         <i class="fas fa-shipping-fast"></i>
                         <span class="link-title" >廠商進貨維護</span>
                     </a>
                 </div>
                 <div>
                     <a href="/purchases/index" class="link-container">
-                        {{-- <i class="fas fa-cubes fa-fw"></i> --}}
                         <i class="fas fa-truck"></i>
                         <span class="link-title" >廠商進貨分析</span>
                     </a>
                 </div>
                 <div>
                     <a href="/purchase_items/index" class="link-container">
-                        {{-- <i class="fas fa-cubes fa-fw"></i> --}}
                         <i class="fas fa-boxes"></i>
                         <span class="link-title" >材料進貨分析</span>
                     </a>
@@ -36,35 +33,36 @@
         
                 <div>
                     <a href="/suppliers/index" class="link-container">
-                        {{-- <i class="fas fa-cubes fa-fw"></i> --}}
                         <i class="far fa-address-card"></i>
                         <span class="link-title" >廠商管理</span>
                     </a>
                 </div>
                 <div>
                     <a href="/materials/index" class="link-container">
-                        {{-- <i class="fas fa-cubes fa-fw"></i> --}}
                         <i class="fas fa-carrot"></i>
                         <span class="link-title" >材料管理</span>
                     </a>
                 </div>
-                <div>
+                {{-- <div>
                     <a href="/material_sets/index" class="link-container">
-                        {{-- <i class="fas fa-cubes fa-fw"></i> --}}
                         <i class="fas fa-file-import"></i>
-                        <span class="link-title" >進貨產品管理</span>
+                        <span class="link-title" >進貨單位換算</span>
                     </a>
-                </div>
+                </div> --}}
+                {{-- <div>
+                    <a href="/products/index" class="link-container">
+                        <i class="fas fa-carrot"></i>
+                        <span class="link-title" >商品管理</span>
+                    </a>
+                </div> --}}
                 <div>
                     <a href="/closings/index" class="link-container">
-                        {{-- <i class="fas fa-cubes fa-fw"></i> --}}
                         <i class="fas fa-calculator"></i>
                         <span class="link-title" >進耗存別關帳</span>
                     </a>
                 </div>
                 <div>
                     <a href="/mis/index" class="link-container">
-                        {{-- <i class="fas fa-cubes fa-fw"></i> --}}
                         <i class="fas fa-tools"></i>
                         <span class="link-title" >維護工具</span>
                     </a>

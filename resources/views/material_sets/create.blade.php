@@ -46,7 +46,7 @@
         </div>
         <div class=" fields">
             <div class="eight wide field disabled">
-                <label>材料單位</label>
+                <label>庫存單位</label>
                 <input id="material_unit" type="text" value="" readonly>
             </div>
             <div class="eight wide field disabled">

@@ -17,9 +17,8 @@ class PurchaseController extends Controller
 	{
         $this->purchaseService = app()->make('PurchaseService');
         $this->materialService = app()->make('MaterialService');
-
-
 	}
+    
     public function index(Request $request)
     {
         return view('purchases.index')->with([

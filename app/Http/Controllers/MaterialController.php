@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Material;
 use App\Models\PurchaseItem;
 use Illuminate\Http\Request;
+use App\Models\ImportConversion;
 use Illuminate\Support\Facades\Log;
 
 class MaterialController extends Controller
@@ -44,6 +45,20 @@ class MaterialController extends Controller
             $material->unit_price = $request->material_unit_price;
             $material->save();
         }
+        if(count($request->items) > 0){
+            ImportConversion::where("material_id", $material->id)->delete();
+            foreach($request->items as $item){
+                ImportConversion::create([
+                    "supplier_id" => $material->supplier_id,
+                    "material_id" => $material->id,
+                    "import_price" => $item["import_price"],
+                    "import_unit" => $item["import_unit"],
+                    "import_count" => $item["import_count"],
+                    "material_count" => $item["material_count"]
+                ]);
+            }
+        }
+        
         return \Response::json(["status"=> 200]);
     }
     public function store(Request $request){
@@ -55,6 +70,20 @@ class MaterialController extends Controller
             'unit' => $request->material_unit,
             'unit_price' => $request->material_unit_price,
         ]);
+
+        if(count($request->items) > 0){
+            ImportConversion::where("material_id", $material->id)->delete();
+            foreach($request->items as $item){
+                ImportConversion::create([
+                    "supplier_id" => $material->supplier_id,
+                    "material_id" => $material->id,
+                    "import_price" => $item["import_price"],
+                    "import_unit" => $item["import_unit"],
+                    "import_count" => $item["import_count"],
+                    "material_count" => $item["material_count"]
+                ]);
+            }
+        }
 
         return \Response::json(["status"=> 200]);
     }
