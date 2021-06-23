@@ -189,7 +189,10 @@ $(document).ready(function(){
                 if("import_amount" in data)
                     input.value = data["import_amount"];
                 input.className = "input-short";
-                td.appendChild(input);
+                const div = document.createElement('div');
+                div.className = "ui input";
+                div.appendChild(input);
+                td.appendChild(div);
 
             } else if (thisColumn == "import_unit"){
                 const input = document.createElement("input");
@@ -199,8 +202,10 @@ $(document).ready(function(){
                 if("import_unit" in data)
                     input.value = data["import_unit"];
                 input.className = "input-short";
-
-                td.appendChild(input);
+                const div = document.createElement('div');
+                div.className = "ui input";
+                div.appendChild(input);
+                td.appendChild(div);
 
             }  else if (thisColumn == "="){
                 const label = document.createElement("label");
@@ -216,8 +221,10 @@ $(document).ready(function(){
                 if("material_amount" in data)
                     input.value = data["material_amount"];
                 input.className = "input-short";
-
-                td.appendChild(input);
+                const div = document.createElement('div');
+                div.className = "ui input";
+                div.appendChild(input);
+                td.appendChild(div);
 
             } else if (thisColumn == "material_unit"){
                 const label = document.createElement("label");
@@ -235,8 +242,10 @@ $(document).ready(function(){
                 if("import_price" in data)
                     input.value = data["import_price"];
                 input.className = "input-short";
-                
-                td.appendChild(input);
+                const div = document.createElement('div');
+                div.className = "ui input";
+                div.appendChild(input);
+                td.appendChild(div);
 
             }
 

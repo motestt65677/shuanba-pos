@@ -17,9 +17,10 @@ class ImportConversionService
             'material_count'
         );
 
-        if(isset($search["material_id"])){
-            $query->where("material_id", $search["material_id"]);
+        if(!isset($search["material_id"])){
+            return [];
         }
+        $query->where("material_id", $search["material_id"]);
 
 
         // foreach($order as $key=>$value){
