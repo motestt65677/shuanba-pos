@@ -275,6 +275,9 @@ $(document).ready(function(){
                 
             }
             data.items = items;
+            if(data.items.length == 0){
+                return;
+            }
             $.ajax({
                 type: "POST",
                 url: "/purchases/store",
@@ -285,7 +288,10 @@ $(document).ready(function(){
                 data: JSON.stringify(data),
                 success: function(response) {
                     // console.log(response);
-                    alert("登錄完成")
+                    if("message" in response)
+                        alert(response["message"]);
+                    else
+                        alert("登錄完成")
                     window.location.href = "/purchases/create";
                 },
                 error: function(response) {
@@ -327,7 +333,8 @@ $(document).ready(function(){
 
                 td.appendChild(select);
                 $(select).dropdown({
-                    fullTextSearch: true
+                    fullTextSearch: true,
+                    placeholder: false
                 });
                 // $(select).trigger('change');
             }else if (thisColumn == "unit"){
@@ -508,8 +515,9 @@ $(document).ready(function(){
                 const conversions = response["data"]
                 $(import_unit_select).dropdown('clear');
 
-
-                // import_unit_select.appendChild(document.createElement("option"));
+                const empty_option = document.createElement("option");
+                empty_option.innerHTML = "請選擇";
+                import_unit_select.appendChild(empty_option);
                 for(var i = 0; i < conversions.length; i++){
                     const this_conversion = conversions[i];
                     const option = document.createElement("option");
@@ -556,7 +564,9 @@ $(document).ready(function(){
                 const select = document.createElement("select");
                 
                 select.classList = "ui search selection dropdown fluid";
-                select.appendChild(document.createElement("option"));
+                            
+
+                select.appendChild(get_empty_option());
 
                 for(var i = 0; i < materials.length; i++){
                     const this_material = materials[i];
@@ -647,27 +657,48 @@ $(document).ready(function(){
             }
         });
     }
-
+    function get_empty_option(){
+        const empty_option = document.createElement("option");
+        empty_option.innerHTML = "請選擇";
+        empty_option.value = "";
+        return empty_option;
+    }
     function import_unit_changed(){
         const option = $(this).find("option:selected");
         const tr = $(this).closest("tr");
         const import_count_input = tr.find("[data-import-count]");
         const unit_price_input = tr.find("[data-unit-price]");
+        const material_count_input = tr.find("[data-amount]");
+        const total_price_label = tr.find("[data-total-price]");
 
         
-        if(option.length > 0){
-            const material_id = option.data("material-id")
-            const import_count = option.data("import-unit-import-count");
-            const material_count = option.data("import-unit-material-count");
-            const material_price = option.data("import-unit-import-price");
-            const material_unit_price = parseFloat(material_price) / parseFloat(material_count);
 
+
+        //     return;
+
+        const material_id = option.data("material-id")
+        const import_count = option.data("import-unit-import-count");
+        const material_count = option.data("import-unit-material-count");
+        const material_price = option.data("import-unit-import-price");
+        const material_unit_price = parseFloat(material_price) / parseFloat(material_count);
+
+        if(option.data('import-unit') == undefined){
+            import_count_input.parent().addClass("disabled");
+            import_count_input.val(0).change();
+            import_count_input.attr( "step", 0);
+            unit_price_input.val(0);
+            // material_count_input.val(0);
+            // total_price_label.html("NaN");
+        } else {
             import_count_input.parent().removeClass("disabled");
             import_count_input.val(import_count).change();
             import_count_input.attr( "step", import_count);
             unit_price_input.val(material_unit_price.toFixed(2));
 
         }
+
+
+
     }
 
     function import_count_changed(){

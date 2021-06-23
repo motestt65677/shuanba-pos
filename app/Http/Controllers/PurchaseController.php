@@ -37,6 +37,10 @@ class PurchaseController extends Controller
 
     public function store(Request $request){
         $user = $request->user;
+
+        if(count($request->items) == 0)
+            return \Response::json(["status"=> 200, "message"=> "no item"]);
+            
         $purchase = Purchase::create([
             "prep_by" => $user->id,
             "branch_id" => $user->branch_id,
@@ -47,8 +51,8 @@ class PurchaseController extends Controller
             "note1" => $request->note1,
             "note2" => $request->note2,
         ]);
-
         $puchase_total = 0;
+
         foreach($request->items as $item){
             if($item["amount"] == 0 || $item["unit_price"] == 0)
                 continue;
