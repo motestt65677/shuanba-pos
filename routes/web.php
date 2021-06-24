@@ -63,6 +63,20 @@ Route::middleware(['auth'])->group(function () {
 
         });
 
+        Route::group(['prefix' => 'products'], function () {
+            Route::get('/{id}/edit', 'ProductController@edit');
+            Route::get('/index', 'ProductController@index');
+            // Route::get('/create', 'MaterialController@create');
+            // Route::post('/store', 'MaterialController@store');
+            Route::post('/update', 'ProductController@update');
+            Route::post('/delete', 'ProductController@delete');
+            Route::post('/queryData', 'ProductController@queryData');
+        });
+
+        Route::group(['prefix' => 'product_materials'], function () {
+            Route::post('/queryData', 'ProductMaterialController@queryData');
+        });
+
 
         Route::group(['prefix' => 'suppliers'], function () {
             Route::get('/{id}/edit', 'SupplierController@edit');

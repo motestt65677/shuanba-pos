@@ -14,6 +14,7 @@ class OrderController extends Controller
     public function __construct()
 	{
         $this->orderService = app()->make('OrderService');
+        $this->productService = app()->make('ProductService');
 	}
 
     public function bulkImportQlieer(Request $request){
@@ -44,6 +45,7 @@ class OrderController extends Controller
             $product = Product::where("name", $item["product_name"])->first();
             if(!$product){
                 $product = Product::create([
+                    "product_no" => $this->productService -> newProductNo(),
                     "name" => $productName,
                     "price" => 0
                 ]);

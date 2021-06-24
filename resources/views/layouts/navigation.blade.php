@@ -43,6 +43,12 @@
                         <span class="link-title" >材料管理</span>
                     </a>
                 </div>
+                <div>
+                    <a href="/products/index" class="link-container">
+                        <i class="fas fa-box"></i>
+                        <span class="link-title" >產品管理</span>
+                    </a>
+                </div>
                 {{-- <div>
                     <a href="/material_sets/index" class="link-container">
                         <i class="fas fa-file-import"></i>
