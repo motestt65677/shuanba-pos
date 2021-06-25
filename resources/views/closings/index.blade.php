@@ -13,6 +13,9 @@
 <h3 class="ui block header" style="position:inline-block;">
     進耗存別關帳
 </h3>
+<div>
+    
+</div>
 <div style="height:85vh;">
     <input type="hidden" id="closing_id" value="">
     <div style="width: 25%; height:100%; overflow-y: scroll; display:inline-block;">
@@ -59,8 +62,7 @@ $(document).ready(function(){
         }
     });
 
-    let closing_item_table;
-    let data_table;
+
     init();
 
     // data_table.on( 'order.dt search.dt', function () {
@@ -68,72 +70,47 @@ $(document).ready(function(){
     //         cell.innerHTML = i+1;
     //     } );
     // } ).draw();
-    data_table.on( 'click', 'tr', function () {
-        $("#closing_id").val(data_table.row( this ).data()["id"]);
-        closing_item_table.ajax.reload();
-        if ( $(this).hasClass('selected') ) {
-            $(this).removeClass('selected');
-        }
-        else {
-            data_table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-        }
+    
+
+
+
+});
+let closing_item_table;
+let data_table;
+let closings;
+let closing_table_data;
+
+
+
+function bind_closing_table(){
+    let data_table = $('#thisTable').DataTable({
+        data: closing_table_data,
+        columns: [
+            // { data: null, orderable:false, className: 'dt-body-center dt-head-center', width: "3%"}, 
+            { data: "year_month", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "created_at", orderable:false, className: 'dt-body-center dt-head-center'},
+        ],
+        paging: false,
+        aaSorting: [],
+        searching: false,
+        info: false,
+        language: {
+            url: "/DataTables/localisation/zh_TW.json",
+            zeroRecords: "查無紀錄"
+        },
+        // paging: true,
+        fixedHeader: true
     });
+    return data_table;
+}
 
-    function bind_closing_table(){
-        data_table = $('#thisTable').DataTable({
-            ajax: {
-                url: "/closings/queryClosings",
-                dataSrc: 'data',
-                data: function(d){
-                    const search = {}
-                    d.search = search;
-                    const order = {year_month: "desc"};
-                    d.order = order;
-                },
-                type: "POST",
-                beforeSend: showLoading,
-                complete: hideLoading
-            },
-            columns: [
-                // { data: null, orderable:false, className: 'dt-body-center dt-head-center', width: "3%"}, 
-                { data: "year_month", orderable:false, className: 'dt-body-center dt-head-center'},
-                { data: "created_at", orderable:false, className: 'dt-body-center dt-head-center'},
-            ],
-            paging: false,
-            aaSorting: [],
-            searching: false,
-            info: false,
-            language: {
-                url: "/DataTables/localisation/zh_TW.json",
-                zeroRecords: "查無紀錄"
-            },
-            // paging: true,
-            fixedHeader: true,
-            // fnInitComplete: function(oSettings, json) {
-            //     $("#closing_id").val(json["data"][0]["id"]);
-
-            //     bind_item_table();
-            // }
-        });
-        return data_table;
-    }
-
-    function bind_item_table(){
+function bind_item_table(year_month, closing_id){
+    const closing_items = closings[year_month][closing_id]["items"];
+    if ( $.fn.dataTable.isDataTable( '#closing_item_table' ) ) {
+        closing_item_table = $('#closing_item_table').DataTable().clear().rows.add(closing_items).draw();
+    } else {
         closing_item_table = $('#closing_item_table').DataTable({
-            ajax: {
-                url: "/closing_items/queryItems",
-                dataSrc: 'data',
-                data: function(d){
-                    const search = {closing_id: $("#closing_id").val()}
-                    d.search = search;
-                    const order = {};
-                    d.order = order;
-                },
-                type: "POST",
-                beforeSend: showLoading,
-                complete: hideLoading
-            },
+            data: closing_items,
             columns: [
                 // { data: null, orderable:false, className: 'dt-body-center dt-head-center', width: "3%"}, 
                 { data: "material_name_and_no", orderable:false, className: 'dt-body-center dt-head-center'},
@@ -166,12 +143,66 @@ $(document).ready(function(){
                 setTimeout(function(){$("#thisTable tr")[1].click()}, 500);
             }
         });
-        return closing_item_table;
     }
-    function init(){
-        bind_closing_table();
-        bind_item_table();
-    }
-});
+
+    return closing_item_table;
+}
+
+function get_closing_data(){
+    return $.ajax({
+        type: "POST",
+        url: "/closings/queryClosingWithItems",
+        contentType: "application/json",
+        dataType: "json",
+        // async: false,
+        // beforeSend: showLoading,
+        // complete: hideLoading,
+        data: JSON.stringify(
+            {
+                search: {},
+                order: {}
+            }
+        ),
+        success: function(response) {
+            closings = response["data"];
+            closing_table_data = [];
+            for (let year_month in response["data"]) {
+                this_year_month = response["data"][year_month];
+                for (let closing_id in this_year_month) {
+                    this_closing = this_year_month[closing_id];
+                    const closing = {
+                        "closing_id": closing_id,
+                        "year_month": this_closing["closing_year_month"],
+                        "created_at" : this_closing["closing_created_at"]
+                    };
+                    closing_table_data.push(closing);
+                }
+            }
+        },
+        error: function(response) {
+            // console.log(response);
+        }
+    });
+    return true;
+}
+async function init(){
+    await get_closing_data();
+    data_table = bind_closing_table();
+    // bind_item_table();
+    data_table.on( 'click', 'tr', function () {
+        const data = data_table.row( this ).data();
+        $("#closing_id").val(data["closing_id"]);
+        // console.log(data_table.row( this ).data());
+        // closing_item_table.ajax.reload();
+        bind_item_table(data["year_month"],data["closing_id"]);
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+        }
+        else {
+            data_table.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    });
+}
 </script>
 @endsection

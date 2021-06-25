@@ -23,4 +23,9 @@ class ClosingController extends Controller
         $items = $this->closingService->queryClosings($request["search"], $request["order"]);
         return \Response::json(["data"=> $items]);
     }
+    public function queryClosingWithItems(Request $request){
+        $items = $this->closingService->queryClosingWithItems($request["search"], $request["order"]);
+        return \Response::json(["data"=> $items]);
+    }
+    
 }

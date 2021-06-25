@@ -130,4 +130,63 @@ class ClosingService
         return $items;
     }
 
+    public function queryClosingWithItems($search = [], $order = []){
+        $query = DB::table('closings')
+        ->leftJoin("closing_items", 'closings.id', '=', 'closing_items.closing_id')
+        ->select(
+            DB::raw("IFNULL((SELECT `material_no` FROM `materials` WHERE `id`=`closing_items`.`material_id` ), '') AS `material_no`"),
+            DB::raw("IFNULL((SELECT `name` FROM `materials` WHERE `id`=`closing_items`.`material_id` ), '') AS `material_name`"),
+            'closings.id as closing_id',
+            'closings.year_month as closing_year_month',
+            'closings.created_at as closing_created_at',
+            'closing_items.purchase_count as purchase_count',
+            'closing_items.purchase_total as purchase_total',
+            'closing_items.order_count as order_count',
+            'closing_items.order_total as order_total',
+            'closing_items.order_cost as order_cost',
+            'closing_items.closing_count as closing_count',
+            'closing_items.closing_total as closing_total'
+        )
+        ->whereNotNull("closing_items.id")
+        ->orderBy("closings.year_month", "DESC")
+        ->orderBy("closing_items.material_id", "ASC");
+
+        // $query->where("closing_id", $search["closing_id"]);
+        // if(isset($search["closing_id"])){
+        //     $query->where("closing_id", $search["closing_id"]);
+        // }
+        foreach($order as $key=>$value){
+            $query->orderBy($key, $value);
+        }
+
+        $items = $query->get();
+        $closings = [];
+        foreach($items as $item){
+            if(!isset($closings[$item->closing_year_month])){
+                $closings[$item->closing_year_month] = [];
+            }
+            $thisYearMonth = &$closings[$item->closing_year_month];
+            if(!isset($thisYearMonth[$item->closing_id])){
+                $thisYearMonth[$item->closing_id] = [
+                                        "closing_year_month" => $item->closing_year_month,
+                                        "closing_created_at" => $item->closing_created_at,
+                                        "items" => []
+                                    ];
+            }
+            $thisClosing = &$closings[$item->closing_year_month][$item->closing_id];
+            $thisItem = [
+                "material_name_and_no" => $item->material_name . ' ('. $item->material_no . ')',
+                "purchase_count" => $item->purchase_count,
+                "purchase_total" => $item->purchase_total,
+                "order_count" => $item->order_count,
+                "order_total" => $item->order_total,
+                "order_cost" => $item->order_cost,
+                "closing_count" => $item->closing_count,
+                "closing_total" => $item->closing_total,
+            ];
+            array_push($thisClosing["items"], $thisItem);
+        }
+        return $closings;
+    }
+
 }
