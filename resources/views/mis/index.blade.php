@@ -191,6 +191,10 @@ $(document).ready(function(){
             success: function(response) {
                 if(response["error"] == "no supplier found"){
                     alert('查無廠商，請確認廠商名稱已經存在');
+                } else if (response["error"] == "date format error"){
+                    alert('日期格式錯誤');
+                } else if ("error" in response){
+                    alert(response["error"]);
                 }
                 const table = create_purchase_item_table_with_error(response["purchase_items"]);
 
@@ -202,7 +206,9 @@ $(document).ready(function(){
                 // span.innerHTML = supplier;
                 // h6.appendChild(span);
                 // review_container.appendChild(h6);
-                document.getElementById("result_container").appendChild(table);
+                const result_container = document.getElementById("result_container");
+                result_container.innerHTML = "";
+                result_container.appendChild(table);
 
             },
             error: function(response) {

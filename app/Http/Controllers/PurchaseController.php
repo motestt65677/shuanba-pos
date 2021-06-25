@@ -17,6 +17,7 @@ class PurchaseController extends Controller
 	{
         $this->purchaseService = app()->make('PurchaseService');
         $this->materialService = app()->make('MaterialService');
+        $this->supplierService = app()->make('SupplierService');
 	}
     
     public function index(Request $request)
@@ -74,6 +75,16 @@ class PurchaseController extends Controller
         return \Response::json(["status"=> 200]);
     }
 
+
+    public function delete(Request $request){
+        $error = [];
+        foreach($request->purchase_ids as $id){
+            Purchase::find($id)->delete();
+            PurchaseItem::where("purchase_id", $id)->delete();
+        }
+        return \Response::json(["status"=> 200, "error"=>$error]);
+    }
+
     public function queryPurchases(Request $request){
         $items = $this->purchaseService->queryPurchases($request["search"], $request["order"]);
         return \Response::json(["data"=> $items]);
@@ -107,8 +118,12 @@ class PurchaseController extends Controller
 
 
         $supplier = Supplier::where("name", $request->purchases[0]["supplier"])->first();
-        if(!$supplier)
-            return \Response::json(["status"=> "200", "error"=> "no supplier found"]);
+        if(!$supplier){
+            $supplier = Supplier::create([
+                'supplier_no' => $this->supplierService->newSupplierNo(),
+                'name' => $request->purchases[0]["supplier"]
+            ]);
+        }
 
         foreach($request->purchases as $purchase){
             if(!isset($purchaseDict[$purchase["purchase_date"]])){
@@ -139,6 +154,14 @@ class PurchaseController extends Controller
             $keepPurchase = false;
             foreach($purchase as $item){
                 $material = Material::where("name", $item["material_name"])->first();
+                if(!$material){
+                    $material = Material::create([
+                        'material_no' => $this->materialService->newMaterialNo(),
+                        'supplier_id' => $supplier->id,
+                        'name' => $item["material_name"],
+                        'unit' => '個'
+                    ]);
+                }
                 if($item["amount"] == 0 || $item["unit_price"] == 0){
                     $item["status"] = "amount or unit price is 0";
                 } else if (!$material){

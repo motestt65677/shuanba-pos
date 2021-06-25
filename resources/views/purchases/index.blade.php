@@ -29,6 +29,7 @@
             </div>
             <div class="right floated column" style="text-align:right;">
                 <button id="paid" class="ui button primary submit ">單據付款</button>
+                <button id="delete_btn" class="ui button negative">刪除</button>
             </div>
         </div>
     </div>
@@ -95,13 +96,13 @@ $(document).ready(function(){
                 width: "3%"
             },
             { data: null, orderable:false, className: 'dt-body-center dt-head-center'}, 
-            { data: "purchase_no", orderable:false, className: 'dt-body-center dt-head-center'},
-            { data: "supplier_no", orderable:false, className: 'dt-body-center dt-head-center'},
-            { data: "supplier_name", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "purchase_no", className: 'dt-body-center dt-head-center'},
+            { data: "supplier_no", className: 'dt-body-center dt-head-center'},
+            { data: "supplier_name", className: 'dt-body-center dt-head-center'},
             { data: "payment_type_text", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
-            { data: "is_paid_text", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
-            { data: "voucher_date", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
-            { data: "total", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
+            { data: "is_paid_text", searchable:false, className: 'dt-body-center dt-head-center'},
+            { data: "voucher_date", searchable:false, className: 'dt-body-center dt-head-center'},
+            { data: "total", searchable:false, className: 'dt-body-center dt-head-center'},
 
         ],
         paging: false,
@@ -150,11 +151,57 @@ $(document).ready(function(){
                     data_table.ajax.reload(hideLoading);
                 }
             });
-        } else {
         }
-
-        
     });
+
+    $("#delete_btn").click(function(){
+        const all_data = data_table.rows().data();
+        let checked_row_id = [];
+        data_table.rows().every(function(index, element) {
+            let row = $(this.node());
+            //eq(col # of checkbox)
+            let checkbox = row.find('td').eq(0).children("input:checkbox");
+            if(checkbox.prop("checked")){
+                checked_row_id.push(all_data[index]["id"]);
+            }
+        });
+
+        if(checked_row_id.length > 0){
+            if(confirm("確定要刪除?")){
+
+                let data = {
+                    "purchase_ids": checked_row_id,
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/purchases/delete",
+                    contentType: "application/json",
+                    dataType: "json",
+                    beforeSend: showLoading,
+                    complete: hideLoading,
+                    data: JSON.stringify(data),
+                    success: function(response) {
+                        if(response["error"].length > 0){
+                            if(response["error"].length > 0){
+                                let message = "錯誤訊息 \r\n";
+                                for(let i = 0; i < response["error"].length; i++){
+                                    message += response["error"][i] + "\r\n";
+                                }
+                                alert(message);
+                            }
+                        } else {
+                            alert("刪除成功");
+                        }
+                        data_table.ajax.reload(hideLoading);
+                    },
+                    error: function(response) {
+                        // console.log(response);
+                    }
+                });
+                }
+
+        } 
+    })
 });
 </script>
 @endsection

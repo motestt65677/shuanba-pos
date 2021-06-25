@@ -51,8 +51,8 @@ class SupplierController extends Controller
     public function store(Request $request){
         $user = $request->user;
         
-        $purchase = Supplier::create([
-            'supplier_no' => $this->supplierService->newMaterialNo(),
+        Supplier::create([
+            'supplier_no' => $this->supplierService->newSupplierNo(),
             'name' => $request->supplier_name,
             'phone' => $request->supplier_phone,
             'cellphone' => $request->supplier_cellphone,

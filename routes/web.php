@@ -27,6 +27,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/index', 'PurchaseController@index');
             Route::get('/create', 'PurchaseController@create');
             Route::post('/store', 'PurchaseController@store');
+            Route::post('/delete', 'PurchaseController@delete');
+
             Route::post('/queryPurchases', 'PurchaseController@queryPurchases');
             Route::post('/queryPurchaseItems', 'PurchaseController@queryPurchaseItems');
             Route::post('/queryPurchaseItemsWithSupplier', 'PurchaseController@queryPurchaseItemsWithSupplier');
