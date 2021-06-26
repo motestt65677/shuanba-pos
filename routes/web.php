@@ -95,7 +95,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/index', 'ClosingController@index');
             Route::post('/queryClosings', 'ClosingController@queryClosings');
             Route::post('/queryClosingWithItems', 'ClosingController@queryClosingWithItems');
-
+            Route::post('/create', 'ClosingController@create');
+            
             
         });
         Route::group(['prefix' => 'closing_items'], function () {

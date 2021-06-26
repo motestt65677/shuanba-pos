@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Log;
 
 class ClosingService
 {
-    public function closeMonth(){
-        $thisYearMonth = "2021-04";
+    public function closeMonth($thisYearMonth){
+        // $thisYearMonth = "2021-04";
 
         $materials = Material::all();
         $closing_item_dict = []; //material_id => [purchase_count: 0, purchase_total: 0, order_count: 0, order_total: 0, order_cost: 0, closing_count: 0, closing_total: 0]
@@ -77,6 +77,21 @@ class ClosingService
             ClosingItem::create($value);
         }
 
+    }
+
+    public function closableYearMonth(){
+        $orderQuery = DB::table('orders')->select('voucher_date');
+        $purchaseQuery = DB::table('purchases')->select('voucher_date')->union($orderQuery);
+        $queryData = $purchaseQuery->get();
+        $yearMonthArray = [];
+        foreach($queryData as $data){
+            $thisYearMonth = substr($data->voucher_date, 0, 7);
+            if(!in_array($thisYearMonth, $yearMonthArray)){
+                array_push($yearMonthArray, $thisYearMonth);
+            }
+        }
+        sort($yearMonthArray);
+        return $yearMonthArray;
     }
 
     public function queryClosings($search = null, $order = []){

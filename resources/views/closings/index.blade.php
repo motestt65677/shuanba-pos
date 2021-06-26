@@ -13,12 +13,13 @@
 <h3 class="ui block header" style="position:inline-block;">
     進耗存別關帳
 </h3>
-<div>
-    
+<div style="text-align:right; margin-bottom: 1rem;">
+    <button id="manual_closing_btn" class="ui button ">手動關帳</button>
 </div>
-<div style="height:85vh;">
+
+<div style="height:85vh;" class="ui segment">
     <input type="hidden" id="closing_id" value="">
-    <div style="width: 25%; height:100%; overflow-y: scroll; display:inline-block;">
+    <div style="width: 25%; height:100%; overflow-y: scroll; display:inline-block; ">
         <table id="thisTable" class="display" style="width:100%">
             <thead>
                 <tr>
@@ -29,7 +30,7 @@
             </thead>
         </table>
     </div>
-    <div style="width: 73%; height:100%; overflow-y: scroll; display:inline-block;">
+    <div style="width: 73%; height:100%; overflow-y: scroll; display:inline-block; ">
         <table id="closing_item_table" class="display" style="width:100%">
             <thead>
                 <tr>
@@ -47,6 +48,36 @@
     </div>
 </div>
 
+<div class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        手動關帳
+    </div>
+    <div class="content">
+        <div class="ui grid">
+            <div class="sixteen wide column">
+                <h3>關帳月份</h3>
+                <div class="ui fluid search selection dropdown">
+                    <input id="year_month_select" type="hidden" name="year_month">
+                    <i class="dropdown icon"></i>
+                    <div class="default text">請選擇</div>
+                    <div class="menu">
+                        @foreach($yearMonth as $data)
+                            <div class="item" data-value="{{$data}}">{{$data}}</div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            {{-- <div class="sixteen wide column">
+                <button class="fluid ui secondary button">Fits container</button>
+            </div> --}}
+        </div>
+    </div>
+    <div class="actions">
+        {{-- <div class="ui button">取消</div> --}}
+        <div id="closing_confirm_btn" class="ui button">確認關帳</div>
+    </div>
+</div>
 
 <div class="ui vertical segment">
 </div>
@@ -80,6 +111,41 @@ let data_table;
 let closings;
 let closing_table_data;
 
+$('.ui.dropdown').dropdown({});
+
+
+
+
+$("#manual_closing_btn").click(function(){
+    $('.ui.modal').modal('show');
+});
+$("#closing_confirm_btn").click(function(){
+    $.ajax({
+        type: "POST",
+        url: "/closings/create",
+        contentType: "application/json",
+        dataType: "json",
+        // async: false,
+        // beforeSend: showLoading,
+        // complete: hideLoading,
+        data: JSON.stringify(
+            {
+                year_month: $("#year_month_select").val()
+            }
+        ),
+        success: function(response) {
+            if(response["status"] == "200"){
+                alert("關帳成功");
+                window.location.href = "/closings/index";
+            } else {
+                alert('關帳失敗');
+            }
+        },
+        error: function(response) {
+            // console.log(response);
+        }
+    });
+});
 
 
 function bind_closing_table(){

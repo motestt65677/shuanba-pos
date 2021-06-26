@@ -20,10 +20,10 @@
 
     <div class="ui form">
         <div style="text-align:right;">
-            <button id="recent_record_btn" class="ui button ">近五筆輸入材料</button>
+            <button id="recent_record_btn" class="ui button">近五筆輸入材料</button>
             <button id="submit" class="ui button primary submit">完成</button>
         </div>
-        <div class=" fields">
+        <div class="fields">
             <div class="eight wide field disabled">
                 <label>單據編號</label>
                 <input type="text" value="AUTONUM">
