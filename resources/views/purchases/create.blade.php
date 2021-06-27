@@ -339,7 +339,9 @@ $(document).ready(function(){
                 // $(select).trigger('change');
             }else if (thisColumn == "unit"){
                 // td.setAttribute("data-unit", "");
-                td.appendChild(document.createTextNode("個"));
+                const label = document.createElement("label");
+                label.setAttribute("data-unit", "");
+                td.appendChild(label);
             }else if (thisColumn == "amount"){
                 const input = document.createElement("input");
                 input.type = "number";
@@ -471,19 +473,32 @@ $(document).ready(function(){
     }
     function material_changed(event){
         update_unit_price(event.target);
+        update_unit(event.target);
         set_import_conversion_select(event.target);
         const tr = $(event.target).closest("tr");
         const row_import_count = tr.find("[data-import-count]");
         row_import_count.parent().addClass('disabled');
         row_import_count.val('0').change();
+    }
 
+    function update_unit(select){
+        let selected_option = $(select).find(":selected")[0];
+        if(selected_option == undefined)
+            selected_option = select.options[0];
+        const material_unit = selected_option.getAttribute('data-material-unit');
+        const tr = $(select).closest("tr");
+        const row_unit = tr.find("[data-unit]")[0];
+        console.log(row_unit);
+        console.log(material_unit);
+
+        row_unit.innerHTML = material_unit;
     }
 
     function update_unit_price(select){
         let selected_option = $(select).find(":selected")[0];
         if(selected_option == undefined)
             selected_option = select.options[0];
-        const unit_price = selected_option.getAttribute('data_unit_price');
+        const unit_price = selected_option.getAttribute('data-material-unit-price');
         const tr = $(select).closest("tr");
         const row_unit_price = tr.find("[data-unit-price]")[0];
         row_unit_price.value = parseFloat(unit_price).toFixed(2);
@@ -573,7 +588,8 @@ $(document).ready(function(){
                     const option = document.createElement("option");
                     option.value = this_material.material_id;
                     option.innerHTML = this_material.material_name;
-                    option.setAttribute('data_unit_price', this_material.material_unit_price);
+                    option.setAttribute('data-material-unit-price', this_material.material_unit_price);
+                    option.setAttribute('data-material-unit', this_material.material_unit);
                     select.appendChild(option);
                     select.onchange = "set_import_conversion_select(this.id)";
                 }

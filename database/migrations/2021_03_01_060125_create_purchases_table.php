@@ -30,7 +30,7 @@ class CreatePurchasesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('purchase_id')->nullable();
             $table->unsignedBigInteger('material_id')->nullable();
-            $table->integer('amount')->default(0);
+            $table->decimal('amount', 13, 2)->default(0);
             $table->decimal('unit_price', 13, 2)->default(0);
             $table->decimal('total', 13, 2)->nullable()->default(0);
             $table->string('note1')->nullable();

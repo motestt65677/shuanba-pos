@@ -76,7 +76,7 @@ $(document).ready(function(){
             { data: null, orderable:false, className: 'dt-body-center dt-head-center'}, 
             { data: "supplier_name_and_no", orderable:false, className: 'dt-body-center dt-head-center'},
             { data: "material_no", orderable:false, className: 'dt-body-center dt-head-center'},
-            { data: "material_name", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
+            { data: "material_name", orderable:false, className: 'dt-body-center dt-head-center'},
             { data: "material_unit", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
             { data: "material_unit_price", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
         ],

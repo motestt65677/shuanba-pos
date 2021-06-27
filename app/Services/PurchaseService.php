@@ -88,9 +88,9 @@ class PurchaseService
 
         $items = $query->get();
         foreach($items as $item){
-            $item->amount = round($item->amount);
-            $item->unit_price = round($item->unit_price);
-            $item->total = round($item->total);
+            $item->amount = round($item->amount, 2);
+            $item->unit_price = round($item->unit_price, 2);
+            $item->total = round($item->total, 2);
             $item->created_date = substr($item->created_at, 0, 10);
         }
         return $items;

@@ -156,6 +156,7 @@ function bind_closing_table(){
             { data: "year_month", orderable:false, className: 'dt-body-center dt-head-center'},
             { data: "created_at", orderable:false, className: 'dt-body-center dt-head-center'},
         ],
+        order: [[0, "desc"],[1, "desc"]],
         paging: false,
         aaSorting: [],
         searching: false,
