@@ -68,13 +68,18 @@
                     </a>
                 </div>
                 <div>
+                    <a href="/transactions/index" class="link-container">
+                        <i class="fas fa-history"></i>
+                        <span class="link-title" >單據異動分析</span>
+                    </a>
+                </div>
+                <div>
                     <a href="/mis/index" class="link-container">
                         <i class="fas fa-tools"></i>
                         <span class="link-title" >維護工具</span>
                     </a>
                 </div>
 
-                
                 
             </div>
             <div id="nav-footer" class="container" style="position: absolute; bottom: 1em; color: white;">

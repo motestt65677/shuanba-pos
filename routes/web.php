@@ -52,17 +52,18 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::group(['prefix' => 'materials'], function () {
-
             Route::get('/{id}/edit', 'MaterialController@edit');
             Route::get('/index', 'MaterialController@index');
             Route::get('/create', 'MaterialController@create');
-
             Route::post('/store', 'MaterialController@store');
             Route::post('/update', 'MaterialController@update');
             Route::post('/delete', 'MaterialController@delete');
             Route::post('/queryData', 'MaterialController@queryData');
+        });
 
-
+        Route::group(['prefix' => 'transactions'], function () {
+            Route::get('/index', 'TransactionController@index');
+            Route::post('/queryData', 'TransactionController@queryData');
         });
 
         Route::group(['prefix' => 'products'], function () {
@@ -96,9 +97,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/queryClosings', 'ClosingController@queryClosings');
             Route::post('/queryClosingWithItems', 'ClosingController@queryClosingWithItems');
             Route::post('/create', 'ClosingController@create');
-            
-            
         });
+
         Route::group(['prefix' => 'closing_items'], function () {
             Route::post('/queryItems', 'ClosingItemController@queryItems');
         });

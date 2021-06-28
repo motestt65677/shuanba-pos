@@ -25,12 +25,15 @@
         <tr>
             <th></th>
             <th>單據編號</th>
-            <th>廠商編號</th>
-            <th>廠商名稱</th>
+            {{-- <th>廠商編號</th> --}}
+            {{-- <th>廠商名稱</th> --}}
+            <th>廠商</th>
             <th>單據日期</th>
-            <th>原料編號</th>
-            <th>原料名稱</th>
+            {{-- <th>原料編號</th> --}}
+            {{-- <th>原料名稱</th> --}}
+            <th>原料</th>
             <th>數量</th>
+            <th>庫存單位</th>
             <th>單價</th>
             <th>金額</th>
         </tr>
@@ -72,12 +75,16 @@ $(document).ready(function(){
         columns: [
             { data: null, orderable:false, className: 'dt-body-center dt-head-center'}, 
             { data: "purchase_no", orderable:false, className: 'dt-body-center dt-head-center'},
-            { data: "supplier_no", orderable:false, searchable: false, className: 'dt-body-center dt-head-center'},
-            { data: "supplier_name", orderable:false, searchable: false, className: 'dt-body-center dt-head-center'},
+            // { data: "supplier_no", orderable:false, searchable: false, className: 'dt-body-center dt-head-center'},
+            // { data: "supplier_name", orderable:false, searchable: false, className: 'dt-body-center dt-head-center'},
+            { data: "supplier_name_and_no", orderable:false, searchable: false, className: 'dt-body-center dt-head-center'},
+
+
             { data: "voucher_date", className: 'dt-body-center dt-head-center'},
-            { data: "material_no", orderable:false, searchable: false, className: 'dt-body-center dt-head-center'},
-            { data: "material_name", orderable:false, searchable: false, className: 'dt-body-center dt-head-center'},
+            // { data: "material_no", orderable:false, searchable: false, className: 'dt-body-center dt-head-center'},
+            { data: "material_name_and_no", orderable:false, searchable: false, className: 'dt-body-center dt-head-center'},
             { data: "item_amount", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "material_unit", orderable:false, searchable: false, className: 'dt-body-center dt-head-center'},
             { data: "item_unit_price", orderable:false, className: 'dt-body-center dt-head-center'},
             { data: "item_total", orderable:false, className: 'dt-body-center dt-head-center'}
         ],

@@ -108,6 +108,7 @@ class PurchaseService
             "purchases.voucher_date AS voucher_date",
             "materials.material_no AS material_no",
             "materials.name AS material_name",
+            "materials.unit AS material_unit",
             "purchase_items.amount AS item_amount",
             "purchase_items.unit_price AS item_unit_price",
             "purchase_items.total AS item_total"
@@ -123,9 +124,11 @@ class PurchaseService
 
         $items = $query->get();
         foreach($items as $item){
-            $item->item_amount = round($item->item_amount);
-            $item->item_unit_price = round($item->item_unit_price);
-            $item->item_total = round($item->item_total);
+            $item->item_amount = round($item->item_amount,2);
+            $item->item_unit_price = round($item->item_unit_price,2);
+            $item->item_total = round($item->item_total,2);
+            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
+            $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
             // $item->created_date = substr($item->created_at, 0, 10);
         }
         return $items;
