@@ -20,40 +20,46 @@
 </style>
 @endsection
 @section('content')
-<h3 class="ui block header">廠商進退維護</h3>
+<h3 class="ui block header">退貨單</h3>
     <div class="ui form">
         <div style="text-align:right;">
+            <a class="ui button" href="/purchases/index">
+                <i class="left chevron icon"></i>
+                返回
+            </a>
             <button id="submit" class="ui button primary submit">完成</button>
         </div>
+
         <div class="fields">
             <div class="six wide field disabled">
                 <label>單據編號</label>
                 <input type="text" value="AUTONUM">
             </div>
-            <div class="six wide field disabled">
-                <label>進貨編號</label>
-                <input id="purchase_no" type="text">
-            </div>
-            <div class="six wide field disabled">
-                <label>退貨總額</label>
-                <input id="total" type="text">
-            </div>
-        </div>
-        <div class=" fields">
             <div class="six wide field">
                 <label>單據日期</label>
                 <input id="voucher_date" type="text" value="">
             </div>
-            <div class="six wide field disabled">
+            <div class="six wide field">
+                <label>進貨編號</label>
+                <select name="" id="purchase_no" class="ui search selection dropdown"></select>
+            </div>
+        </div>
+        <div class=" fields">
+            <div class="eight wide field disabled">
                 <label>廠商</label>
                 <input id="supplier" type="text" value="">
             </div>
-            <div class="six wide field disabled">
+            <div class="eight wide field disabled">
+                <label>退貨總額</label>
+                <input id="total" type="text">
+            </div>
+        </div>
+
+        <div class="fields" style="display:none;">
+            <div class="eight wide field disabled">
                 <label>付款方式</label>
                 <input id="payment_type" type="text" value="">
             </div>
-        </div>
-        <div class="fields" style="display:none;">
             <div class="sixteen wide field disabled">
                 <label>備註一</label>
                 <input id="note1" type="text" >
@@ -67,7 +73,7 @@
         </div>
     </div>
 
-    <div class="col-sm-12" >
+    <div class="col-sm-12 form" >
         <table id="purchase_items" style="width:100%; text-align:center;" class="ui celled table">
             <thead>
                 <tr>
@@ -98,11 +104,9 @@ $(document).ready(function(){
     init();
 
     $("#submit").click(function(){
-        const urlParams = new URLSearchParams(window.location.search);
-        const purchase_id = urlParams.get('purchase-id')
 
         let data = {
-            "purchase_id": purchase_id,
+            "purchase_id": $("#purchase_no").val(),
             "voucher_date": $("#voucher_date").val(),
             "items": []
         };
@@ -149,7 +153,7 @@ $(document).ready(function(){
                     alert(response["message"]);
                 else
                     alert("登錄完成");
-                window.location.href = "/purchases/index";
+                window.location.href = "/purchase_returns/index";
             },
             error: function(response) {
                 // console.log(response);
@@ -247,9 +251,9 @@ $(document).ready(function(){
         $("#total").val(total);
     }
 
-    function load_page_data(){
-        const urlParams = new URLSearchParams(window.location.search);
-        const purchase_id = urlParams.get('purchase-id')
+    function load_purchase_data(purchase_id){
+        // const urlParams = new URLSearchParams(window.location.search);
+        // const purchase_id = urlParams.get('purchase-id')
         return $.ajax({
             type: "POST",
             url: "/purchases/queryPurchaseItemsWithReturns",
@@ -266,12 +270,13 @@ $(document).ready(function(){
             ),
             success: function(response) {
                 if(response["data"].length > 0){
-                    $("#purchase_no").val(response["data"][0]["purchase_no"]);
-                    $("#voucher_date").val(response["data"][0]["voucher_date"]);
+                    // $("#purchase_no").val(response["data"][0]["purchase_no"]);
+                    // $("#voucher_date").val(response["data"][0]["voucher_date"]);
                     $("#supplier").val(response["data"][0]["supplier_name_and_no"]);
-                    $("#payment_type").val(response["data"][0]["payment_type_text"]);
+                    // $("#payment_type").val(response["data"][0]["payment_type_text"]);
                     $("#note1").val(response["data"][0]["note1"]);
                     $("#note2").val(response["data"][0]["note2"]);
+                    $("#purchase_items tbody").html('');
                     for(let i = 0; i < response["data"].length; i++){
                         const thisItem = response["data"][i];
                         add_purchase_item({
@@ -292,9 +297,49 @@ $(document).ready(function(){
         });
     }
 
-    async function init(){
-        await load_page_data();
+    function bind_purchase_no_select(){
+        return $.ajax({
+            type: "POST",
+            url: "/purchases/queryPurchases",
+            contentType: "application/json",
+            dataType: "json",
+            data:JSON.stringify({search: {}, order: {}}),
+            // beforeSend: showLoading,
+            // complete: hideLoading,
+            success: function(response) {
+                const purchases = response["data"]
+                const select = $("#purchase_no")[0];
+                
+                // select.classList = "ui search selection dropdown";
+                select.appendChild(get_empty_option());
 
+                for(var i = 0; i < purchases.length; i++){
+                    const this_purchase = purchases[i];
+                    const option = document.createElement("option");
+                    option.value = this_purchase.id;
+                    option.innerHTML = this_purchase.purchase_no;
+                    // option.setAttribute("data-material-unit", this_purchase["material_unit"]);
+                    select.appendChild(option);
+                }
+            },
+            error: function(response) {
+                // console.log(response);
+            }
+        });
+    }
+    function get_empty_option(){
+        const empty_option = document.createElement("option");
+        empty_option.innerHTML = "請選擇";
+        empty_option.value = "";
+        return empty_option;
+    }
+    function purchase_no_changed (){
+        load_purchase_data($("#purchase_no").val());
+    }
+
+    async function init(){
+        // await load_page_data();
+        await bind_purchase_no_select();
         $('#voucher_date').datetimepicker({
             timepicker:false,
             format: 'Y-m-d',
@@ -302,7 +347,8 @@ $(document).ready(function(){
             // maxDate: lastDay,
             scrollMonth : false
         });
-
+        $("#purchase_no").dropdown({selectedfullTextSearch: true});
+        $("#purchase_no").change(purchase_no_changed);
         $('#voucher_date').val(getymd());
         // await set_import_conversion_select();
         // $("#add_item_btn").trigger('click');

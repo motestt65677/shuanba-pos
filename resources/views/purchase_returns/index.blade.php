@@ -10,7 +10,7 @@
 @section('content')
 
 <h3 class="ui block header" style="position:inline-block;">
-    廠商進貨分析
+    廠商退貨分析
 </h3>
 
 <div class="ui vertical segment">
@@ -28,8 +28,7 @@
                 </select>
             </div>
             <div class="right floated column" style="text-align:right;">
-                <a href="/purchases/create" class="ui secondary button">進貨單</a>
-                <button id="paid" class="ui button">單據付款</button>
+                <a id="return" class="ui secondary button" href="/purchase_returns/create">退貨單</a>
                 <button id="delete_btn" class="ui button negative">刪除</button>
             </div>
         </div>
@@ -43,10 +42,10 @@
                 <th>單據編號</th>
                 <th>廠商編號</th>
                 <th>廠商名稱</th>
-                <th>付款方式</th>
-                <th>付款狀態</th>
+                {{-- <th>付款方式</th> --}}
+                {{-- <th>付款狀態</th> --}}
                 <th>單據日期</th>
-                <th>應付金額</th>
+                <th>應收金額</th>
             </tr>
         </thead>
     </table>
@@ -69,13 +68,13 @@ $(document).ready(function(){
     //bind table
     let data_table = $('#thisTable').DataTable({
         ajax: {
-            url: "/purchases/queryPurchases",
+            url: "/purchase_returns/queryData",
             dataSrc: 'data',
             data: function(d){
                 const search = {payment_type: "monthly", voucher_year_month: $('#year_month_select').val()}
                 d.search = search;
-                const order = {is_paid: "asc"};
-                d.order = order;
+                // const order = {};
+                // d.order = order;
             },
             // beforeSend: showLoading,
             // data:{
@@ -97,11 +96,11 @@ $(document).ready(function(){
                 width: "3%"
             },
             { data: null, orderable:false, className: 'dt-body-center dt-head-center'}, 
-            { data: "purchase_no", className: 'dt-body-center dt-head-center'},
+            { data: "purchase_return_no", className: 'dt-body-center dt-head-center'},
             { data: "supplier_no", className: 'dt-body-center dt-head-center'},
             { data: "supplier_name", className: 'dt-body-center dt-head-center'},
-            { data: "payment_type_text", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
-            { data: "is_paid_text", searchable:false, className: 'dt-body-center dt-head-center'},
+            // { data: "payment_type_text", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
+            // { data: "is_paid_text", searchable:false, className: 'dt-body-center dt-head-center'},
             { data: "voucher_date", searchable:false, className: 'dt-body-center dt-head-center'},
             { data: "total", searchable:false, className: 'dt-body-center dt-head-center'},
 
@@ -125,36 +124,6 @@ $(document).ready(function(){
         } );
     } ).draw();
 
-    $("#paid").on('click', function(event){
-        const all_data = data_table.rows().data();
-        let checked_row_id = [];
-        data_table.rows().every(function(index, element) {
-            let row = $(this.node());
-            //eq(col # of checkbox)
-            let checkbox = row.find('td').eq(0).children("input:checkbox");
-            if(checkbox.prop("checked")){
-                checked_row_id.push(all_data[index]["id"]);
-            }
-        });
-
-        if(checked_row_id.length > 0){
-            $.ajax({
-                type: "POST",
-                url: "/purchases/paid",
-                data: JSON.stringify({
-                        ids: checked_row_id
-                }),
-                contentType: "application/json",
-                dataType: "json",
-                beforeSend: showLoading,
-                complete: hideLoading,
-                success: function(response) {
-                    data_table.ajax.reload(hideLoading);
-                }
-            });
-        }
-    });
-
 
     $("#delete_btn").click(function(){
         const all_data = data_table.rows().data();
@@ -170,13 +139,12 @@ $(document).ready(function(){
 
         if(checked_row_id.length > 0){
             if(confirm("確定要刪除?")){
-
                 let data = {
-                    "purchase_ids": checked_row_id,
+                    "purchase_return_ids": checked_row_id,
                 };
                 $.ajax({
                     type: "POST",
-                    url: "/purchases/delete",
+                    url: "/purchase_returns/delete",
                     contentType: "application/json",
                     dataType: "json",
                     beforeSend: showLoading,
@@ -200,8 +168,7 @@ $(document).ready(function(){
                         // console.log(response);
                     }
                 });
-                }
-
+            }
         } 
     })
 });

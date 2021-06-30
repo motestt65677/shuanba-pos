@@ -44,7 +44,7 @@ class PurchaseService
             'voucher_date',
             'total',
             'is_paid'
-        );
+        )->where("total", ">", 0);
 
         if(isset($search["payment_type"])){
             $query->where("payment_type", $search["payment_type"]);
@@ -190,7 +190,7 @@ class PurchaseService
         }
         return $items;
     }
-    public static function getYearMonthSelect(){
+    public function getYearMonthSelect(){
         $first = Purchase::orderBy("voucher_date", "ASC")
         -> first();
         $retAry = [];

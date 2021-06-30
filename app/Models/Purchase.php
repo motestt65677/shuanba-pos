@@ -12,4 +12,9 @@ class Purchase extends Model
     protected $fillable = [
         'prep_by', 'branch_id', 'supplier_id', 'voucher_date', 'purchase_no', 'payment_type', 'total', 'note1', 'note2', 'is_paid'
     ];
+
+    public function purchaseItems()
+    {
+        return $this->hasMany(PurchaseItems::class);
+    }
 }

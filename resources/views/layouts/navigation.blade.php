@@ -12,16 +12,22 @@
                 <img src="/image/chef-icon-white.png" alt="" style="color:gray; display: block; margin-left: auto; margin-right: auto; width: 50%;">
             </div>
             <div id="nav-body" style="overflow-x:hidden;"> 
-                <div>
+                {{-- <div>
                     <a href="/purchases/create" class="link-container">
                         <i class="fas fa-shipping-fast"></i>
                         <span class="link-title" >廠商進貨維護</span>
                     </a>
-                </div>
+                </div> --}}
                 <div>
                     <a href="/purchases/index" class="link-container">
                         <i class="fas fa-truck"></i>
                         <span class="link-title" >廠商進貨分析</span>
+                    </a>
+                </div>
+                <div>
+                    <a href="/purchase_returns/index" class="link-container">
+                        <i class="fas fa-dolly"></i>
+                        <span class="link-title" >廠商退貨分析</span>
                     </a>
                 </div>
                 <div>

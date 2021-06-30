@@ -10,6 +10,6 @@ class PurchaseReturn extends Model
     use HasFactory;
     protected $table = "purchase_returns";
     protected $fillable = [
-        'prep_by', 'branch_id', 'purchase_id', 'voucher_date', 'purchase_return_no', 'total'
+        'prep_by', 'branch_id', 'purchase_id', 'supplier_id','voucher_date', 'purchase_return_no', 'total'
     ];
 }

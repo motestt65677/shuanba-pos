@@ -41,8 +41,12 @@ Route::middleware(['auth'])->group(function () {
 
         });
         Route::group(['prefix' => 'purchase_returns'], function () {
+            Route::get('/index', 'PurchaseReturnController@index');
             Route::get('/create', 'PurchaseReturnController@create');
             Route::post('/store', 'PurchaseReturnController@store');
+            Route::post('/queryData', 'PurchaseReturnController@queryData');
+            Route::post('/delete', 'PurchaseReturnController@delete');
+
         });
 
 
