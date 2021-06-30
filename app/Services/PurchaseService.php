@@ -5,6 +5,7 @@ namespace App\Services;
 use DateTime;
 use DateInterval;
 use App\Models\Purchase;
+use App\Models\PurchaseReturnItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -106,6 +107,7 @@ class PurchaseService
             "suppliers.supplier_no AS supplier_no",
             "suppliers.name AS supplier_name",
             "purchases.voucher_date AS voucher_date",
+            "purchases.payment_type AS payment_type",
             "materials.material_no AS material_no",
             "materials.name AS material_name",
             "materials.unit AS material_unit",
@@ -115,8 +117,11 @@ class PurchaseService
         );
         if(isset($search["material_id"]))
             $query->where("purchase_items.material_id", $search["material_id"]);
+        if(isset($search["purchase_id"]))
+            $query->where("purchase_items.purchase_id", $search["purchase_id"]);
         if(isset($search["count"]))
             $query->take($search["count"]);
+
 
         foreach($order as $key=>$value){
             $query->orderBy($key, $value);
@@ -129,6 +134,58 @@ class PurchaseService
             $item->item_total = round($item->item_total,2);
             $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
             $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
+            $item->payment_type_text = $item->payment_type == "monthly" ? "月結" : "現金";
+
+            // $item->created_date = substr($item->created_at, 0, 10);
+        }
+        return $items;
+    }
+
+    public function queryPurchaseItemsWithReturns($search = [], $order = []){
+        $query = DB::table('purchase_items')
+        ->leftJoin("purchases", 'purchases.id', '=', 'purchase_items.purchase_id')
+        ->leftJoin("materials", 'materials.id', '=', 'purchase_items.material_id')
+        ->leftJoin("suppliers", 'suppliers.id', '=', 'materials.supplier_id')
+        ->select(
+            "purchases.purchase_no AS purchase_no",
+            "suppliers.supplier_no AS supplier_no",
+            "suppliers.name AS supplier_name",
+            "purchases.voucher_date AS voucher_date",
+            "purchases.payment_type AS payment_type",
+            "materials.material_no AS material_no",
+            "materials.name AS material_name",
+            "materials.unit AS material_unit",
+            "purchase_items.id AS purchase_item_id",
+
+            "purchase_items.amount AS item_amount",
+            "purchase_items.unit_price AS item_unit_price",
+            "purchase_items.total AS item_total"
+        );
+        if(isset($search["material_id"]))
+            $query->where("purchase_items.material_id", $search["material_id"]);
+        if(isset($search["purchase_id"]))
+            $query->where("purchase_items.purchase_id", $search["purchase_id"]);
+        if(isset($search["count"]))
+            $query->take($search["count"]);
+
+
+        foreach($order as $key=>$value){
+            $query->orderBy($key, $value);
+        }
+
+        $items = $query->get();
+        foreach($items as $item){
+            $item->item_amount = round($item->item_amount,2);
+            $item->item_unit_price = round($item->item_unit_price,2);
+            $item->item_total = round($item->item_total,2);
+            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
+            $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
+            $item->payment_type_text = $item->payment_type == "monthly" ? "月結" : "現金";
+
+            $returnItems = PurchaseReturnItem::where("purchase_item_id", $item->purchase_item_id)->get();
+            foreach($returnItems as $returnItem){
+                $item->item_amount -= $returnItem->amount;
+            }
             // $item->created_date = substr($item->created_at, 0, 10);
         }
         return $items;

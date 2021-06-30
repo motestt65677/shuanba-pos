@@ -62,7 +62,6 @@ class TransactionService
             $item->material_name_and_no = '('. $item->material_no . ') ' .$item->material_name;
             
         }
-        Log::info($items);
         return $items;
     }
 

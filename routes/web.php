@@ -32,12 +32,19 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/queryPurchases', 'PurchaseController@queryPurchases');
             Route::post('/queryPurchaseItems', 'PurchaseController@queryPurchaseItems');
             Route::post('/queryPurchaseItemsWithSupplier', 'PurchaseController@queryPurchaseItemsWithSupplier');
+            Route::post('/queryPurchaseItemsWithReturns', 'PurchaseController@queryPurchaseItemsWithReturns');
 
+            
             
             Route::post('/paid', 'PurchaseController@paid');
             Route::post('/bulk_import', 'PurchaseController@bulk_import');
 
         });
+        Route::group(['prefix' => 'purchase_returns'], function () {
+            Route::get('/create', 'PurchaseReturnController@create');
+            Route::post('/store', 'PurchaseReturnController@store');
+        });
+
 
         Route::group(['prefix' => 'purchase_items'], function () {
             Route::get('/index', 'PurchaseItemController@index');

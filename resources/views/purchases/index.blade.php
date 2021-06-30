@@ -28,7 +28,8 @@
                 </select>
             </div>
             <div class="right floated column" style="text-align:right;">
-                <button id="paid" class="ui button primary submit ">單據付款</button>
+                <button id="paid" class="ui button">單據付款</button>
+                <button id="return" class="ui button ">單據退貨</button>
                 <button id="delete_btn" class="ui button negative">刪除</button>
             </div>
         </div>
@@ -151,6 +152,26 @@ $(document).ready(function(){
                     data_table.ajax.reload(hideLoading);
                 }
             });
+        }
+    });
+
+
+    $("#return").on('click', function(event){
+        const all_data = data_table.rows().data();
+        let checked_row_id = [];
+        data_table.rows().every(function(index, element) {
+            let row = $(this.node());
+            //eq(col # of checkbox)
+            let checkbox = row.find('td').eq(0).children("input:checkbox");
+            if(checkbox.prop("checked")){
+                checked_row_id.push(all_data[index]["id"]);
+            }
+        });
+
+        if(checked_row_id.length == 1){
+            window.location.href = "/purchase_returns/create?purchase-id=" + checked_row_id[0];
+        } else {
+            alert('請選擇一項單據進行退貨');
         }
     });
 

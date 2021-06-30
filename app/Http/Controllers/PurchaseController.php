@@ -100,6 +100,10 @@ class PurchaseController extends Controller
         return \Response::json(["data"=> $items]);
     }
 
+    public function queryPurchaseItemsWithReturns(Request $request){
+        $items = $this->purchaseService->queryPurchaseItemsWithReturns($request["search"], $request["order"]);
+        return \Response::json(["data"=> $items]);
+    }
     
 
     public function paid(Request $request){
