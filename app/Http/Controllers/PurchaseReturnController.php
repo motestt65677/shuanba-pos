@@ -58,7 +58,8 @@ class PurchaseReturnController extends Controller
                     "purchase_item_id" => $item["data_purchase_item_id"],
                     "amount" => $item["data_amount"],
                     "unit_price" => $item["data_unit_price"],
-                    "total" => $itemTotal
+                    "total" => $itemTotal,
+                    "material_id" => $item["material_id"]
                 ]);
             }
 
@@ -82,6 +83,11 @@ class PurchaseReturnController extends Controller
     public function queryData(Request $request){
         $order = isset($request["order"]) ? $request["order"] : [];
         $items = $this->purchaseReturnService->queryData($request["search"], $order);
+        return \Response::json(["data"=> $items]);
+    }
+    public function queryPurchaseReturnWithItems(Request $request){
+        $order = isset($request["order"]) ? $request["order"] : [];
+        $items = $this->purchaseReturnService->queryPurchaseReturnWithItems($request["search"], $order);
         return \Response::json(["data"=> $items]);
     }
 }

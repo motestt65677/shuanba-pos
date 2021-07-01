@@ -60,6 +60,43 @@ class PurchaseReturnService
         return $items;
     }
 
+    public function queryPurchaseReturnWithItems($search=[], $order=[]){
+        $query = DB::table('purchase_returns')
+        ->leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
+        ->select(
+            "purchase_returns.purchase_return_no",
+            "purchase_returns.voucher_date",
+            "purchase_returns.total as purchase_return_total",
+            DB::raw("IFNULL((SELECT `purchase_no` FROM `purchases` WHERE `id`=`purchase_returns`.`purchase_id` ), '') AS `purchase_no`"),
+            DB::raw("IFNULL((SELECT `name` FROM `suppliers` WHERE `id`=`purchase_returns`.`supplier_id` ), '') AS `supplier_name`"),
+            DB::raw("IFNULL((SELECT `supplier_no` FROM `suppliers` WHERE `id`=`purchase_returns`.`supplier_id` ), '') AS `supplier_no`"),
+
+
+
+            DB::raw("IFNULL((SELECT `material_no` FROM `materials` WHERE `id`=`purchase_return_items`.`material_id` ), '') AS `material_no`"),
+            DB::raw("IFNULL((SELECT `name` FROM `materials` WHERE `id`=`purchase_return_items`.`material_id` ), '') AS `material_name`"),
+            DB::raw("IFNULL((SELECT `unit` FROM `materials` WHERE `id`=`purchase_return_items`.`material_id` ), '') AS `material_unit`"),
+            "purchase_return_items.amount",
+            "purchase_return_items.unit_price",
+            "purchase_return_items.total as purchase_return_item_total"
+        );
+
+        if(isset($search["purchase_return_id"]))
+            $query->where("purchase_returns.id", $search["purchase_return_id"]);
+
+        foreach($order as $key=>$value){
+            $query->orderBy($key, $value);
+        }
+
+        $items = $query->get();
+        foreach($items as $item){
+            $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
+            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
+
+        }
+        return $items;
+    }
+
     public function getYearMonthSelect(){
         $first = PurchaseReturn::orderBy("voucher_date", "ASC")
         -> first();

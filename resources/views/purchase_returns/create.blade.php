@@ -120,13 +120,14 @@ $(document).ready(function(){
             const data_purchase_item_id = $(row).find("[data-purchase-item-id]").data("purchase-item-id");
             const data_unit_price = $(row).find("[data-unit-price]").data("unit-price");
             const data_amount = $(row).find("[data-amount]").val();
+            const data_material_id = $(row).find("[data-material-id]").data("material-id");
 
             if(data_amount == 0)
                 continue;
             if(data_unit_price == 0)
                 continue;
 
-            const this_item = {"data_purchase_item_id": data_purchase_item_id, "data_amount": data_amount, "data_unit_price": data_unit_price};
+            const this_item = {"data_purchase_item_id": data_purchase_item_id, "data_amount": data_amount, "data_unit_price": data_unit_price, "material_id": data_material_id};
             
             items.push(this_item);
                 // console.log(data_item_id[0]);
@@ -182,6 +183,7 @@ $(document).ready(function(){
                 const hidden = document.createElement("input");
                 hidden.type = "hidden";
                 hidden.setAttribute("data-purchase-item-id", data["purchase_item_id"]);
+                hidden.setAttribute("data-material-id", data["material_id"]);
                 td.appendChild(label);
                 td.appendChild(hidden);
 
@@ -285,7 +287,8 @@ $(document).ready(function(){
                             material_unit: thisItem["material_unit"],
                             item_amount: thisItem["item_amount"],
                             item_unit_price: thisItem["item_unit_price"],
-                            item_total: thisItem["item_total"]
+                            item_total: thisItem["item_total"],
+                            material_id: thisItem["material_id"]
                         });
                     }
                 }

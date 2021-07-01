@@ -49,6 +49,58 @@
             </tr>
         </thead>
     </table>
+
+    <div id="infoModal" class="ui modal large">
+        <i class="close icon"></i>
+        <div id="modal_title" class="header">
+            退貨單明細
+        </div>
+        <div class="content">
+            <div class="ui form">
+                <div class=" fields">
+                    <div class="eight wide field">
+                        <label>單據編號</label>
+                        <span id="purchase_return_no">PR2016101001</span>
+                    </div>
+                    <div class="eight wide field">
+                        <label>單據日期</label>
+                        <span id="voucher_date">2021-07-01</span>
+                    </div>
+                </div>
+                <div class=" fields">
+                    <div class="eight wide field">
+                        <label>進貨編號</label>
+                        <span id="purchase_no">P20210610000</span>
+                    </div>
+                    <div class="eight wide field">
+                        <label>廠商</label>
+                        <span id="supplier">美孚</span>
+                    </div>
+                </div>
+                <div class=" fields">
+                    <div class="eight wide field">
+                        <label>退貨總額</label>
+                        <span id="total">2400</span>
+                    </div>
+                </div>
+            </div>
+            <table id="return_table" class="ui celled table">
+                <thead>
+                    <tr>
+                        <th>序號</th>
+                        <th>材料</th>
+                        <th>庫存單位</th>
+                        <th>材料數量</th>
+                        <th>單價</th>
+                        <th>金額</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -171,6 +223,73 @@ $(document).ready(function(){
             }
         } 
     })
+
+    $('#thisTable tbody').on('click', 'tr', function () {
+        var data = data_table.row( this ).data();
+        if(data["id"] == undefined)
+            return;
+        load_purchase_return_info(data["id"]);
+        $('#infoModal').modal("show");
+    } );
+
+    function set_return_table(data){
+        const table_name = "return_table";
+        const columns = ["#", "material_name_and_no", "material_unit", "amount", "unit_price", "purchase_return_item_total"];
+        const body = document.getElementById(table_name).getElementsByTagName('tbody')[0];
+        let row_number = 0;
+        $("#"+table_name+" tbody").html('');
+
+        for(let i = 0; i < data.length; i++){
+            const tr = document.createElement("tr");
+
+            row_number += 1;
+            this_row_data = data[i];
+            for(let j = 0; j < columns.length; j++){
+                const thisColumn = columns[j];
+                const td = document.createElement("td");
+
+                if(thisColumn == "#"){
+                    td.appendChild(document.createTextNode(row_number));
+                } else{
+                    td.appendChild(document.createTextNode(this_row_data[columns[j]]));
+                } 
+                tr.appendChild(td);
+            }
+            $("#"+table_name+" tbody").append(tr);
+        }
+    }
+
+    function load_purchase_return_info(purchase_return_id){
+        return $.ajax({
+            type: "POST",
+            url: "/purchase_returns/queryPurchaseReturnWithItems",
+            contentType: "application/json",
+            dataType: "json",
+            beforeSend: showLoading,
+            complete: hideLoading,
+            data: JSON.stringify({"search": {"purchase_return_id": purchase_return_id}}),
+            success: function(response) {
+                if(response["data"].length > 0){
+                    const first_row = response["data"][0];
+                    $("#purchase_return_no").html(first_row["purchase_return_no"]);
+                    $("#voucher_date").html(first_row["voucher_date"]);
+                    $("#purchase_no").html(first_row["purchase_no"]);
+                    $("#supplier").html(first_row["supplier_name_and_no"]);
+                    $("#total").html(first_row["purchase_return_total"]);
+
+
+
+
+                    set_return_table(response["data"]);
+                }
+            },
+            error: function(response) {
+                // console.log(response);
+            }
+        });
+    }
+
+
 });
 </script>
 @endsection

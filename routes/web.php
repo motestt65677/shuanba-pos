@@ -45,8 +45,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/create', 'PurchaseReturnController@create');
             Route::post('/store', 'PurchaseReturnController@store');
             Route::post('/queryData', 'PurchaseReturnController@queryData');
-            Route::post('/delete', 'PurchaseReturnController@delete');
+            Route::post('/queryPurchaseReturnWithItems', 'PurchaseReturnController@queryPurchaseReturnWithItems');
 
+            Route::post('/delete', 'PurchaseReturnController@delete');
+            
         });
 
 

@@ -30,7 +30,7 @@
 
     </head>
     <body class="font-sans antialiased">
-        <div id="loader" class="ui segment" style="position:fixed; height:100vh; width: 100%; z-index: 1000; opacity: 50%; border: 0;">
+        <div id="loader" class="ui segment" style="position:fixed; height:100vh; width: 100%; z-index: 100000; opacity: 50%; border: 0;">
             <p></p>
             <div class="ui active dimmer">
                 <div class="ui loader"></div>

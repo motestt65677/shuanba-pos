@@ -152,6 +152,7 @@ class PurchaseService
             "suppliers.name AS supplier_name",
             "purchases.voucher_date AS voucher_date",
             "purchases.payment_type AS payment_type",
+            "materials.id AS material_id",
             "materials.material_no AS material_no",
             "materials.name AS material_name",
             "materials.unit AS material_unit",
