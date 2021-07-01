@@ -224,15 +224,17 @@ $(document).ready(function(){
         } 
     })
 
-    $('#thisTable tbody').on('click', 'tr', function () {
-        var data = data_table.row( this ).data();
-        if(data["id"] == undefined)
-            return;
-        load_purchase_return_info(data["id"]);
-        $('#infoModal').modal("show");
+    $('#thisTable tbody').on('click', 'td', function () {
+        if($(this).find("input:checkbox").length == 0){
+            var data = data_table.row($(this).closest("tr")).data();
+            if(data["id"] == undefined)
+                return;
+            load_purchase_return_info(data["id"]);
+            $('#infoModal').modal("show");
+        } 
     } );
 
-    function set_return_table(data){
+    function set_info_table(data){
         const table_name = "return_table";
         const columns = ["#", "material_name_and_no", "material_unit", "amount", "unit_price", "purchase_return_item_total"];
         const body = document.getElementById(table_name).getElementsByTagName('tbody')[0];
@@ -280,7 +282,7 @@ $(document).ready(function(){
 
 
 
-                    set_return_table(response["data"]);
+                    set_info_table(response["data"]);
                 }
             },
             error: function(response) {
