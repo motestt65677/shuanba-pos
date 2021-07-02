@@ -112,7 +112,7 @@
             近五筆進貨材料
         </div>
         <div class="content">
-            <table id="thisTable" class="display" style="width:100%">
+            <table id="thisTable" class="ui celled table" style="width:100%">
                 <thead>
                     <tr>
                         <th></th>

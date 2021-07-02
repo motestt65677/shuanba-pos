@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <table id="thisTable" class="display" style="width:100%">
+    <table id="thisTable" class="ui celled table" style="width:100%">
         <thead>
             <tr>
                 <th></th>

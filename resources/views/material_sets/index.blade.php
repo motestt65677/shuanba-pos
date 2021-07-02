@@ -17,7 +17,7 @@
     <button id="delete_btn" class="ui button negative">刪除</button>
 </div>
 <div class="ui vertical segment">
-    <table id="thisTable" class="display" style="width:100%">
+    <table id="thisTable" class="ui celled table" style="width:100%">
         <thead>
             <tr>
                 <th></th>

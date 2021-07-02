@@ -20,7 +20,7 @@
 <div style="height:85vh;" class="ui segment">
     <input type="hidden" id="closing_id" value="">
     <div style="width: 25%; height:100%; overflow-y: scroll; display:inline-block; ">
-        <table id="thisTable" class="display" style="width:100%">
+        <table id="thisTable" class="ui celled table" style="width:100%">
             <thead>
                 <tr>
                     {{-- <th></th> --}}
@@ -31,7 +31,7 @@
         </table>
     </div>
     <div style="width: 73%; height:100%; overflow-y: scroll; display:inline-block; ">
-        <table id="closing_item_table" class="display" style="width:100%">
+        <table id="closing_item_table" class="ui celled table" style="width:100%">
             <thead>
                 <tr>
                     <th>材料</th>
