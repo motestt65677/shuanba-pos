@@ -61,7 +61,7 @@ class PurchaseService
         $items = $query->get();
 
         foreach($items as $item){
-            $item->total = round($item->total);
+            $item->total = round($item->total,2);
             $item->payment_type_text = $item->payment_type == "monthly" ? "月結" : "現金";
             $item->is_paid_text = $item->is_paid == true ? "已付款" : "未付款";
 

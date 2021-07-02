@@ -15,7 +15,7 @@
 
 <div class="ui vertical segment">
     <div class="ui grid" style="margin-bottom: 1rem;">
-        <div class="four column row">
+        <div class="two column row">
             <div class="left floated column">
                 <select id="year_month_select" class="ui search selection dropdown">
                     @foreach($yearMonthSelect as $item)
