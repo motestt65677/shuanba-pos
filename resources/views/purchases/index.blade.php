@@ -50,6 +50,59 @@
             </tr>
         </thead>
     </table>
+
+    <div id="infoModal" class="ui modal large">
+        <i class="close icon"></i>
+        <div id="modal_title" class="header">
+            進貨單明細
+        </div>
+        <div class="content">
+            <div class="ui form">
+                <div class=" fields">
+                    <div class="eight wide field">
+                        <label>單據編號</label>
+                        <span id="purchase_no"></span>
+                    </div>
+                    <div class="eight wide field">
+                        <label>總金額</label>
+                        <span id="purchase_total"></span>
+                    </div>
+
+                </div>
+                <div class=" fields">
+                    <div class="eight wide field">
+                        <label>單據日期</label>
+                        <span id="voucher_date"></span>
+                    </div>
+                    <div class="eight wide field">
+                        <label>廠商</label>
+                        <span id="supplier"></span>
+                    </div>
+                </div>
+                <div class=" fields">
+                    <div class="eight wide field">
+                        <label>付款方式</label>
+                        <span id="payment_type"></span>
+                    </div>
+                </div>
+            </div>
+            <table id="purchase_table" class="ui celled table">
+                <thead>
+                    <tr>
+                        <th>序號</th>
+                        <th>材料</th>
+                        <th>庫存單位</th>
+                        <th>材料數量</th>
+                        <th>單價</th>
+                        <th>金額</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -155,7 +208,6 @@ $(document).ready(function(){
         }
     });
 
-
     $("#delete_btn").click(function(){
         const all_data = data_table.rows().data();
         let checked_row_id = [];
@@ -204,6 +256,70 @@ $(document).ready(function(){
 
         } 
     })
+
+    $('#thisTable tbody').on('click', 'td', function () {
+        if($(this).find("input:checkbox").length == 0){
+            var data = data_table.row($(this).closest("tr")).data();
+            if(data["id"] == undefined)
+                return;
+            load_purchase_info(data["id"]);
+            $('#infoModal').modal("show");
+        } 
+    } );
+
+    function load_purchase_info(purchase_id){
+        return $.ajax({
+            type: "POST",
+            url: "/purchases/queryPurchaseItemsWithSupplier",
+            contentType: "application/json",
+            dataType: "json",
+            beforeSend: showLoading,
+            complete: hideLoading,
+            data: JSON.stringify({"search": {"purchase_id": purchase_id}, "order": {}}),
+            success: function(response) {
+                if(response["data"].length > 0){
+                    const first_row = response["data"][0];
+                    $("#purchase_no").html(first_row["purchase_no"]);
+                    $("#purchase_total").html(first_row["purchase_total"]);
+                    $("#voucher_date").html(first_row["voucher_date"]);
+                    $("#supplier").html(first_row["supplier_name_and_no"]);
+                    $("#payment_type").html(first_row["payment_type_text"]);
+
+                    set_info_table(response["data"]);
+                }
+            },
+            error: function(response) {
+                // console.log(response);
+            }
+        });
+    }
+
+    function set_info_table(data){
+        const table_name = "purchase_table";
+        const columns = ["#", "material_name_and_no", "material_unit", "item_amount", "item_unit_price", "item_total"];
+        const body = document.getElementById(table_name).getElementsByTagName('tbody')[0];
+        let row_number = 0;
+        $("#"+table_name+" tbody").html('');
+
+        for(let i = 0; i < data.length; i++){
+            const tr = document.createElement("tr");
+
+            row_number += 1;
+            this_row_data = data[i];
+            for(let j = 0; j < columns.length; j++){
+                const thisColumn = columns[j];
+                const td = document.createElement("td");
+
+                if(thisColumn == "#"){
+                    td.appendChild(document.createTextNode(row_number));
+                } else{
+                    td.appendChild(document.createTextNode(this_row_data[columns[j]]));
+                } 
+                tr.appendChild(td);
+            }
+            $("#"+table_name+" tbody").append(tr);
+        }
+    }
 });
 </script>
 @endsection

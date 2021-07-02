@@ -113,7 +113,9 @@ class PurchaseService
             "materials.unit AS material_unit",
             "purchase_items.amount AS item_amount",
             "purchase_items.unit_price AS item_unit_price",
-            "purchase_items.total AS item_total"
+            "purchase_items.total AS item_total",
+            "purchases.total AS purchase_total",
+
         );
         if(isset($search["material_id"]))
             $query->where("purchase_items.material_id", $search["material_id"]);
@@ -132,6 +134,7 @@ class PurchaseService
             $item->item_amount = round($item->item_amount,2);
             $item->item_unit_price = round($item->item_unit_price,2);
             $item->item_total = round($item->item_total,2);
+            $item->purchase_total = round($item->purchase_total,2);
             $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
             $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
             $item->payment_type_text = $item->payment_type == "monthly" ? "月結" : "現金";

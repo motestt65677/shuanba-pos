@@ -262,7 +262,9 @@ $(document).ready(function(){
                 const data_item_id = $(row).find("[data-item-id]");
                 const data_amount = $(row).find("[data-amount]");
                 const data_unit_price = $(row).find("[data-unit-price]");
+                const data_total_price = $(row).find("[data-total-price]");
 
+                
                 // console.log(data_item_id);
                 if(data_item_id.length > 0){
                     if(data_amount[0].value == 0)
@@ -272,8 +274,9 @@ $(document).ready(function(){
                     const item_id = data_item_id[0].value;
                     const amount = data_amount[0].value;
                     const unit_price = data_unit_price[0].value;
+                    const total = data_total_price[0].innerHTML;
 
-                    const this_item = {"item_id": item_id, "amount": amount, "unit_price": unit_price};
+                    const this_item = {"item_id": item_id, "amount": amount, "unit_price": unit_price, "total": total};
                     items.push(this_item);
                     // console.log(data_item_id[0]);
                     // console.log(data_item_id[0].value);
@@ -495,8 +498,6 @@ $(document).ready(function(){
         const material_unit = selected_option.getAttribute('data-material-unit');
         const tr = $(select).closest("tr");
         const row_unit = tr.find("[data-unit]")[0];
-        console.log(row_unit);
-        console.log(material_unit);
 
         row_unit.innerHTML = material_unit;
     }

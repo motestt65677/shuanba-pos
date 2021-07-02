@@ -58,15 +58,14 @@ class PurchaseController extends Controller
             if($item["amount"] == 0 || $item["unit_price"] == 0)
                 continue;
 
-            $item_total = $item["amount"] * $item["unit_price"];
             PurchaseItem::create([
                 "purchase_id" => $purchase->id,
                 "material_id" => $item["item_id"],
                 "amount" => $item["amount"],
                 "unit_price" => $item["unit_price"],
-                "total" => $item_total
+                "total" => $item["total"]
             ]);
-            $puchase_total += $item_total;
+            $puchase_total += $item["total"];
         }
 
         $purchase->total = $puchase_total;
@@ -96,7 +95,8 @@ class PurchaseController extends Controller
     }
 
     public function queryPurchaseItemsWithSupplier(Request $request){
-        $items = $this->purchaseService->queryPurchaseItemsWithSupplier($request["search"], $request["order"]);
+        $order = isset($request["order"]) ? $request["order"] : [];
+        $items = $this->purchaseService->queryPurchaseItemsWithSupplier($request["search"], $order);
         return \Response::json(["data"=> $items]);
     }
 
