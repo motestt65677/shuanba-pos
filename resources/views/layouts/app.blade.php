@@ -18,7 +18,7 @@
         <link rel="stylesheet" href="/datetimepicker/jquery.datetimepicker.css">
         <link rel="stylesheet" type="text/css" href="/DataTables/datatables.min.css">
         {{-- <link rel="stylesheet" type="text/css" href="/select2/select2.css"> --}}
-
+        <link rel="icon" href="/image/chef-icon-white.png">
         @yield('custom_css')
 
         {{-- <link rel="stylesheet" href="bootstrap5/bootstrap.min.css"> --}}

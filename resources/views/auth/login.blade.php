@@ -1,3 +1,5 @@
+<link rel="icon" href="/image/chef-icon-white.png">
+
 <x-guest-layout>
     <x-auth-card>
         <x-slot name="logo">

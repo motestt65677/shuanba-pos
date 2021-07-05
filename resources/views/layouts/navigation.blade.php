@@ -21,6 +21,12 @@
                     </a>
                 </div> --}}
                 <div>
+                    <a href="/dashboard" class="link-container {{ Request::segment(1) === 'dashboard' ? 'current' : null }}">
+                        <i class="fas fa-home"></i>
+                        <span class="link-title " >儀表板</span>
+                    </a>
+                </div>
+                <div>
                     <a href="/purchases/index" class="link-container {{ Request::segment(1) === 'purchases' ? 'current' : null }}">
                         <i class="fas fa-truck"></i>
                         <span class="link-title " >廠商進貨分析</span>
