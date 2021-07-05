@@ -5,6 +5,9 @@
     /* tr{
         border: 1px solid black;
     } */
+    #thisTable tr{
+        cursor:pointer;
+    }
 </style>
 @endsection
 @section('content')

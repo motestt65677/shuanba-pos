@@ -71,20 +71,82 @@
 
 
         <script>
-            var navOpen = false;
             hideLoading()
+
+            // document.cookie = "sidebar=close;";
+            // const cookie = document.cookie
+            // .split('; ')
+            // .find(row => row.startsWith('sidebar='));
+
+            // .split('=')[1];
+            if(getCookie("sidebar") == undefined){
+                setCookie("sidebar", "close", 1);
+            } else {
+                const cookeValue = getCookie("sidebar");
+                $(".sidenav").addClass("notransition");
+                $("#main").addClass("notransition");
+
+                if(cookeValue == "close"){
+                    $("#nav-btn-arrow").removeClass('rotated');
+                    document.getElementById("my-side-nav").style.width = "75px";
+                    document.getElementById("main").style.marginLeft= "75px";
+                } else {
+                    $("#nav-btn-arrow").addClass('rotated');
+                    document.getElementById("my-side-nav").style.width = "250px";
+                    document.getElementById("main").style.marginLeft = "250px";
+                }
+
+                setTimeout(function(){
+                    $(".sidenav").removeClass("notransition");
+                    $("#main").removeClass("notransition");
+                }, 200)
+            }
+
+            // alert(cookie);
+            function getCookie(c_name){
+                const cookie = document.cookie
+                .split('; ')
+                .find(row => row.startsWith(c_name + '='));
+                if(cookie == undefined){
+                    return undefined;
+                } else {
+                    return cookie.split('=')[1];
+                }
+            }
+
+            function setCookie(c_name,value,exdays){
+                var exdate=new Date();
+                exdate.setDate(exdate.getDate() + exdays);
+                var c_value=escape(value) + ((exdays==null)
+                                            ? "" : "; expires="+exdate.toUTCString())
+                                            + "; path=/";
+                document.cookie=c_name + "=" + c_value;
+            }
+            function deleteAllCookies() {
+                var cookies = document.cookie.split(";");
+
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i];
+                    var eqPos = cookie.indexOf("=");
+                    var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                }
+            }
+
+
+
+
             function toggleNav(){
-                if(navOpen){
-                    navOpen = false;
+                if(getCookie("sidebar") == "open"){
                     $("#nav-btn-arrow").toggleClass('rotated');
                     document.getElementById("my-side-nav").style.width = "75px";
                     document.getElementById("main").style.marginLeft= "75px";
-    
+                    setCookie("sidebar", "close", 1);
                 } else {
-                    navOpen = true;
                     $("#nav-btn-arrow").toggleClass('rotated');
                     document.getElementById("my-side-nav").style.width = "250px";
                     document.getElementById("main").style.marginLeft = "250px";
+                    setCookie("sidebar", "open", 1);
                 }
             }
             function showLoading(){

@@ -17,6 +17,14 @@ body {
     
 }
 
+.notransition {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+}
+
+
 .sidenav a {
     padding: 8px 8px 8px 12px;
     text-decoration: none;
