@@ -44,7 +44,18 @@
                         <span class="link-title" >材料進貨分析</span>
                     </a>
                 </div>
-        
+                <div>
+                    <a href="/closings/index" class="link-container {{ Request::segment(1) === 'closings' ? 'current' : null }}">
+                        <i class="fas fa-calculator"></i>
+                        <span class="link-title" >進耗存別關帳</span>
+                    </a>
+                </div>
+                <div>
+                    <a href="/transactions/index" class="link-container {{ Request::segment(1) === 'transactions' ? 'current' : null }}">
+                        <i class="fas fa-history"></i>
+                        <span class="link-title" >單據異動分析</span>
+                    </a>
+                </div>
                 <div>
                     <a href="/suppliers/index" class="link-container {{ Request::segment(1) === 'suppliers' ? 'current' : null }}">
                         <i class="far fa-address-card"></i>
@@ -75,18 +86,7 @@
                         <span class="link-title" >商品管理</span>
                     </a>
                 </div> --}}
-                <div>
-                    <a href="/closings/index" class="link-container {{ Request::segment(1) === 'closings' ? 'current' : null }}">
-                        <i class="fas fa-calculator"></i>
-                        <span class="link-title" >進耗存別關帳</span>
-                    </a>
-                </div>
-                <div>
-                    <a href="/transactions/index" class="link-container {{ Request::segment(1) === 'transactions' ? 'current' : null }}">
-                        <i class="fas fa-history"></i>
-                        <span class="link-title" >單據異動分析</span>
-                    </a>
-                </div>
+
                 <div>
                     <a href="/mis/index" class="link-container {{ Request::segment(1) === 'mis' ? 'current' : null }}">
                         <i class="fas fa-tools"></i>
