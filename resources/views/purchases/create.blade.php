@@ -258,14 +258,12 @@ $(document).ready(function(){
             for (var i = 0, row; row = table.rows[i]; i++) {
             //iterate through rows
             //rows would be accessed using the "row" variable assigned in the for loop
-                // console.log(row);
                 const data_item_id = $(row).find("[data-item-id]");
                 const data_amount = $(row).find("[data-amount]");
                 const data_unit_price = $(row).find("[data-unit-price]");
                 const data_total_price = $(row).find("[data-total-price]");
 
                 
-                // console.log(data_item_id);
                 if(data_item_id.length > 0){
                     if(data_amount[0].value == 0)
                         continue;
@@ -278,11 +276,7 @@ $(document).ready(function(){
 
                     const this_item = {"item_id": item_id, "amount": amount, "unit_price": unit_price, "total": total};
                     items.push(this_item);
-                    // console.log(data_item_id[0]);
-                    // console.log(data_item_id[0].value);
                 }
-                // console.log($($(row).data("unit")).get(0));
-                
             }
             data.items = items;
             if(data.items.length == 0){
@@ -451,7 +445,6 @@ $(document).ready(function(){
         const import_conversion_select = tr.find("[data-import-unit]");
         const selected_option = $(import_conversion_select).find(":selected");
         const import_unit_material_count = parseFloat(selected_option.data("import-unit-material-count"));
-
         
         let total = 0;
         if(parseFloat(row_amount.value) % import_unit_material_count == 0){
@@ -461,7 +454,7 @@ $(document).ready(function(){
         } else {
             total = parseFloat(row_amount.value) * parseFloat(row_unit_price.value);
         }
-        
+        // total = parseFloat(row_amount.value) * parseFloat(row_unit_price.value);
         row_total_price.innerHTML = total.toFixed(2);
         
     }
@@ -482,6 +475,7 @@ $(document).ready(function(){
         update_total();
     }
     function material_changed(event){
+        // console.log("material_changed");
         update_unit_price(event.target);
         update_unit(event.target);
         set_import_conversion_select(event.target);
@@ -710,14 +704,18 @@ $(document).ready(function(){
             import_count_input.parent().addClass("disabled");
             import_count_input.val(0).change();
             import_count_input.attr( "step", 0);
-            unit_price_input.val(0);
+            unit_price_input.parent().removeClass("disabled");
+            
+            // unit_price_input.val(0);
             // material_count_input.val(0);
             // total_price_label.html("NaN");
         } else {
             import_count_input.parent().removeClass("disabled");
+            unit_price_input.parent().addClass("disabled");
+
             import_count_input.val(import_count).change();
             import_count_input.attr( "step", import_count);
-            unit_price_input.val(material_unit_price.toFixed(2));
+            unit_price_input.val(material_unit_price.toFixed(2)).change();
 
         }
 
