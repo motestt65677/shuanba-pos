@@ -11,6 +11,6 @@ class ClosingItem extends Model
     protected $table = "closing_items";
     protected $fillable = [
         'closing_id','material_id','purchase_count','purchase_total','order_count','order_total','order_cost',
-        'closing_count','closing_total'
+        'closing_count','closing_total', 'purchase_unit_price', 'starting_total', 'starting_count'
     ];
 }

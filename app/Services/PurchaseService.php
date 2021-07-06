@@ -5,6 +5,7 @@ namespace App\Services;
 use DateTime;
 use DateInterval;
 use App\Models\Purchase;
+use App\Models\PurchaseItem;
 use App\Models\PurchaseReturnItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -229,6 +230,21 @@ class PurchaseService
         }
         return $retAry;
         
+    }
+
+    public function getAveragePurchaseUnitPriceOfMaterial($materialId){
+        //claculate average unit price of the material
+        $totalMaterialAmount = 0;
+        $totalMaterialPrice = 0;
+
+        $allPurchaseItems = PurchaseItem::where("material_id",$materialId)->get();
+        foreach($allPurchaseItems as $item){
+            $totalMaterialAmount += floatval($item->amount);
+            $totalMaterialPrice += floatval($item->total);
+        }
+
+        $materialAverageUnitPrice = $totalMaterialPrice == 0 ? 0 : floatval($totalMaterialPrice) / floatval($totalMaterialAmount);
+        return $materialAverageUnitPrice;
     }
 
 }

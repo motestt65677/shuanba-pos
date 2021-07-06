@@ -34,11 +34,15 @@
         <table id="closing_item_table" class="ui celled table" style="width:100%">
             <thead>
                 <tr>
+
                     <th>材料</th>
+                    <th>期初數量</th>
+                    <th>期初金額</th>
                     <th>進貨數量</th>
                     <th>進貨金額</th>
+                    {{-- <th>平均進貨單價</th> --}}
                     <th>銷貨數量</th>
-                    <th>銷貨金額</th>
+                    {{-- <th>銷貨金額</th> --}}
                     <th>銷貨成本</th>
                     <th>期末數量</th>
                     <th>期末金額</th>
@@ -181,10 +185,13 @@ function bind_item_table(year_month, closing_id){
             columns: [
                 // { data: null, orderable:false, className: 'dt-body-center dt-head-center', width: "3%"}, 
                 { data: "material_name_and_no", orderable:false, className: 'dt-body-center dt-head-center'},
+                { data: "starting_count", orderable:false, className: 'dt-body-center dt-head-center'},
+                { data: "starting_total", orderable:false, className: 'dt-body-center dt-head-center'},
                 { data: "purchase_count", orderable:false, className: 'dt-body-center dt-head-center'},
                 { data: "purchase_total", orderable:false, className: 'dt-body-center dt-head-center'},
+                // { data: "purchase_unit_price", orderable:false, className: 'dt-body-center dt-head-center'},
                 { data: "order_count", orderable:false, className: 'dt-body-center dt-head-center'},
-                { data: "order_total", orderable:false, className: 'dt-body-center dt-head-center'},
+                // { data: "order_total", orderable:false, className: 'dt-body-center dt-head-center'},
                 { data: "order_cost", orderable:false, className: 'dt-body-center dt-head-center'},
                 { data: "closing_count", orderable:false, className: 'dt-body-center dt-head-center'},
                 { data: "closing_total", orderable:false, className: 'dt-body-center dt-head-center'}
