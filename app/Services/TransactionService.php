@@ -11,6 +11,7 @@ class TransactionService
 {
 
     public function queryData($search = [], $order = []){
+        
         $purchaseItemsQuery = DB::table('purchases')->select(
             DB::raw("'進貨' as type"),
             "purchases.purchase_no AS no",
@@ -24,6 +25,21 @@ class TransactionService
         )
         ->leftJoin("purchase_items", 'purchases.id', '=', 'purchase_items.purchase_id')
         ->leftJoin("materials", 'purchase_items.material_id', '=', 'materials.id')
+        ->whereNotNull('materials.id');
+
+        $purchaseReturnItemsQuery = DB::table('purchase_returns')->select(
+            DB::raw("'退貨' as type"),
+            "purchase_returns.purchase_return_no AS no",
+            "purchase_returns.voucher_date AS voucher_date",
+            "purchase_return_items.unit_price AS unit_price",
+            "purchase_return_items.amount AS amount",
+            "purchase_return_items.total AS total",
+            "materials.material_no AS material_no",
+            "materials.name AS material_name",
+            "materials.unit AS material_unit"
+        )
+        ->leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
+        ->leftJoin("materials", 'purchase_return_items.material_id', '=', 'materials.id')
         ->whereNotNull('materials.id');
 
         $orderItemsQuery = DB::table('orders')->select(
@@ -43,7 +59,7 @@ class TransactionService
         ->leftJoin("materials", 'materials.id', '=', 'product_materials.material_id')
         ->whereNotNull('materials.id');
         
-        $query = $purchaseItemsQuery->union($orderItemsQuery);
+        $query = $purchaseItemsQuery->union($orderItemsQuery)->union($purchaseReturnItemsQuery);
         // if(isset($search["material_id"]))
         //     $query->where("materials.id", $search["material_id"]);
         // if(isset($search["supplier_id"]))
