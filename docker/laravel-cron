@@ -1,0 +1,2 @@
+* * * * * cd /var/www/html/PHP && php artisan schedule:run >> /dev/null 2>&1; touch /tmp/a_command_has_run
+

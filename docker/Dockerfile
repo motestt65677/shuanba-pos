@@ -43,6 +43,11 @@ RUN cp $WORKDIR/docker/PHP.conf /etc/apache2/sites-available/PHP.conf \
 RUN chown -R www-data:www-data /var/www/html/PHP/ \
     && chmod -R 755 /var/www/html/PHP/
 
+# Setup cron
+RUN cp ./docker/laravel-cron /etc/cron.d \
+    && chmod 0644 /etc/cron.d/laravel-cron \
+    && crontab /etc/cron.d/laravel-cron
+
 RUN cp $WORKDIR/docker/docker-entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
