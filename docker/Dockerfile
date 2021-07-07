@@ -26,7 +26,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"\
 
 RUN curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
-    && apt-get install -y nodejs build-essential libssl-dev
+    && apt-get install -y nodejs build-essential libssl-dev supervisor
 
 # Setup temphawk web service
 COPY . $WORKDIR
@@ -48,10 +48,16 @@ RUN cp ./docker/laravel-cron /etc/cron.d \
     && chmod 0644 /etc/cron.d/laravel-cron \
     && crontab /etc/cron.d/laravel-cron
 
-RUN cp $WORKDIR/docker/docker-entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+# Setup supervisord
+RUN cp ./docker/laravel-worker.conf /etc/supervisor/conf.d
 
 # Export port
 EXPOSE 80 443
+
+RUN cp $WORKDIR/docker/docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+
 
 
