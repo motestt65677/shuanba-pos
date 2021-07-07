@@ -17,9 +17,10 @@
     <button id="manual_closing_btn" class="ui button ">手動關帳</button>
 </div>
 
-<div style="height:85vh;" class="ui segment">
+
+<div style="height:85vh;" class="ui segments">
     <input type="hidden" id="closing_id" value="">
-    <div style="width: 25%; height:100%; overflow-y: scroll; display:inline-block; ">
+    <div class="ui segment" style="width: 100%; max-height: 50rem;  display:inline-block; ">
         <table id="thisTable" class="ui celled table" style="width:100%">
             <thead>
                 <tr>
@@ -30,22 +31,36 @@
             </thead>
         </table>
     </div>
-    <div style="width: 73%; height:100%; overflow-y: scroll; display:inline-block; ">
-        <table id="closing_item_table" class="ui celled table" style="width:100%">
+
+    <div class="ui secondary segment" style="width: 100%; display:inline-block; ">
+        <div class="ui warning message">
+            <div class="header">
+                <pre style="text-align: center;"> 期初 + 進貨 - 退貨 - 銷貨 = 期末</pre>
+            </div>
+        </div>
+        <table id="closing_item_table" class="ui structured celled table" style="width:100%">
             <thead>
                 <tr>
-
-                    <th>材料</th>
-                    <th>期初數量</th>
-                    <th>期初金額</th>
+                    <th rowspan="2">材料</th>
+                    <th colspan="5" style="text-align:center;">數量</th>
+                    <th colspan="5" style="text-align:center;">金額</th>
+                </tr>
+                <tr>
+                    <th>期初</th>
+                    <th>進貨</th>
+                    <th>退貨</th>
+                    <th>銷貨</th>
+                    <th>期末</th>
+                    {{-- <th>期初數量</th>
                     <th>進貨數量</th>
-                    <th>進貨金額</th>
-                    {{-- <th>平均進貨單價</th> --}}
+                    <th>退貨數量</th>
                     <th>銷貨數量</th>
-                    {{-- <th>銷貨金額</th> --}}
-                    <th>銷貨成本</th>
-                    <th>期末數量</th>
-                    <th>期末金額</th>
+                    <th>期末數量</th> --}}
+                    <th>期初</th>
+                    <th>進貨</th>
+                    <th>退貨</th>
+                    <th>銷貨</th>
+                    <th>期末</th>
                 </tr>
             </thead>
         </table>
@@ -156,12 +171,14 @@ function bind_closing_table(){
     let data_table = $('#thisTable').DataTable({
         data: closing_table_data,
         columns: [
-            // { data: null, orderable:false, className: 'dt-body-center dt-head-center', width: "3%"}, 
-            { data: "year_month", orderable:false, className: 'dt-body-center dt-head-center'},
-            { data: "created_at", orderable:false, className: 'dt-body-center dt-head-center'},
+            // { data: null, orderable:false, width: "3%"}, 
+            { data: "year_month", orderable:false},
+            { data: "created_at", orderable:false},
         ],
         order: [[0, "desc"],[1, "desc"]],
-        paging: false,
+        paging: true,
+        pageLength: 5,
+        lengthChange: false,
         aaSorting: [],
         searching: false,
         info: false,
@@ -183,18 +200,22 @@ function bind_item_table(year_month, closing_id){
         closing_item_table = $('#closing_item_table').DataTable({
             data: closing_items,
             columns: [
-                // { data: null, orderable:false, className: 'dt-body-center dt-head-center', width: "3%"}, 
-                { data: "material_name_and_no", orderable:false, className: 'dt-body-center dt-head-center'},
-                { data: "starting_count", orderable:false, className: 'dt-body-center dt-head-center'},
-                { data: "starting_total", orderable:false, className: 'dt-body-center dt-head-center'},
-                { data: "purchase_count", orderable:false, className: 'dt-body-center dt-head-center'},
-                { data: "purchase_total", orderable:false, className: 'dt-body-center dt-head-center'},
-                // { data: "purchase_unit_price", orderable:false, className: 'dt-body-center dt-head-center'},
-                { data: "order_count", orderable:false, className: 'dt-body-center dt-head-center'},
-                // { data: "order_total", orderable:false, className: 'dt-body-center dt-head-center'},
-                { data: "order_cost", orderable:false, className: 'dt-body-center dt-head-center'},
-                { data: "closing_count", orderable:false, className: 'dt-body-center dt-head-center'},
-                { data: "closing_total", orderable:false, className: 'dt-body-center dt-head-center'}
+                // { data: null, orderable:false, width: "3%"}, 
+                { data: "material_name_and_no", orderable:false},
+                { data: "starting_count", orderable:false},
+                { data: "purchase_count", orderable:false},
+                { data: "purchase_return_count", orderable:false},
+                { data: "order_count", orderable:false},
+                { data: "closing_count", orderable:false},
+
+                { data: "starting_total", orderable:false},
+                { data: "purchase_total", orderable:false},
+                { data: "purchase_return_total", orderable:false},
+                { data: "order_cost", orderable:false},
+                { data: "closing_total", orderable:false}
+
+                // { data: "purchase_unit_price", orderable:false},
+                // { data: "order_total", orderable:false},
             ],
             paging: false,
             // bPaginate: false,
@@ -269,13 +290,9 @@ async function init(){
         // console.log(data_table.row( this ).data());
         // closing_item_table.ajax.reload();
         bind_item_table(data["year_month"],data["closing_id"]);
-        if ( $(this).hasClass('selected') ) {
-            $(this).removeClass('selected');
-        }
-        else {
-            data_table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-        }
+
+        data_table.$('tr.active').removeClass('active');
+        $(this).addClass('active');
     });
 }
 </script>

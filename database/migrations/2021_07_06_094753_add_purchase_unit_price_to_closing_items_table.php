@@ -18,7 +18,8 @@ class AddPurchaseUnitPriceToClosingItemsTable extends Migration
             $table->decimal('purchase_unit_price', 13, 2)->comment('進貨單價')->nullable()->after('order_cost');
             $table->decimal('starting_total', 13, 2)->comment('期初金額')->nullable()->after('closing_total');
             $table->decimal('starting_count', 13, 2)->comment('期初數量')->nullable()->after('closing_total');
-
+            $table->decimal('purchase_return_total', 13, 2)->comment('退貨金額')->nullable()->after('purchase_total');
+            $table->decimal('purchase_return_count', 13, 2)->comment('退貨數量')->nullable()->after('purchase_total');
         });
     }
 
@@ -34,6 +35,9 @@ class AddPurchaseUnitPriceToClosingItemsTable extends Migration
             $table->dropColumn('purchase_unit_price');
             $table->dropColumn('starting_total');
             $table->dropColumn('starting_count');
+            $table->dropColumn('purchase_return_total');
+            $table->dropColumn('purchase_return_count');
+
 
         });
     }

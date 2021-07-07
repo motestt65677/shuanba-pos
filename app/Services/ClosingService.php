@@ -24,6 +24,8 @@ class ClosingService
             $closing_item = [
                 "purchase_count" => 0, 
                 "purchase_total"=> 0, 
+                "purchase_return_count"=> 0,
+                "purchase_return_total"=> 0,
                 "order_count" => 0, 
                 "order_total" => 0, //cannot be calculated since order_items total cannot be caluclated
                 "order_cost" => 0, 
@@ -34,6 +36,7 @@ class ClosingService
                 "closing_total" => 0
             ];
 
+            //calculate closing values prior this month to get starting_count and starting_total
             $allPurchaseItems = DB::table('purchases')
             ->leftJoin("purchase_items", 'purchases.id', '=', 'purchase_items.purchase_id')
             ->where("purchases.voucher_date", "<", $thisYearMonth . "-01")
@@ -44,7 +47,17 @@ class ClosingService
                 $closing_item["starting_count"] += floatval($item->amount);
                 $closing_item["starting_total"] += floatval($item->total);
             }
-            
+
+            $allReturnItems = DB::table('purchase_returns')
+            ->leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
+            ->where("purchase_returns.voucher_date", "<", $thisYearMonth . "-01")
+            ->where("purchase_return_items.material_id", $material->id)
+            ->get();
+            foreach($allReturnItems as $item){
+                $closing_item["starting_count"] -= floatval($item->amount);
+                $closing_item["starting_total"] -= floatval($item->total);
+            }
+
             $allOrderItems = DB::table('orders')
             ->select(
                 "order_items.amount as order_item_amount", 
@@ -65,9 +78,7 @@ class ClosingService
             }
 
 
-
-
-
+            //calculate closing values of this month
             $purchase_items = DB::table('purchases')
             ->leftJoin("purchase_items", 'purchases.id', '=', 'purchase_items.purchase_id')
             ->where("purchases.voucher_date", "like", $thisYearMonth . "%")
@@ -79,7 +90,16 @@ class ClosingService
                 $closing_item["purchase_total"] += floatval($item->total);
             }
 
-            
+            $purchase_return_items = DB::table('purchase_returns')
+            ->leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
+            ->where("purchase_returns.voucher_date", "like", $thisYearMonth . "%")
+            ->where("purchase_return_items.material_id", $material->id)
+            ->get();
+
+            foreach($purchase_return_items as $item){
+                $closing_item["purchase_return_count"] += floatval($item->amount);
+                $closing_item["purchase_return_total"] += floatval($item->total);
+            }
 
             $order_items = DB::table('orders')
             ->select(
@@ -102,8 +122,8 @@ class ClosingService
                 // Log::info([floatval($item->order_item_amount), floatval($item->material_count), $materialAverageUnitPrice]);
             }
 
-            $closing_item["closing_count"] = $closing_item["starting_count"] + $closing_item["purchase_count"] - $closing_item["order_count"];
-            $closing_item["closing_total"] = $closing_item["starting_total"] + $closing_item["purchase_total"] - $closing_item["order_cost"];
+            $closing_item["closing_count"] = $closing_item["starting_count"] + $closing_item["purchase_count"] - $closing_item["purchase_return_count"] - $closing_item["order_count"];
+            $closing_item["closing_total"] = $closing_item["starting_total"] + $closing_item["purchase_total"] - $closing_item["purchase_return_total"] - $closing_item["order_cost"];
 
             $closing_item_dict[$material->id] = $closing_item;
         }
@@ -197,6 +217,8 @@ class ClosingService
             'closings.created_at as closing_created_at',
             'closing_items.purchase_count as purchase_count',
             'closing_items.purchase_total as purchase_total',
+            'closing_items.purchase_return_count as purchase_return_count',
+            'closing_items.purchase_return_total as purchase_return_total',
             'closing_items.order_count as order_count',
             'closing_items.order_total as order_total',
             'closing_items.order_cost as order_cost',
@@ -204,6 +226,7 @@ class ClosingService
             'closing_items.closing_total as closing_total',
             'closing_items.starting_count as starting_count',
             'closing_items.starting_total as starting_total'
+
         )
         ->whereNotNull("closing_items.id")
         ->orderBy("closings.year_month", "DESC")
@@ -236,6 +259,8 @@ class ClosingService
                 "material_name_and_no" => $item->material_name . ' ('. $item->material_no . ')',
                 "purchase_count" => $item->purchase_count,
                 "purchase_total" => $item->purchase_total,
+                "purchase_return_count" => $item->purchase_return_count,
+                "purchase_return_total" => $item->purchase_return_total,
                 "order_count" => $item->order_count,
                 "order_total" => $item->order_total,
                 "order_cost" => $item->order_cost,
