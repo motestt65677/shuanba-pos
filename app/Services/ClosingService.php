@@ -256,7 +256,7 @@ class ClosingService
             }
             $thisClosing = &$closings[$item->closing_year_month][$item->closing_id];
             $thisItem = [
-                "material_name_and_no" => $item->material_name . ' ('. $item->material_no . ')',
+                "material_name_and_no" => $item->material_no . ' ('. $item->material_name . ')',
                 "purchase_count" => $item->purchase_count,
                 "purchase_total" => $item->purchase_total,
                 "purchase_return_count" => $item->purchase_return_count,

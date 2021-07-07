@@ -201,18 +201,18 @@ function bind_item_table(year_month, closing_id){
             data: closing_items,
             columns: [
                 // { data: null, orderable:false, width: "3%"}, 
-                { data: "material_name_and_no", orderable:false},
-                { data: "starting_count", orderable:false},
-                { data: "purchase_count", orderable:false},
-                { data: "purchase_return_count", orderable:false},
-                { data: "order_count", orderable:false},
-                { data: "closing_count", orderable:false},
+                { data: "material_name_and_no"},
+                { data: "starting_count"},
+                { data: "purchase_count"},
+                { data: "purchase_return_count"},
+                { data: "order_count"},
+                { data: "closing_count"},
 
-                { data: "starting_total", orderable:false},
-                { data: "purchase_total", orderable:false},
-                { data: "purchase_return_total", orderable:false},
-                { data: "order_cost", orderable:false},
-                { data: "closing_total", orderable:false}
+                { data: "starting_total"},
+                { data: "purchase_total"},
+                { data: "purchase_return_total"},
+                { data: "order_cost"},
+                { data: "closing_total"}
 
                 // { data: "purchase_unit_price", orderable:false},
                 // { data: "order_total", orderable:false},
@@ -226,7 +226,7 @@ function bind_item_table(year_month, closing_id){
             // "bAutoWidth": false
             // paging: true,
             aaSorting: [],
-            searching: false,
+            searching: true,
             info: false,
             language: {
                 url: "/DataTables/localisation/zh_TW.json",
