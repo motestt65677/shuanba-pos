@@ -35,7 +35,13 @@ class ProductService
             "products.name AS product_name",
             "products.description AS product_description",
             "products.price AS product_price",
-        );
+            "product_materials.material_count AS material_count",
+            "materials.name AS material_name",
+            "materials.material_no AS material_no",
+        )
+        ->leftJoin("product_materials", "products.id", "=", "product_materials.product_id")
+        ->leftJoin("materials", "materials.id", "=", "product_materials.material_id");
+
         if(isset($search["product_id"]))
             $query->where("products.id", $search["product_id"]);
 
@@ -44,12 +50,35 @@ class ProductService
         }
 
         $items = $query->get();
-        // foreach($items as $item){
-        //     $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
-        //     $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
-            
-        // }
-        return $items;
+        $productDict = [];
+
+        foreach($items as $item){
+            if(!isset($productDict[$item->product_id])){
+
+                $productDict[$item->product_id] = [
+                    "product_id" => $item->product_id,
+                    "product_no" => $item->product_no,
+                    "product_name" => $item->product_name,
+                    "product_description" => $item->product_description,
+                    "product_price" => $item->product_price,
+                    "product_material_count" => 0,
+                    "product_material_list" => ""
+                ];
+            }
+
+            if(isset($item->material_count)){
+                $productDict[$item->product_id]["product_material_count"]++;
+                $productDict[$item->product_id]["product_material_list"] .= $item->material_no . '(' .$item->material_name . ')' . ' * ' . round($item-> material_count,2) . "</br>";
+
+            }
+        }
+
+        $returnArray = [];
+        foreach($productDict as $key=>$value){
+            array_push($returnArray, $value);
+        }
+
+        return $returnArray;
     }
     public function queryMaterialSet($search = []){
         $query = DB::table('material_sets')

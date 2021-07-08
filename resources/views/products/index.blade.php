@@ -23,8 +23,9 @@
                 <th></th>
                 <th>產品編號</th>
                 <th>產品名稱</th>
-                <th>說明</th>
+                <th>材料成分</th>
                 <th>價格</th>
+                <th>說明</th>
             </tr>
         </thead>
     </table>
@@ -74,8 +75,9 @@ $(document).ready(function(){
             { data: null, orderable:false, className: 'dt-body-center dt-head-center'}, 
             { data: "product_no", orderable:false, className: 'dt-body-center dt-head-center'},
             { data: "product_name", orderable:false, className: 'dt-body-center dt-head-center'},
-            { data: "product_description", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "product_material_list", orderable:false, className: 'dt-body-center dt-head-center'},
             { data: "product_price", orderable:false, searchable:false, className: 'dt-body-center dt-head-center'},
+            { data: "product_description", orderable:false, className: 'dt-body-center dt-head-center'},
         ],
         paging: false,
         // searching: false,
