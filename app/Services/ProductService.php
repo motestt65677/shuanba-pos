@@ -68,8 +68,7 @@ class ProductService
 
             if(isset($item->material_count)){
                 $productDict[$item->product_id]["product_material_count"]++;
-                $productDict[$item->product_id]["product_material_list"] .= $item->material_no . '(' .$item->material_name . ')' . ' * ' . round($item-> material_count,2) . "</br>";
-
+                $productDict[$item->product_id]["product_material_list"] .= $item->material_no . '(' .$item->material_name . ')' . '  &#10006;  ' . round($item-> material_count,2) . "</br>";
             }
         }
 
