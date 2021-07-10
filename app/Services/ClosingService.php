@@ -15,7 +15,6 @@ class ClosingService
 {
 
     public function closeMonth($thisYearMonth){
-        Log::info("closeMonth");
         CloseMonthJob::dispatch($thisYearMonth);
     }
 

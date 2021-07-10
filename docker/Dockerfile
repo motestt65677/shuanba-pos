@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:20.04
 
 # ENV VAR
 ENV HOME=/root WORKDIR=/var/www/html/PHP
@@ -26,7 +26,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"\
 
 RUN curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
-    && apt-get install -y nodejs build-essential libssl-dev supervisor
+    && apt-get install -y nodejs build-essential libssl-dev supervisor cron
 
 # Setup temphawk web service
 COPY . $WORKDIR

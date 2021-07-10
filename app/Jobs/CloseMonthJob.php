@@ -139,7 +139,6 @@ class CloseMonthJob implements ShouldQueue
                 $closing_item["order_count"] += floatval($item->order_item_amount) * floatval($item->material_count);
                 //temperarily use material_unit_price as unit_cost of material, should maybe use average purchase price of material
                 $closing_item["order_cost"] += floatval($item->order_item_amount) * floatval($item->material_count) * $closing_item["purchase_unit_price"];
-                // Log::info([floatval($item->order_item_amount), floatval($item->material_count), $materialAverageUnitPrice]);
             }
 
             $closing_item["closing_count"] = $closing_item["starting_count"] + $closing_item["purchase_count"] - $closing_item["purchase_return_count"] - $closing_item["order_count"];
