@@ -84,14 +84,14 @@
             <thead>
                 <tr>
                     <th>序號</th>
-                    <th>材料</th>
+                    <th>材料 *</th>
                     <th>換算單位</th>
                     <th>數量</th>
                     <th>=</th>
                     <th>庫存單位</th>
-                    <th>換算數量</th>
-                    <th>單價</th>
-                    <th>金額</th>
+                    <th>換算數量 *</th>
+                    <th>單價 *</th>
+                    <th>金額 *</th>
                 </tr>
             </thead>
             <tbody>
@@ -272,7 +272,7 @@ $(document).ready(function(){
                     const item_id = data_item_id[0].value;
                     const amount = data_amount[0].value;
                     const unit_price = data_unit_price[0].value;
-                    const total = data_total_price[0].innerHTML;
+                    const total = data_total_price[0].value;
 
                     const this_item = {"item_id": item_id, "amount": amount, "unit_price": unit_price, "total": total};
                     items.push(this_item);
@@ -282,6 +282,7 @@ $(document).ready(function(){
             if(data.items.length == 0){
                 return;
             }
+            $("#submit").addClass("disabled");
             $.ajax({
                 type: "POST",
                 url: "/purchases/store",
@@ -335,6 +336,7 @@ $(document).ready(function(){
                 select.setAttribute("data-item-id", "");
                 select.onchange = material_changed;
 
+                td.className = "warning";
                 td.appendChild(select);
                 $(select).dropdown({
                     fullTextSearch: true,
@@ -358,10 +360,11 @@ $(document).ready(function(){
                 const div = document.createElement("div");
                 div.className = "ui input";
                 div.appendChild(input);
+                td.className = "warning";
                 td.appendChild(div);
             }else if (thisColumn == "unit_price"){
                 const input = document.createElement("input");
-                input.type = "number";
+                input.type = "text";
                 input.min = 0;
                 input.value = 0;
                 input.setAttribute("data-unit-price", "");
@@ -371,14 +374,22 @@ $(document).ready(function(){
                 const div = document.createElement("div");
                 div.className = "ui input";
                 div.appendChild(input);
-
+                td.className = "warning";
                 td.appendChild(div);
             }else if (thisColumn == "total"){
                 // td.setAttribute("data-total", "");
-                const span = document.createElement("span");
-                span.innerHTML = 0;
-                span.setAttribute("data-total-price", "");
-                td.appendChild(span);
+                const input = document.createElement("input");
+                input.type = "text";
+                input.innerHTML = 0;
+                input.setAttribute("data-total-price", "");
+                input.onchange = row_total_changed;
+                input.oninput = row_total_changed;
+
+                const div = document.createElement("div");
+                div.className = "ui input disabled";
+                div.appendChild(input);
+                td.className = "warning";
+                td.appendChild(div);
             } else if (thisColumn == "import_unit"){
                 // const set_select = import_unit_select.cloneNode(true);
                 const select = document.createElement("select");
@@ -435,6 +446,16 @@ $(document).ready(function(){
         else
             select.fireEvent("onchange");
     })
+
+    function row_total_changed(){
+        const tr = $(event.target).closest("tr");
+        const row_amount = tr.find("[data-amount]");
+        const row_total_price = tr.find("[data-total-price]");
+
+        const row_unit_price = tr.find("[data-unit-price]");
+        const unit_price = parseFloat(row_total_price.val()) / parseFloat(row_amount.val());
+        row_unit_price.val(unit_price);
+    }
     
     function update_row_price(row){
         const tr = $(row).closest("tr");
@@ -446,22 +467,29 @@ $(document).ready(function(){
         const selected_option = $(import_conversion_select).find(":selected");
         const import_unit_material_count = parseFloat(selected_option.data("import-unit-material-count"));
         
-        let total = 0;
-        if(parseFloat(row_amount.value) % import_unit_material_count == 0){
-            const count = parseFloat(row_amount.value) / parseFloat(import_unit_material_count);
-            const import_unit_import_price = parseFloat(selected_option.data("import-unit-import-price"));
-            total = count * import_unit_import_price;
+        // if(parseFloat(row_amount.value) % import_unit_material_count == 0){
+        //     const count = parseFloat(row_amount.value) / parseFloat(import_unit_material_count);
+        //     // const import_unit_import_price = parseFloat(selected_option.data("import-unit-import-price"));
+        //     // total = count * import_unit_import_price;
+        //     total = parseFloat(row_amount.value) * parseFloat(row_unit_price.value);
+
+        // } else {
+        //     total = parseFloat(row_amount.value) * parseFloat(row_unit_price.value);
+        // }
+        if($(row_unit_price).parent().hasClass('disabled')){
+            let unit_price = parseFloat(row_total_price.value) / parseFloat(row_amount.value);
+            row_unit_price.value = unit_price.toFixed(2);
         } else {
-            total = parseFloat(row_amount.value) * parseFloat(row_unit_price.value);
+            let total = parseFloat(row_amount.value) * parseFloat(row_unit_price.value);
+            row_total_price.value = total.toFixed(2);
         }
-        // total = parseFloat(row_amount.value) * parseFloat(row_unit_price.value);
-        row_total_price.innerHTML = total.toFixed(2);
+
         
     }
     function update_total(){
         let total = 0;
         $("[data-total-price]").each(function(){
-            total += parseFloat($(this).html());
+            total += parseFloat($(this).val());
         })
         $("#total").val(total);
     }
@@ -475,7 +503,6 @@ $(document).ready(function(){
         update_total();
     }
     function material_changed(event){
-        // console.log("material_changed");
         update_unit_price(event.target);
         update_unit(event.target);
         set_import_conversion_select(event.target);
@@ -510,55 +537,58 @@ $(document).ready(function(){
         let selected_option = $(select).find(":selected")[0];
         if(selected_option == undefined)
             selected_option = select.options[0];
+        
+        const tr = $(select).closest("tr");
+        const import_unit = tr.find("[data-import-unit]");
 
-        $.ajax({
-            type: "POST",
-            url: "/import_conversions/queryData",
-            contentType: "application/json",
-            dataType: "json",
-            beforeSend: showLoading,
-            complete: hideLoading,
-            data: JSON.stringify(
-                {
-                    search: {material_id: selected_option.value}
+        const import_unit_select = import_unit[0];
+        import_unit_select.innerHTML = "";
+        $(import_unit_select).dropdown('clear');
+
+        const empty_option = document.createElement("option");
+        empty_option.innerHTML = "請選擇";
+        import_unit_select.appendChild(empty_option);
+
+        if(selected_option.value != ""){
+            $.ajax({
+                type: "POST",
+                url: "/import_conversions/queryData",
+                contentType: "application/json",
+                dataType: "json",
+                beforeSend: showLoading,
+                complete: hideLoading,
+                data: JSON.stringify(
+                    {
+                        search: {material_id: selected_option.value}
+                    }
+                ),
+                success: function(response) {
+                    const conversions = response["data"]
+                    for(var i = 0; i < conversions.length; i++){
+                        const this_conversion = conversions[i];
+                        const option = document.createElement("option");
+                        // option.value = this_conversion.material_id;
+                        option.innerHTML = this_conversion.import_unit;
+                        option.setAttribute('data-import-unit', this_conversion.import_unit);
+                        option.setAttribute('data-import-unit-conversion-ratio', parseFloat(this_conversion.material_count) / parseFloat(this_conversion.import_count) );
+                        // option.setAttribute('data-import-unit-material-unit-price', parseFloat(this_conversion.import_price) / parseFloat(this_conversion.material_count) );
+                        option.setAttribute('data-import-unit-import-price', this_conversion.import_price);
+                        option.setAttribute('data-import-unit-import-count', this_conversion.import_count);
+                        option.setAttribute('data-import-unit-material-count', this_conversion.material_count);
+                        
+                        // option.setAttribute('data-import-unit-import-count', parseFloat(this_conversion.import_price) / parseFloat(this_conversion.material_count));
+                        // option.setAttribute('data-import-unit-material-unit-price', parseFloat(this_conversion.import_price) / parseFloat(this_conversion.material_count) );
+
+
+                        import_unit_select.appendChild(option);
+                    }
+                    import_unit.change();
+                },
+                error: function(response) {
+                    // console.log(response);
                 }
-            ),
-            success: function(response) {
-                const tr = $(select).closest("tr");
-                const import_unit = tr.find("[data-import-unit]");
-
-                const import_unit_select = import_unit[0];
-                import_unit_select.innerHTML = "";
-                const conversions = response["data"]
-                $(import_unit_select).dropdown('clear');
-
-                const empty_option = document.createElement("option");
-                empty_option.innerHTML = "請選擇";
-                import_unit_select.appendChild(empty_option);
-                for(var i = 0; i < conversions.length; i++){
-                    const this_conversion = conversions[i];
-                    const option = document.createElement("option");
-                    // option.value = this_conversion.material_id;
-                    option.innerHTML = this_conversion.import_unit;
-                    option.setAttribute('data-import-unit', this_conversion.import_unit);
-                    option.setAttribute('data-import-unit-conversion-ratio', parseFloat(this_conversion.material_count) / parseFloat(this_conversion.import_count) );
-                    // option.setAttribute('data-import-unit-material-unit-price', parseFloat(this_conversion.import_price) / parseFloat(this_conversion.material_count) );
-                    option.setAttribute('data-import-unit-import-price', this_conversion.import_price);
-                    option.setAttribute('data-import-unit-import-count', this_conversion.import_count);
-                    option.setAttribute('data-import-unit-material-count', this_conversion.material_count);
-                    
-                    // option.setAttribute('data-import-unit-import-count', parseFloat(this_conversion.import_price) / parseFloat(this_conversion.material_count));
-                    // option.setAttribute('data-import-unit-material-unit-price', parseFloat(this_conversion.import_price) / parseFloat(this_conversion.material_count) );
-
-
-                    import_unit_select.appendChild(option);
-                }
-                import_unit.change();
-            },
-            error: function(response) {
-                // console.log(response);
-            }
-        });
+            });
+        }
         return true;
     }
     
@@ -687,12 +717,7 @@ $(document).ready(function(){
         const import_count_input = tr.find("[data-import-count]");
         const unit_price_input = tr.find("[data-unit-price]");
         const material_count_input = tr.find("[data-amount]");
-        const total_price_label = tr.find("[data-total-price]");
-
-        
-
-
-        //     return;
+        const total_price_input = tr.find("[data-total-price]");
 
         const material_id = option.data("material-id")
         const import_count = option.data("import-unit-import-count");
@@ -702,35 +727,47 @@ $(document).ready(function(){
 
         if(option.data('import-unit') == undefined){
             import_count_input.parent().addClass("disabled");
+            unit_price_input.parent().removeClass("disabled");
+            material_count_input.parent().removeClass("disabled");
+            total_price_input.parent().addClass("disabled");
             import_count_input.val(0).change();
             import_count_input.attr( "step", 0);
-            unit_price_input.parent().removeClass("disabled");
-            
             // unit_price_input.val(0);
-            // material_count_input.val(0);
-            // total_price_label.html("NaN");
+            material_count_input.val(1).change();
+            // total_price_input.val(0);
         } else {
             import_count_input.parent().removeClass("disabled");
             unit_price_input.parent().addClass("disabled");
-
-            import_count_input.val(import_count).change();
+            material_count_input.parent().addClass("disabled");
+            total_price_input.parent().removeClass("disabled");
             import_count_input.attr( "step", import_count);
-            unit_price_input.val(material_unit_price.toFixed(2)).change();
-
+            import_count_input.val(import_count).change();
+            total_price_input.val(material_price).change();
+            // unit_price_input.val(material_unit_price.toFixed(2)).change();
         }
-
-
-
     }
 
     function import_count_changed(){
         const tr = $(this).closest("tr");
         const data_material_count = tr.find("[data-material-count]");
         const import_count = tr.find("[data-import-count]");
-        const conversion_ratio = tr.find("[data-import-unit] option:selected").data('import-unit-conversion-ratio');
+        const option = tr.find("[data-import-unit]").find("option:selected");
+
+        const conversion_ratio = option.data('import-unit-conversion-ratio');
+        const import_unit_import_price = option.data('import-unit-import-price');
+
         const material_count = parseFloat(conversion_ratio) * parseFloat(import_count.val());
         const material_amount_input = tr.find("[data-amount]");
-        material_amount_input.val(material_count.toFixed(2)).change();
+        const row_total_input = tr.find("[data-total-price]");
+        // const row_total_input = tr.find("[data-total-price]");
+
+
+        material_amount_input.val(material_count.toFixed(2));
+        // console.log(option.data('import-unit'));
+        if(option.data('import-unit') != undefined){
+            row_total_input.val(import_count.val() * import_unit_import_price).change();
+        }
+
     }
 
     

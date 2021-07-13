@@ -76,6 +76,8 @@ class MaterialController extends Controller
         if(count($request->items) > 0){
             ImportConversion::where("material_id", $material->id)->delete();
             foreach($request->items as $item){
+                if(!isset($item["import_count"]) || !isset($item["material_count"]))
+                    continue;
                 ImportConversion::create([
                     "supplier_id" => $material->supplier_id,
                     "material_id" => $material->id,

@@ -93,6 +93,20 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/queryData', 'ProductMaterialController@queryData');
         });
 
+        Route::group(['prefix' => 'imports'], function () {
+            Route::get('/{id}/edit', 'ImportController@edit');
+            Route::get('/index', 'ImportController@index');
+            Route::get('/create', 'ImportController@create');
+            Route::post('/store', 'ImportController@store');
+            Route::post('/update', 'ImportController@update');
+            Route::post('/delete', 'ImportController@delete');
+            Route::post('/queryData', 'ImportController@queryData');
+        });
+        Route::group(['prefix' => 'import_materials'], function () {
+            Route::post('/queryData', 'ImportMaterialController@queryData');
+        });
+
+
 
         Route::group(['prefix' => 'suppliers'], function () {
             Route::get('/{id}/edit', 'SupplierController@edit');

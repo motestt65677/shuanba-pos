@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DateTime;
+use App\Models\Import;
 use App\Models\Material;
 use App\Models\Purchase;
 use App\Models\Supplier;
@@ -53,7 +54,6 @@ class PurchaseController extends Controller
             "note2" => $request->note2,
         ]);
         $puchase_total = 0;
-
         foreach($request->items as $item){
             if($item["amount"] == 0 || $item["unit_price"] == 0)
                 continue;
@@ -78,8 +78,8 @@ class PurchaseController extends Controller
     public function delete(Request $request){
         $error = [];
         foreach($request->purchase_ids as $id){
-            Purchase::find($id)->delete();
             PurchaseItem::where("purchase_id", $id)->delete();
+            Purchase::find($id)->delete();
         }
         return \Response::json(["status"=> 200, "error"=>$error]);
     }
@@ -157,30 +157,26 @@ class PurchaseController extends Controller
             $puchase_total = 0;
             $keepPurchase = false;
             foreach($purchase as $item){
-                $material = Material::where("name", $item["material_name"])->first();
-                if(!$material){
-                    $material = Material::create([
-                        'material_no' => $this->materialService->newMaterialNo(),
-                        'supplier_id' => $supplier->id,
-                        'name' => $item["material_name"],
-                        'unit' => '個'
-                    ]);
-                }
-                if($item["amount"] == 0 || $item["unit_price"] == 0){
-                    $item["status"] = "amount or unit price is 0";
-                } else if (!$material){
-                    $item["status"] = "material not found";
-                }else {
-                    $purchaseItem = PurchaseItem::create([
-                        "purchase_id" => $thisPurchase->id,
-                        "material_id" => $material->id,
-                        "amount" => $item["amount"],
-                        "unit_price" => $item["unit_price"],
-                        "total" => $item["total"]
-                    ]);
-                    $puchase_total += $item["total"];
-                    $item["status"] = "success";
-                    $keepPurchase = true;
+                $import = Import::where("name",$item["material_name"])->first();
+                if(!$import){
+                    $item["status"] = "進貨產品不存在";
+                } else {
+                    $importMaterials = $import->importMaterials;
+                    foreach($importMaterials as $importMaterial){
+                        $material = Material::where("id", $importMaterial["material_id"])->first();
+                        if($material){
+                            $purchaseItem = PurchaseItem::create([
+                                "purchase_id" => $thisPurchase->id,
+                                "material_id" => $material->id,
+                                "amount" => floatval($importMaterial->material_count) * floatval($item["amount"]),
+                                "unit_price" => floatval($item["total"]) / (floatval($importMaterial->material_count) * floatval($item["amount"])),
+                                "total" => $item["total"]
+                            ]);
+                            $puchase_total += $item["total"];
+                            $item["status"] = "success";
+                            $keepPurchase = true;
+                        }
+                    }
                 }
                 array_push($returnPurchaseItems, $item);
             }

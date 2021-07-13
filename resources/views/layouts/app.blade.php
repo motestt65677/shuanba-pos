@@ -92,8 +92,8 @@
                     document.getElementById("main").style.marginLeft= "75px";
                 } else {
                     $("#nav-btn-arrow").addClass('rotated');
-                    document.getElementById("my-side-nav").style.width = "250px";
-                    document.getElementById("main").style.marginLeft = "250px";
+                    document.getElementById("my-side-nav").style.width = "300px";
+                    document.getElementById("main").style.marginLeft = "300px";
                 }
 
                 setTimeout(function(){
@@ -144,8 +144,8 @@
                     setCookie("sidebar", "close", 1);
                 } else {
                     $("#nav-btn-arrow").toggleClass('rotated');
-                    document.getElementById("my-side-nav").style.width = "250px";
-                    document.getElementById("main").style.marginLeft = "250px";
+                    document.getElementById("my-side-nav").style.width = "300px";
+                    document.getElementById("main").style.marginLeft = "300px";
                     setCookie("sidebar", "open", 1);
                 }
             }

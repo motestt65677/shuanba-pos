@@ -38,6 +38,14 @@ class PurchaseServiceProvider extends ServiceProvider
             return new \App\Services\ProductMaterialService($app);
         });
 
+        $this->app->singleton('ImportService', function ($app) {
+            return new \App\Services\ImportService($app);
+        });
+
+        $this->app->singleton('ImportMaterialService', function ($app) {
+            return new \App\Services\ImportMaterialService($app);
+        });
+
         $this->app->singleton('SupplierService', function ($app) {
             return new \App\Services\SupplierService($app);
         });

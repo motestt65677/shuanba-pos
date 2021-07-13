@@ -12,7 +12,7 @@ class SupplierService
     
     public function newSupplierNo(){
 
-        $numStr = "0001";
+        $numStr = "001";
         $char = "F";
 
         $sql = "SELECT RIGHT(supplier_no,3) AS num FROM `suppliers`
