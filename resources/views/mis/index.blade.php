@@ -2,13 +2,13 @@
 
 @section('custom_css')
 <style>
-    table,
+    /* . table,
     th,
     td {
-    padding: 10px;
-    border: 1px solid black;
-    border-collapse: collapse;
-    }
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+    } */
 </style>
 @endsection
 @section('content')
@@ -74,7 +74,49 @@
     
     </div>
 </div>
-
+<div id="edit_product_material_modal" class="ui large modal">
+    <i class="close icon"></i>
+    <div class="header">
+        Qlieer產品和庫存材料配對
+    </div>
+    <div class="content">
+        <div class="description">
+            <p><h5>Qlieer產品名稱:</h5> <span id="product_name"></span></p>
+            <div>
+                <div class="ui grid" style="margin-bottom: 1rem;">
+                    <div class="four column row">
+                        <div class="left floated column"><h5>材料成分</h5></div>
+                        <div class="right floated column"  style="text-align:right;">
+                            <button id="add_item_btn" class="ui primary basic button" style="float:right;">+</button>
+                        </div>
+                    </div>
+                </div>
+                <table id="product_materials" style="width:100%; text-align:center;" class="ui celled table">
+                    <thead>
+                        <tr>
+                            <th>序號</th>
+                            <th>材料</th>
+                            <th>材料數量</th>
+                            <th>庫存單位</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        {{-- <button class="ui black deny button">
+            取消
+        </button> --}}
+        <button id="next_product" class="ui secondary right labeled icon button">
+            編輯下一個項目
+            <i class="checkmark icon"></i>
+        </button>
+    </div>
+</div>
 
 
 
@@ -217,8 +259,10 @@ $(document).ready(function(){
         });
     })
 
+
     function create_purchase_item_table(purchases){
         const table = document.createElement('table');
+        table.className = "ui celled table";
         const tr_head = document.createElement('tr');
         const td_purchase_date =  document.createElement('th');
         td_purchase_date.innerHTML = "訂貨日期";
@@ -269,6 +313,7 @@ $(document).ready(function(){
 
     function create_purchase_item_table_with_error(purchases){
         const table = document.createElement('table');
+        table.className = "ui celled table";
         const tr_head = document.createElement('tr');
         const td_purchase_date =  document.createElement('th');
         td_purchase_date.innerHTML = "訂貨日期";
@@ -372,18 +417,113 @@ $(document).ready(function(){
         // document.getElementById('vendor_name').innerHTML = vendor;
     });
 
-    $("#import_purchases_btn_qlieer_order").click(function(){
-        $('#qlieer_order_form').form('validate form');
+    let material_select;
+    let product_material_edit_index = 0;
+    let product_material_not_exists = [];
+    let product_material_exists = [];
+    let row_number = 0;
+    let product_id;
+    set_material_select();
 
+    $("#add_item_btn").click(add_product_material_row);
+    $("#next_product").click(function(){
+        //update product_materials to db
+        let data = {
+            "product_id": product_id,
+            "items": []
+        };
+
+        var table = document.getElementById("product_materials");
+        var items = [];
+        for (var i = 1, row; row = table.rows[i]; i++) {
+            const material_select = $(row).find("[data-material]");
+            const material_id = material_select.find(":selected")[0].value;
+            const material_count = $(row).find("[data-material-count]")[0].value;
+
+            if(
+                material_id != undefined && 
+                material_count != undefined
+            ){
+                const this_item = {
+                    "material_id": material_id, 
+                    "material_count": material_count 
+                };
+                items.push(this_item);
+            }
+        }
+        if(items.length == 0){
+            next_product();
+            return;
+        }
+            
+        data.items = items;
+    
+        $.ajax({
+            type: "POST",
+            url: "/products/update",
+            contentType: "application/json",
+            dataType: "json",
+            beforeSend: showLoading,
+            complete: hideLoading,
+            data: JSON.stringify(data),
+            success: function(response) {
+                console.log(response);
+                next_product();
+                // window.location.href = "/products/index";
+            },
+            error: function(response) {
+                // console.log(response);
+            }
+        });
+        //setup next product edit modal
+    });
+    $("#import_purchases_btn_qlieer_order").click(function(){
+        //check for product without product material and allow user to edit
+        const data = {
+            qlieer_order_items: qlieer_order_items,
+            qlieer_order_total: qlieer_order_total,
+            voucher_date: $("#qlieer_voucher_date").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/orders/bulkImportProductCheck",
+            contentType: "application/json",
+            dataType: "json",
+            beforeSend: showLoading,
+            complete: hideLoading,
+            data: JSON.stringify(data),
+            success: function(response) {
+                console.log(response);
+                //set to -1 so next product index is 0
+                product_material_edit_index = -1;
+                product_material_not_exists = response["qlieer_order_items"]["product_material_not_exists"];
+                product_material_exists = response["qlieer_order_items"]["product_material_exists"];
+
+                next_product();
+
+                // const table = create_qlieer_order_items_table(response["order_items"]);
+                // document.getElementById("result_container_qlieer_order").appendChild(table);
+                // document.getElementById('review_container_qlieer_order').innerHTML = "";
+            },
+            error: function(response) {
+                // console.log(response);
+            }
+        });
+    })
+
+    function import_qlieer(){
+        $('#qlieer_order_form').form('validate form');
         if($('#qlieer_order_form').form('is valid')) {
             const data = {
                 qlieer_order_items: qlieer_order_items,
                 qlieer_order_total: qlieer_order_total,
                 voucher_date: $("#qlieer_voucher_date").val()
             };
+
             $.ajax({
                 type: "POST",
-                url: "/orders/bulk-import-qlieer-orders",
+                url: "/orders/bulkImportQlieerOrders",
                 contentType: "application/json",
                 dataType: "json",
                 beforeSend: showLoading,
@@ -393,6 +533,7 @@ $(document).ready(function(){
                     const table = create_qlieer_order_items_table(response["order_items"]);
                     document.getElementById("result_container_qlieer_order").appendChild(table);
                     document.getElementById('review_container_qlieer_order').innerHTML = "";
+                    alert('匯入完成')
                 },
                 error: function(response) {
                     // console.log(response);
@@ -400,10 +541,145 @@ $(document).ready(function(){
             });
         }
 
-    })
+    }
+
+    function next_product(){
+        if(product_material_edit_index >= product_material_not_exists.length - 1){
+            alert("所有產品都已經和庫存材料配對完成，現在匯入資料");
+            $("#edit_product_material_modal").modal('hide');
+            import_qlieer();
+            return
+        }
+        clear_product_material_row();
+        product_material_edit_index++;
+        product_id = product_material_not_exists[product_material_edit_index]["product_id"];
+        update_product_material_modal(product_material_not_exists[product_material_edit_index]);
+        $("#edit_product_material_modal").modal('show');
+    }
+    function clear_product_material_row(){
+        const table_name = "product_materials";
+        row_number = 0;
+        $("#" + table_name + " tbody").html('');
+    }
+
+    function get_empty_option(){
+        const empty_option = document.createElement("option");
+        empty_option.innerHTML = "請選擇";
+        empty_option.value = "";
+        return empty_option;
+    }
+
+    function set_material_select(){
+        return $.ajax({
+            type: "POST",
+            url: "/materials/queryData",
+            contentType: "application/json",
+            dataType: "json",
+            // async: false,
+            // beforeSend: showLoading,
+            // complete: hideLoading,
+            data: JSON.stringify(
+                {
+                    search: {}
+                }
+            ),
+            success: function(response) {
+                const materials = response["data"]
+                const select = document.createElement("select");
+                
+                select.classList = "ui search selection dropdown";
+                            
+
+                select.appendChild(get_empty_option());
+
+                for(var i = 0; i < materials.length; i++){
+                    const this_material = materials[i];
+                    const option = document.createElement("option");
+                    option.value = this_material.material_id;
+                    option.innerHTML = this_material.material_name;
+                    option.setAttribute("data-material-unit", this_material["material_unit"]);
+                    select.appendChild(option);
+                    select.onchange = material_changed;
+                }
+                material_select = select;
+            },
+            error: function(response) {
+                // console.log(response);
+            }
+        });
+        return true;
+    }
+
+    function material_changed(){
+        const tr = $(this).closest("tr");
+        const material_unit_label = tr.find("[data-material-unit]");
+        const material_select = tr.find("[data-material]");
+        const selected_option = material_select.find(":selected");
+        material_unit_label.html(selected_option.data('material-unit'));
+    }
+
+    function add_product_material_row (data = {}){
+        const table_name = "product_materials";
+        const columns = ["#", "material", "material_count", "material_unit"];
+        const body = document.getElementById(table_name).getElementsByTagName('tbody')[0];
+        const tr = document.createElement("tr");
+        let select;
+
+        tr.setAttribute("data-tr", "");
+        row_number += 1;
+        for(let i = 0; i < columns.length; i++){
+            const thisColumn = columns[i];
+            const td = document.createElement("td");
+
+            if(thisColumn == "#"){
+                td.appendChild(document.createTextNode(row_number));
+            } else if (thisColumn == "material"){
+                select = material_select.cloneNode(true);
+                select.setAttribute("data-material", "");
+                td.appendChild(select);
+                $(select).dropdown({selectedfullTextSearch: true, placeholder: false});
+                select.onchange = material_changed;
+                setTimeout(function(){
+                    if("material_id" in data){
+                        $(select).val(data["material_id"]).change();
+                        // $(select).dropdown({"set exactly": "1"});
+                    }
+                }, 200);
+            } else if (thisColumn == "material_count"){
+                const input = document.createElement("input");
+                input.type = "number";
+                input.min = 0;
+                input.setAttribute("data-material-count", "");
+                const div = document.createElement('div');
+                div.className = "ui input";
+                div.appendChild(input);
+                td.appendChild(div);
+                if("material_count" in data){
+                    input.value = data["material_count"];
+                }
+            }  else if (thisColumn == "material_unit"){
+                const label = document.createElement("label");
+                label.setAttribute("data-material-unit", "");
+
+                td.appendChild(label);
+            }
+
+            tr.appendChild(td);
+        }
+
+        
+        $("#" + table_name + " tbody").append(tr);
+        // document.getElementById("purchase_items").appendChild(tr);
+    }
+
+    function update_product_material_modal(data){
+        $("#product_name").html(data["product_name"]);
+    }
+
 
     function create_qlieer_order_items_table(qlieer_order_items){
         const table = document.createElement('table');
+        table.className = "ui celled table";
         const tr_head = document.createElement('tr');
 
         const td_set_name =  document.createElement('th');

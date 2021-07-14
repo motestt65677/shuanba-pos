@@ -20,7 +20,9 @@ class ClosingService
 
     public function closableYearMonth(){
         $orderQuery = DB::table('orders')->select('voucher_date');
-        $purchaseQuery = DB::table('purchases')->select('voucher_date')->union($orderQuery);
+        $purchaseReturnQuery = DB::table('purchase_returns')->select('voucher_date');
+        $purchaseQuery = DB::table('purchases')->select('voucher_date')->union($orderQuery)->union($purchaseReturnQuery);
+
         $queryData = $purchaseQuery->get();
         $yearMonthArray = [];
         foreach($queryData as $data){

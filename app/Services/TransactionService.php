@@ -54,9 +54,11 @@ class TransactionService
             "materials.unit AS material_unit"
         )
         ->leftJoin("order_items", 'orders.id', '=', 'order_items.order_id')
-        ->leftJoin("products", 'products.id', '=', 'order_items.product_id')
-        ->leftJoin("product_materials", 'product_materials.product_id', '=', 'products.id')
-        ->leftJoin("materials", 'materials.id', '=', 'product_materials.material_id')
+        ->leftJoin("materials", 'order_items.material_id', '=', 'materials.id')
+
+        // ->leftJoin("products", 'products.id', '=', 'order_items.product_id')
+        // ->leftJoin("product_materials", 'product_materials.product_id', '=', 'products.id')
+        // ->leftJoin("materials", 'materials.id', '=', 'product_materials.material_id')
         ->whereNotNull('materials.id');
         
         $query = $purchaseItemsQuery->union($orderItemsQuery)->union($purchaseReturnItemsQuery);

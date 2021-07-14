@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use App\Models\ProductMaterial;
 use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
@@ -19,12 +20,6 @@ class OrderController extends Controller
 
     public function bulkImportQlieer(Request $request){
 
-        // array (
-        //     'product_name' => '烏龍麵',
-        //     'product_count' => '39',
-        //     'set_name' => '活力梅花豬肉鍋',
-        //   ), DATEEEEEE
-            //DATEEEEEEDATEEEEEEDATEEEEEE
         $purchaseDict = [];
         $order = Order::create([
             "prep_by" => $request->user->id,
@@ -34,7 +29,9 @@ class OrderController extends Controller
             "payment_type" => "credit",
             "total" => $request->qlieer_order_total,
         ]);
+        $orderItemCount = 0;
         $returnItems = $request->qlieer_order_items;
+
         foreach($returnItems as $key=>$item){
             $productName = $item["product_name"];
             if (str_contains($item["product_name"], 'oz') || str_contains($item["product_name"], 'g')) { 
@@ -43,24 +40,60 @@ class OrderController extends Controller
             }
 
             $product = Product::where("name", $item["product_name"])->first();
+
+            if(!$product)
+                continue;
+
+            $productMaterials = ProductMaterial::where("product_id", $product->id)->get();
+
+            if(count($productMaterials) == 0){
+                $returnItems[$key]["message"] = "產品無配對庫存材料";
+                continue;
+            } 
+
+            foreach($productMaterials as $productMaterial){
+                OrderItem::create([
+                    "material_id" => $productMaterial -> material_id,
+                    "product_id" => $product->id,
+                    "order_id" => $order->id,
+                    "amount" => floatval($item["product_count"]) * floatval($productMaterial -> material_count),
+                    "unit_price" => 0,
+                    "total" => 0
+                ]);
+                $returnItems[$key]["message"] = "Success";
+                $orderItemCount++;
+            }
+        }
+        if($orderItemCount == 0)
+            $order->delete();
+        return \Response::json(["status"=> "200", "order_items"=>$returnItems]);
+    }
+
+    public function bulkImportProductCheck(Request $request){
+        $returnItems = [
+            "product_material_exists" => [],
+            "product_material_not_exists" => []
+        ];
+        foreach($request->qlieer_order_items as $item){
+            $product = Product::where("name", $item["product_name"])->first();
             if(!$product){
                 $product = Product::create([
                     "product_no" => $this->productService -> newProductNo(),
-                    "name" => $productName,
+                    "name" => $item["product_name"],
                     "price" => 0
                 ]);
             }
-
-            OrderItem::create([
-                "product_id" => $product->id,
-                "order_id" => $order->id,
-                "amount" => $item["product_count"],
-                "unit_price" => 0,
-                "total" => 0
-            ]);
-            $returnItems[$key]["message"] = "Success";
+            //include product_id for update product with product_id in later ajax call
+            $item["product_id"] = $product->id;
+            $productMaterial = ProductMaterial::where("product_id", $product->id)->first();
+            if($productMaterial){
+                array_push($returnItems["product_material_exists"], $item);
+            } else {
+                array_push($returnItems["product_material_not_exists"], $item);
+            }
         }
 
-        return \Response::json(["status"=> "200", "order_items"=>$returnItems]);
+        return \Response::json(["status"=> "200", "qlieer_order_items"=>$returnItems]);
+
     }
 }

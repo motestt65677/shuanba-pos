@@ -61,7 +61,9 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::group(['prefix' => 'orders'], function () {
-            Route::post('/bulk-import-qlieer-orders', 'OrderController@bulkImportQlieer');
+            Route::post('/bulkImportQlieerOrders', 'OrderController@bulkImportQlieer');
+            Route::post('/bulkImportProductCheck', 'OrderController@bulkImportProductCheck');
+
         });
 
         Route::group(['prefix' => 'materials'], function () {

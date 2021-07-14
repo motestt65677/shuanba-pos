@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\ProductMaterial;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -24,13 +25,15 @@ class ProductController extends Controller
     }
 
     public function update(Request $request){
-        $user = $request->user;
         $product = Product::find($request->product_id);
         
         if($product){
-            $product->name = $request->product_name;
-            $product->description = $request->product_description;
-            $product->price = $request->product_price;
+            if(isset($request->name))
+                $product->name = $request->product_name;
+            if(isset($request->description))
+                $product->description = $request->product_description;
+            if(isset($request->price))
+                $product->price = $request->product_price;
             $product->save();
             if(count($request->items) > 0){
                 ProductMaterial::where("product_id", $product->id)->delete();

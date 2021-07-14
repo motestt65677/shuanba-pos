@@ -79,22 +79,14 @@ class CloseMonthJob implements ShouldQueue
             }
 
             $allOrderItems = DB::table('orders')
-            ->select(
-                "order_items.amount as order_item_amount", 
-                "product_materials.material_count as material_count",
-                "materials.unit_price as material_unit_price"
-            )
             ->leftJoin("order_items", 'orders.id', '=', 'order_items.order_id')
-            ->leftJoin("products", 'products.id', '=', 'order_items.product_id')
-            ->leftJoin("product_materials", 'product_materials.product_id', '=', 'products.id')
-            ->leftJoin("materials", 'materials.id', '=', 'product_materials.material_id')
             ->where("orders.voucher_date", "<", $this->yearMonth . "-01")
-            ->where("materials.id", $material->id)
+            ->where("order_items.material_id", $material->id)
             ->get();
 
             foreach($allOrderItems as $item){
-                $closing_item["starting_count"] -= floatval($item->order_item_amount) * floatval($item->material_count);
-                $closing_item["starting_total"] -= floatval($item->order_item_amount) * floatval($item->material_count) * $closing_item["purchase_unit_price"];
+                $closing_item["starting_count"] -= floatval($item->amount);
+                $closing_item["starting_total"] -= floatval($item->amount) * $closing_item["purchase_unit_price"];
             }
 
 
@@ -122,23 +114,15 @@ class CloseMonthJob implements ShouldQueue
             }
 
             $order_items = DB::table('orders')
-            ->select(
-                "order_items.amount as order_item_amount", 
-                "product_materials.material_count as material_count",
-                "materials.unit_price as material_unit_price"
-            )
             ->leftJoin("order_items", 'orders.id', '=', 'order_items.order_id')
-            ->leftJoin("products", 'products.id', '=', 'order_items.product_id')
-            ->leftJoin("product_materials", 'product_materials.product_id', '=', 'products.id')
-            ->leftJoin("materials", 'materials.id', '=', 'product_materials.material_id')
-            ->where("orders.voucher_date", "like", $this->yearMonth . "%")
-            ->where("materials.id", $material->id)
+            ->where("orders.voucher_date", "<", $this->yearMonth . "-01")
+            ->where("order_items.material_id", $material->id)
             ->get();
 
             foreach($order_items as $item){
-                $closing_item["order_count"] += floatval($item->order_item_amount) * floatval($item->material_count);
+                $closing_item["order_count"] += floatval($item->amount);
                 //temperarily use material_unit_price as unit_cost of material, should maybe use average purchase price of material
-                $closing_item["order_cost"] += floatval($item->order_item_amount) * floatval($item->material_count) * $closing_item["purchase_unit_price"];
+                $closing_item["order_cost"] += floatval($item->amount)* $closing_item["purchase_unit_price"];
             }
 
             $closing_item["closing_count"] = $closing_item["starting_count"] + $closing_item["purchase_count"] - $closing_item["purchase_return_count"] - $closing_item["order_count"];
