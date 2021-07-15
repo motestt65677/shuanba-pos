@@ -93,7 +93,7 @@ class ClosingService
             DB::raw("IFNULL((SELECT `material_no` FROM `materials` WHERE `id`=`closing_items`.`material_id` ), '') AS `material_no`"),
             DB::raw("IFNULL((SELECT `name` FROM `materials` WHERE `id`=`closing_items`.`material_id` ), '') AS `material_name`"),
             'closings.id as closing_id',
-            'closings.year_month as closing_year_month',
+            DB::raw("LEFT(closings.year_month, 7) AS closing_year_month"),
             'closings.created_at as closing_created_at',
             'closing_items.purchase_count as purchase_count',
             'closing_items.purchase_total as purchase_total',
