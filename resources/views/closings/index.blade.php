@@ -36,6 +36,8 @@
         <div class="ui warning message">
             <div class="header">
                 <pre style="text-align: center;"> 期初 + 進貨 - 退貨 - 銷貨 = 期末</pre>
+                <pre style="text-align: center;"> 銷貨單價以進貨平均價格計算</pre>
+
             </div>
         </div>
         <table id="closing_item_table" class="ui structured celled table" style="width:100%">
