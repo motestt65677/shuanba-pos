@@ -48,7 +48,7 @@
             </header> --}}
 
             <!-- Page Content -->
-            <main id="main" style="margin-left:75px;">
+            <main id="main" style="padding-left: 2.5rem; padding-right: 1rem;">
                 @yield('content')
             </main>
         </div>
@@ -83,6 +83,7 @@
                 setCookie("sidebar", "close", 1);
             } else {
                 const cookeValue = getCookie("sidebar");
+
                 $(".sidenav").addClass("notransition");
                 $("#main").addClass("notransition");
 
@@ -90,10 +91,14 @@
                     $("#nav-btn-arrow").removeClass('rotated');
                     document.getElementById("my-side-nav").style.width = "75px";
                     document.getElementById("main").style.marginLeft= "75px";
+                    $("#navigation_name").hide();
+
                 } else {
                     $("#nav-btn-arrow").addClass('rotated');
                     document.getElementById("my-side-nav").style.width = "300px";
                     document.getElementById("main").style.marginLeft = "300px";
+                    $("#navigation_name").show();
+
                 }
 
                 setTimeout(function(){
@@ -142,11 +147,13 @@
                     document.getElementById("my-side-nav").style.width = "75px";
                     document.getElementById("main").style.marginLeft= "75px";
                     setCookie("sidebar", "close", 1);
+                    $("#navigation_name").hide();
                 } else {
                     $("#nav-btn-arrow").toggleClass('rotated');
                     document.getElementById("my-side-nav").style.width = "300px";
                     document.getElementById("main").style.marginLeft = "300px";
                     setCookie("sidebar", "open", 1);
+                    $("#navigation_name").show();
                 }
             }
             function showLoading(){

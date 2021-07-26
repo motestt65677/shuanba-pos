@@ -76,6 +76,16 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/queryData', 'MaterialController@queryData');
         });
 
+        Route::group(['prefix' => 'users'], function () {
+            Route::get('/{id}/edit', 'UserController@edit');
+            Route::get('/index', 'UserController@index');
+            Route::get('/create', 'UserController@create');
+            Route::post('/store', 'UserController@store');
+            Route::post('/update', 'UserController@update');
+            Route::post('/delete', 'UserController@delete');
+            Route::post('/queryData', 'UserController@queryData');
+        });
+
         Route::group(['prefix' => 'transactions'], function () {
             Route::get('/index', 'TransactionController@index');
             Route::post('/queryData', 'TransactionController@queryData');
@@ -119,6 +129,14 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/update', 'SupplierController@update');
             Route::post('/delete', 'SupplierController@delete');
             Route::post('/queryData', 'SupplierController@queryData');
+        });
+
+        Route::group(['prefix' => 'branches'], function () {
+            // Route::get('/index', 'BranchController@index');
+            // Route::get('/create', 'BranchController@create');
+            // Route::post('/store', 'BranchController@store');
+            // Route::post('/delete', 'BranchController@delete');
+            Route::post('/queryData', 'BranchController@queryData');
         });
 
         Route::group(['prefix' => 'closings'], function () {

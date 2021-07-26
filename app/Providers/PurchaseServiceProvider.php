@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class PurchaseServiceProvider extends ServiceProvider
@@ -24,6 +25,14 @@ class PurchaseServiceProvider extends ServiceProvider
 
         $this->app->singleton('MaterialService', function ($app) {
             return new \App\Services\MaterialService($app);
+        });
+
+        $this->app->singleton('UserService', function ($app) {
+            return new \App\Services\UserService($app);
+        });
+
+        $this->app->singleton('BranchService', function ($app) {
+            return new \App\Services\BranchService($app);
         });
 
         $this->app->singleton('TransactionService', function ($app) {
@@ -72,6 +81,6 @@ class PurchaseServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+
     }
 }
