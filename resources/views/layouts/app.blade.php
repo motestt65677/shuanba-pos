@@ -92,13 +92,13 @@
                     document.getElementById("my-side-nav").style.width = "75px";
                     document.getElementById("main").style.marginLeft= "75px";
                     $("#navigation_name").hide();
-
+                    $("#navigation_branch_container").hide();
                 } else {
                     $("#nav-btn-arrow").addClass('rotated');
                     document.getElementById("my-side-nav").style.width = "300px";
                     document.getElementById("main").style.marginLeft = "300px";
                     $("#navigation_name").show();
-
+                    $("#navigation_branch_container").show();
                 }
 
                 setTimeout(function(){
@@ -138,22 +138,26 @@
                 }
             }
 
-
-
-
             function toggleNav(){
                 if(getCookie("sidebar") == "open"){
+                    $("#navigation_branch_container").hide();
+                    $("#navigation_name").hide();
+
                     $("#nav-btn-arrow").toggleClass('rotated');
                     document.getElementById("my-side-nav").style.width = "75px";
                     document.getElementById("main").style.marginLeft= "75px";
                     setCookie("sidebar", "close", 1);
-                    $("#navigation_name").hide();
                 } else {
+                    setTimeout(function(){
+                        $("#navigation_branch_container").show();
+                        $("#navigation_name").show();
+                    }, 250);
+
                     $("#nav-btn-arrow").toggleClass('rotated');
                     document.getElementById("my-side-nav").style.width = "300px";
                     document.getElementById("main").style.marginLeft = "300px";
+
                     setCookie("sidebar", "open", 1);
-                    $("#navigation_name").show();
                 }
             }
             function showLoading(){
@@ -167,6 +171,37 @@
             }
             $("#logout").click(function(){
                 $("#logout-form").submit();
+            })
+            $("#app_branch").change(function(){
+                let data = {
+                    "branch_id": $(this).val()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/users/updateUserBranch",
+                    contentType: "application/json",
+                    dataType: "json",
+                    beforeSend: showLoading,
+                    complete: hideLoading,
+                    data: JSON.stringify(data),
+                    success: function(response) {
+                        if(response["status"] != "200"){
+                            alert("系統錯誤");
+                        }
+
+                        if(response["error"].length > 0){
+                            for(let i = 0; i < response["error"].length; i++){
+                                alert(response["error"][i]);
+                            }
+                        } else {
+                            location.reload();
+                        }
+                    },
+                    error: function(response) {
+                        // console.log(response);
+                    }
+                });
+                console.log($(this).val());
             })
         </script>
     </body>

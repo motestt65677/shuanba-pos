@@ -11,7 +11,19 @@
             <a  class="nav-toggle-btn" onclick="toggleNav()"><i id="nav-btn-arrow" class="fas fa-chevron-right" style="color: gray;"></i></a>
         
             <div id="nav-header" class="mb-5" style="">
-                <img src="/image/chef-icon-white.png" alt="" style="color:gray; display: block; margin-left: auto; margin-right: auto; width: 50%;">
+                <img src="/image/chef-icon-white.png" alt="" style="color:gray; display: block; margin-left: auto; margin-right: auto; width: 30%;">
+            
+            </div>
+            <div id="navigation_branch_container" style="text-align: center; padding:1rem; display:none;  ">
+            @if($appUser->role == "mis" || $appUser->role == "admin" )
+                <select name="" id="app_branch">
+                @foreach($appBranches as $branch)
+                <option value="{{$branch->id}}" @if($branch->id == $appUser->branch_id) selected @endif>{{$branch->name}}</option>
+                @endforeach
+                </select>
+            @else
+                <h3 style="text-align: center;">{{$appBranches[0]["name"]}}</h3>
+            @endif
             </div>
             <div id="nav-body" style="overflow-x:hidden;"> 
                 {{-- <div>
@@ -73,7 +85,7 @@
                     </a>
                 </div>
                 @endif
-
+                <div class="ui divider"></div>
                 @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("廠商管理", $appRoles))
                 <div>
                     <a href="/suppliers/index" class="link-container {{ Request::segment(1) === 'suppliers' ? 'current' : null }}">
@@ -141,7 +153,7 @@
                 @endif
                 
             </div>
-            <div id="nav-footer" class="container" style="position: absolute; bottom: 1em; color: white;">
+            <div id="nav-footer" class="container" style="position: absolute; bottom: 0rem; color: white;">
                 <div class="dropup" style="width: 100%;">
                     <button class="dropbtn">
                         <span id="navigation_name" style="margin:1rem; display:none;">{{$appUser->name}}</span><i class="fas fa-angle-right fa-fw"></i>
@@ -162,6 +174,11 @@
         </div>
         <script>
 
+window.onload = function() {
+  // console.log("window loaded")
+  $('#app_branch').dropdown();
+
+};
         </script>
         
     </body>

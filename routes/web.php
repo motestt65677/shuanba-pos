@@ -82,8 +82,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/create', 'UserController@create');
             Route::post('/store', 'UserController@store');
             Route::post('/update', 'UserController@update');
+
             Route::post('/delete', 'UserController@delete');
             Route::post('/queryData', 'UserController@queryData');
+            Route::post('/updateUserBranch', 'UserController@updateUserBranch');
         });
 
         Route::group(['prefix' => 'transactions'], function () {

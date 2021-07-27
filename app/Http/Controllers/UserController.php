@@ -70,6 +70,13 @@ class UserController extends Controller
         return \Response::json(["status"=> 200, "error"=>$error]);
     }
 
+    public function updateUserBranch(Request $request){
+        $user = $request->user;
+        $user->branch_id = $request->branch_id;
+        $user->save();
+        return \Response::json(["status"=> 200, "error"=>[]]);
+    }
+
     /**
      * Handle an incoming registration request.
      *
