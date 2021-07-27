@@ -58,10 +58,6 @@ $(document).ready(function(){
         ajax: {
             url: "/purchases/queryPurchaseItemsWithSupplier",
             dataSrc: 'data',
-            data:{
-                search: {},
-                order: {"purchase_items.id": "desc"}
-            },
             data: function(d){
                 const search = {"material_id": $("#material").val()};
                 d.search = search;

@@ -14,14 +14,14 @@ use Illuminate\Support\Facades\Log;
 class ClosingService
 {
 
-    public function closeMonth($thisYearMonth){
-        CloseMonthJob::dispatch($thisYearMonth);
+    public function closeMonth($thisYearMonth, $branchId){
+        CloseMonthJob::dispatch($thisYearMonth, $branchId);
     }
 
-    public function closableYearMonth(){
-        $orderQuery = DB::table('orders')->select('voucher_date');
-        $purchaseReturnQuery = DB::table('purchase_returns')->select('voucher_date');
-        $purchaseQuery = DB::table('purchases')->select('voucher_date')->union($orderQuery)->union($purchaseReturnQuery);
+    public function closableYearMonth($branchId){
+        $orderQuery = DB::table('orders')->select('voucher_date')->where("branch_id", $branchId);
+        $purchaseReturnQuery = DB::table('purchase_returns')->select('voucher_date')->where("branch_id", $branchId);
+        $purchaseQuery = DB::table('purchases')->select('voucher_date')->where("branch_id", $branchId)->union($orderQuery)->union($purchaseReturnQuery);
 
         $queryData = $purchaseQuery->get();
         $yearMonthArray = [];
@@ -42,6 +42,9 @@ class ClosingService
             'year_month',
             'created_at'
         );
+
+        if(isset($search["branch_id"]))
+            $query->where("closings.branch_id", $search["branch_id"]);
 
         foreach($order as $key=>$value){
             $query->orderBy($key, $value);
@@ -72,6 +75,7 @@ class ClosingService
             'closing_items.closing_total as closing_total'
         )->whereNotNull("closing_items.id");
         $query->where("closing_id", $search["closing_id"]);
+
         // if(isset($search["closing_id"])){
         //     $query->where("closing_id", $search["closing_id"]);
         // }
@@ -112,10 +116,13 @@ class ClosingService
         ->orderBy("closings.year_month", "DESC")
         ->orderBy("closing_items.material_id", "ASC");
 
+        
         // $query->where("closing_id", $search["closing_id"]);
-        // if(isset($search["closing_id"])){
-        //     $query->where("closing_id", $search["closing_id"]);
-        // }
+        if(isset($search["branch_id"])){
+            $query->where("closings.branch_id", $search["branch_id"]);
+        }
+
+
         foreach($order as $key=>$value){
             $query->orderBy($key, $value);
         }

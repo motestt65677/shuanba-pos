@@ -10,6 +10,6 @@ class Closing extends Model
     use HasFactory;
     protected $table = "closings";
     protected $fillable = [
-        'year_month'
+        'branch_id','year_month'
     ];
 }

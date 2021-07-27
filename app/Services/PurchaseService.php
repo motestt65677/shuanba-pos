@@ -51,6 +51,10 @@ class PurchaseService
             $query->where("payment_type", $search["payment_type"]);
         }
 
+        if(isset($search["branch_id"])){
+            $query->where("branch_id", $search["branch_id"]);
+        }
+
         if(isset($search["voucher_year_month"])){
             $query->whereRaw("LEFT(`voucher_date`, 7) = '" . $search["voucher_year_month"] . "'");
         }
@@ -83,6 +87,9 @@ class PurchaseService
         );
         if(isset($search["count"]))
             $query->take($search["count"]);
+
+        if(isset($search["branch_id"]))
+            $query->where("branch_id", $search["branch_id"]);
 
         foreach($order as $key=>$value){
             $query->orderBy($key, $value);
@@ -122,6 +129,8 @@ class PurchaseService
             $query->where("purchase_items.material_id", $search["material_id"]);
         if(isset($search["purchase_id"]))
             $query->where("purchase_items.purchase_id", $search["purchase_id"]);
+        if(isset($search["branch_id"]))
+            $query->where("purchase_items.branch_id", $search["branch_id"]);
         if(isset($search["count"]))
             $query->take($search["count"]);
 

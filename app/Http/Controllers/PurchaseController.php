@@ -59,6 +59,7 @@ class PurchaseController extends Controller
                 continue;
 
             PurchaseItem::create([
+                "branch_id" => $user->branch_id,
                 "purchase_id" => $purchase->id,
                 "material_id" => $item["item_id"],
                 "amount" => $item["amount"],
@@ -85,18 +86,24 @@ class PurchaseController extends Controller
     }
 
     public function queryPurchases(Request $request){
-        $items = $this->purchaseService->queryPurchases($request["search"], $request["order"]);
+        $search = $request["search"];
+        $search["branch_id"] = $request->user->branch_id;
+        $items = $this->purchaseService->queryPurchases($search, $request["order"]);
         return \Response::json(["data"=> $items]);
     }
 
     public function queryPurchaseItems(Request $request){
-        $items = $this->purchaseService->queryPurchaseItems($request["search"], $request["order"]);
+        $search = $request["search"];
+        $search["branch_id"] = $request->user->branch_id;
+        $items = $this->purchaseService->queryPurchaseItems($search, $request["order"]);
         return \Response::json(["data"=> $items]);
     }
 
     public function queryPurchaseItemsWithSupplier(Request $request){
         $order = isset($request["order"]) ? $request["order"] : [];
-        $items = $this->purchaseService->queryPurchaseItemsWithSupplier($request["search"], $order);
+        $search = $request["search"];
+        $search["branch_id"] = $request->user->branch_id;
+        $items = $this->purchaseService->queryPurchaseItemsWithSupplier($search, $order);
         return \Response::json(["data"=> $items]);
     }
 
@@ -167,6 +174,7 @@ class PurchaseController extends Controller
                         if($material){
                             $purchaseItem = PurchaseItem::create([
                                 "purchase_id" => $thisPurchase->id,
+                                "branch_id" => $user->branch_id,
                                 "material_id" => $material->id,
                                 "amount" => floatval($importMaterial->material_count) * floatval($item["amount"]),
                                 "unit_price" => floatval($item["total"]) / (floatval($importMaterial->material_count) * floatval($item["amount"])),

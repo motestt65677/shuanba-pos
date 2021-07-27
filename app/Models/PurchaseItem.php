@@ -10,6 +10,6 @@ class PurchaseItem extends Model
     use HasFactory;
     protected $table = "purchase_items";
     protected $fillable = [
-        'purchase_id', 'material_id', 'amount', 'unit_price', 'total', 'note1'
+        'branch_id','purchase_id', 'material_id', 'amount', 'unit_price', 'total', 'note1'
     ];
 }

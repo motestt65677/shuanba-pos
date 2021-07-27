@@ -26,6 +26,8 @@ class TransactionService
         ->leftJoin("purchase_items", 'purchases.id', '=', 'purchase_items.purchase_id')
         ->leftJoin("materials", 'purchase_items.material_id', '=', 'materials.id')
         ->whereNotNull('materials.id');
+        if(isset($search["branch_id"]))
+            $purchaseItemsQuery->where("purchases.branch_id", $search["branch_id"]);
 
         $purchaseReturnItemsQuery = DB::table('purchase_returns')->select(
             DB::raw("'退貨' as type"),
@@ -41,6 +43,8 @@ class TransactionService
         ->leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
         ->leftJoin("materials", 'purchase_return_items.material_id', '=', 'materials.id')
         ->whereNotNull('materials.id');
+        if(isset($search["branch_id"]))
+            $purchaseReturnItemsQuery->where("purchase_returns.branch_id", $search["branch_id"]);
 
         $orderItemsQuery = DB::table('orders')->select(
             DB::raw("'銷貨' as type"),
@@ -55,11 +59,10 @@ class TransactionService
         )
         ->leftJoin("order_items", 'orders.id', '=', 'order_items.order_id')
         ->leftJoin("materials", 'order_items.material_id', '=', 'materials.id')
-
-        // ->leftJoin("products", 'products.id', '=', 'order_items.product_id')
-        // ->leftJoin("product_materials", 'product_materials.product_id', '=', 'products.id')
-        // ->leftJoin("materials", 'materials.id', '=', 'product_materials.material_id')
         ->whereNotNull('materials.id');
+
+        if(isset($search["branch_id"]))
+            $orderItemsQuery->where("orders.branch_id", $search["branch_id"]);
         
         $query = $purchaseItemsQuery->union($orderItemsQuery)->union($purchaseReturnItemsQuery);
         // if(isset($search["material_id"]))

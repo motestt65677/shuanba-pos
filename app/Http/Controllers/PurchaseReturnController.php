@@ -82,7 +82,9 @@ class PurchaseReturnController extends Controller
 
     public function queryData(Request $request){
         $order = isset($request["order"]) ? $request["order"] : [];
-        $items = $this->purchaseReturnService->queryData($request["search"], $order);
+        $search = isset($request["order"]) ? $request["order"] : [];
+        $search["branch_id"] = $request->user->branch_id;
+        $items = $this->purchaseReturnService->queryData($search, $order);
         return \Response::json(["data"=> $items]);
     }
     public function queryPurchaseReturnWithItems(Request $request){

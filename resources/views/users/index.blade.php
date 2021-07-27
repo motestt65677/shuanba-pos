@@ -24,6 +24,7 @@
                 <th></th>
                 <th>帳號</th>
                 <th>姓名</th>
+                <th>分公司</th>
             </tr>
         </thead>
     </table>
@@ -73,6 +74,7 @@ $(document).ready(function(){
             { data: null, orderable:false, className: 'dt-body-center dt-head-center'}, 
             { data: "username", orderable:false, className: 'dt-body-center dt-head-center'},
             { data: "name", orderable:false, className: 'dt-body-center dt-head-center'},
+            { data: "branch_name", orderable:false, className: 'dt-body-center dt-head-center'},
         ],
         paging: false,
         // searching: false,

@@ -106,7 +106,6 @@ class UserController extends Controller
     }
 
     public function delete(Request $request){
-        // $user = $request->user;
         $error = [];
         foreach($request->user_ids as $id){
             

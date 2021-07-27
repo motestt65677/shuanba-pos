@@ -15,7 +15,9 @@ class TransactionController extends Controller
 
     public function queryData(Request $request)
     {
-        $materials = $this->transactionService->queryData($request->search, $request->order);
+        $search = $request["search"];
+        $search["branch_id"] = $request->user->branch_id;
+        $materials = $this->transactionService->queryData($search, $request->order);
         return \Response::json(["data"=> $materials]);
     }
 

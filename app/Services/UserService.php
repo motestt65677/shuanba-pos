@@ -15,6 +15,9 @@ class UserService
             "users.id AS user_id",
             "users.username AS username",
             "users.name AS name",
+            DB::raw("IFNULL((SELECT `name` FROM `branches` WHERE `id`=`users`.`branch_id` ), '') AS `branch_name`"),
+
+
         );
         if(isset($search["user_id"]))
             $query->where("users.id", $search["user_id"]);

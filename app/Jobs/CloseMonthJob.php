@@ -19,16 +19,20 @@ class CloseMonthJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     private $purchaseService;
     private $yearMonth;
+    private $branchId;
+
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($yearMonth)
+    public function __construct($yearMonth, $branchId)
 	{
         $this->purchaseService = app()->make('PurchaseService');
         $this->yearMonth = $yearMonth;
+        $this->branchId = $branchId;
+
 	}
 
     /**
@@ -61,6 +65,7 @@ class CloseMonthJob implements ShouldQueue
             ->leftJoin("purchase_items", 'purchases.id', '=', 'purchase_items.purchase_id')
             ->where("purchases.voucher_date", "<", $this->yearMonth . "-01")
             ->where("purchase_items.material_id", $material->id)
+            ->where("purchases.branch_id", $this->branchId)
             ->get();
 
             foreach($allPurchaseItems as $item){
@@ -72,6 +77,7 @@ class CloseMonthJob implements ShouldQueue
             ->leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
             ->where("purchase_returns.voucher_date", "<", $this->yearMonth . "-01")
             ->where("purchase_return_items.material_id", $material->id)
+            ->where("purchase_returns.branch_id", $this->branchId)
             ->get();
             foreach($allReturnItems as $item){
                 $closing_item["starting_count"] -= floatval($item->amount);
@@ -82,6 +88,7 @@ class CloseMonthJob implements ShouldQueue
             ->leftJoin("order_items", 'orders.id', '=', 'order_items.order_id')
             ->where("orders.voucher_date", "<", $this->yearMonth . "-01")
             ->where("order_items.material_id", $material->id)
+            ->where("orders.branch_id", $this->branchId)
             ->get();
 
             foreach($allOrderItems as $item){
@@ -95,6 +102,7 @@ class CloseMonthJob implements ShouldQueue
             ->leftJoin("purchase_items", 'purchases.id', '=', 'purchase_items.purchase_id')
             ->where("purchases.voucher_date", "like", $this->yearMonth . "%")
             ->where("purchase_items.material_id", $material->id)
+            ->where("purchases.branch_id", $this->branchId)
             ->get();
 
             foreach($purchase_items as $item){
@@ -106,6 +114,7 @@ class CloseMonthJob implements ShouldQueue
             ->leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
             ->where("purchase_returns.voucher_date", "like", $this->yearMonth . "%")
             ->where("purchase_return_items.material_id", $material->id)
+            ->where("purchase_returns.branch_id", $this->branchId)
             ->get();
 
             foreach($purchase_return_items as $item){
@@ -117,6 +126,7 @@ class CloseMonthJob implements ShouldQueue
             ->leftJoin("order_items", 'orders.id', '=', 'order_items.order_id')
             ->where("orders.voucher_date", "<", $this->yearMonth . "-01")
             ->where("order_items.material_id", $material->id)
+            ->where("orders.branch_id", $this->branchId)
             ->get();
 
             foreach($order_items as $item){
@@ -132,7 +142,8 @@ class CloseMonthJob implements ShouldQueue
         }
 
         $closing = Closing::create([
-            "year_month" => $this->yearMonth . "-01"
+            "year_month" => $this->yearMonth . "-01",
+            "branch_id" => $this->branchId
         ]);
 
         foreach($closing_item_dict as $key => $value){

@@ -48,6 +48,10 @@ class PurchaseReturnService
         if(isset($search["voucher_year_month"])){
             $query->whereRaw("LEFT(`voucher_date`, 7) = '" . $search["voucher_year_month"] . "'");
         }
+
+        if(isset($search["branch_id"])){
+            $query->where("branch_id", $search["branch_id"]);
+        }
         foreach($order as $key=>$value){
             $query->orderBy($key, $value);
         }
