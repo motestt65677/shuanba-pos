@@ -37,17 +37,37 @@ class UserController extends Controller
     }
 
     public function edit(Request $request, $id){
-        return view('users.edit');
+        $userRoles = UserRole::where("user_id", $id)->pluck('role_id')->toArray();
+        return view('users.edit')->with(
+            [
+                "roles" => Role::all(), 
+                "userRoles" => $userRoles,
+                "user" => User::find($id),
+            ]
+        );
     }
     public function update(Request $request){
-        $user = $request->user;
+        $error = [];
+
         $user = User::find($request->user_id);
-        if($user){
+        if(!$user)
+            array_push($error, "查無帳號");
+            
+        if(count($error) == 0){
             $user->name = $request->name;
+            $user->branch_id = $request->branch;
             $user->save();
+    
+            UserRole::where("user_id", $user->id)->delete();
+            foreach($request->roles as $role){
+                UserRole::create([
+                    "user_id" => $user->id, 
+                    "role_id" => $role
+                ]);
+            }
         }
         
-        return \Response::json(["status"=> 200]);
+        return \Response::json(["status"=> 200, "error"=>$error]);
     }
 
     /**
@@ -89,8 +109,11 @@ class UserController extends Controller
         // $user = $request->user;
         $error = [];
         foreach($request->user_ids as $id){
+            
             $user = User::find($id);
+            UserRole::where("user_id", $user->id)->delete();
             $user->delete();
+
         }
         return \Response::json(["status"=> 200, "error"=>$error]);
     }

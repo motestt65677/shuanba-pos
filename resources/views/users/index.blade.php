@@ -155,6 +155,11 @@ $(document).ready(function(){
             }
         } 
     })
+
+    $('#thisTable tbody').on('dblclick', 'tr', function () {
+        var data = data_table.row( this ).data();
+        window.location.href = "/users/" + data["user_id"] + "/edit";
+    } );
 });
 </script>
 @endsection
