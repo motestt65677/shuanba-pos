@@ -206,7 +206,6 @@
                         // console.log(response);
                     }
                 });
-                console.log($(this).val());
             })
         </script>
     </body>
