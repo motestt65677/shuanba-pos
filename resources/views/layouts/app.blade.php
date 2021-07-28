@@ -71,7 +71,12 @@
 
 
         <script>
-            hideLoading()
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            hideLoading();
 
             // document.cookie = "sidebar=close;";
             // const cookie = document.cookie

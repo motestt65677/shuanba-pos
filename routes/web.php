@@ -86,6 +86,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/delete', 'UserController@delete');
             Route::post('/queryData', 'UserController@queryData');
             Route::post('/updateUserBranch', 'UserController@updateUserBranch');
+            Route::post('/changePassword', 'UserController@changePassword');
+
         });
 
         Route::group(['prefix' => 'transactions'], function () {

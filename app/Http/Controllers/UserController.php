@@ -77,6 +77,21 @@ class UserController extends Controller
         return \Response::json(["status"=> 200, "error"=>[]]);
     }
 
+    public function changePassword(Request $request){
+        $error = [];
+        $user = $request->user;
+        
+        if(!Hash::check($request->old_password, $user->password))
+            array_push($error, "舊密碼錯誤");
+
+        if(count($error) == 0){
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+        }
+
+        return \Response::json(["status"=> 200, "error"=>$error ]);
+    }
+
     /**
      * Handle an incoming registration request.
      *
