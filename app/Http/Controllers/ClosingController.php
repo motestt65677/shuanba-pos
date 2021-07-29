@@ -33,7 +33,7 @@ class ClosingController extends Controller
     }
 
     public function create(Request $request){
-        $this->closingService->closeMonth($request->year_month, $request->user->branch_id);
+        $this->closingService->closeMonth($request->year_month, [$request->user->branch_id]);
         return \Response::json(["status"=> "200"]);
     }
     

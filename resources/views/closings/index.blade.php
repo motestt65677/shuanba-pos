@@ -69,13 +69,19 @@
     </div>
 </div>
 
-<div class="ui modal">
+<div id="manual_closing_modal" class="ui modal">
     <i class="close icon"></i>
     <div class="header">
         手動關帳
     </div>
     <div class="content">
+        <div class="ui warning message">
+            <div class="header">
+                <pre style="text-align: center;">手動關帳後請等待1-2分鐘再重新整理頁面</pre>
+            </div>
+        </div>
         <div class="ui grid">
+
             <div class="sixteen wide column">
                 <h3>關帳月份</h3>
                 <div class="ui fluid search selection dropdown">
@@ -138,7 +144,7 @@ $('.ui.dropdown').dropdown({});
 
 
 $("#manual_closing_btn").click(function(){
-    $('.ui.modal').modal('show');
+    $('#manual_closing_modal').modal('show');
 });
 $("#closing_confirm_btn").click(function(){
     $.ajax({

@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use DateTime;
+use App\Models\Branch;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
@@ -35,6 +36,7 @@ class ClosingThisMonthJob implements ShouldQueue
     {
         $nowDateTime = new DateTime("first day of last month");
         $yearMonth = $nowDateTime -> format('Y-m');
-        $this->closingService->closeMonth($yearMonth);
+        $branches = Branch::all()->pluck('id')->toArray();
+        $this->closingService->closeMonth($yearMonth, $branches);
     }
 }
