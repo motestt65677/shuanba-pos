@@ -128,7 +128,7 @@ $(document).ready(function(){
             url: "/purchases/queryPurchases",
             dataSrc: 'data',
             data: function(d){
-                const search = {payment_type: "monthly", voucher_year_month: $('#year_month_select').val()}
+                const search = {voucher_year_month: $('#year_month_select').val()}
                 d.search = search;
                 const order = {is_paid: "asc"};
                 d.order = order;
