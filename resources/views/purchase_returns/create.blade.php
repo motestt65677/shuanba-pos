@@ -73,7 +73,7 @@
         </div>
     </div>
 
-    <div class="col-sm-12 form" >
+    <div class="col-sm-12" >
         <table id="purchase_items" style="width:100%; text-align:center;" class="ui celled table">
             <thead>
                 <tr>

@@ -7,7 +7,7 @@
 @endsection
 @section('content')
 <h3 class="ui block header">編輯產品</h3>
-<div class="ui form">
+<div id="this_form" class="ui form">
     <div style="text-align:right;">
         <a class="ui button" href="/products/index">
             <i class="left chevron icon"></i>
@@ -75,9 +75,9 @@ $.ajaxSetup({
 $(document).ready(function(){
     init();
     //validation setting
-    $('.ui.form').form.settings.prompt.empty = "請填寫{name}";
-    $('.ui.form').form.settings.prompt.number = "{name}應為數字";
-    $('.ui.form').form({
+    $('#this_form').form.settings.prompt.empty = "請填寫{name}";
+    $('#this_form').form.settings.prompt.number = "{name}應為數字";
+    $('#this_form').form({
         inline : true,
         fields: {
             product_name: 'empty'
@@ -87,7 +87,7 @@ $(document).ready(function(){
     let material_select;
 
     $("#submit").click(function(){
-        if( $('.ui.form').form('is valid')) {
+        if( $('#this_form').form('is valid')) {
             let data = {
                 "product_id": get_url_id(),
                 "product_name": $("#product_name").val(),
@@ -117,7 +117,6 @@ $(document).ready(function(){
                 }
             }
             data.items = items;
-            console.log(data);
             $.ajax({
                 type: "POST",
                 url: "/products/update",
@@ -140,7 +139,6 @@ $(document).ready(function(){
     $("#add_item_btn").click(add_product_material_row);
 
     function add_product_material_row (data = {}){
-        console.log(data);
         const table_name = "product_materials";
         const columns = ["#", "material", "material_count", "material_unit"];
         const body = document.getElementById(table_name).getElementsByTagName('tbody')[0];

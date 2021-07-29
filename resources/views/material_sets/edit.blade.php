@@ -9,7 +9,7 @@
 @endsection
 @section('content')
 <h3 class="ui block header">編輯進貨產品</h3>
-<div class="ui form">
+<div id="this_form" class="ui form">
     <div style="text-align:right;">
         <a class="ui button" href="/material_sets/index">
             <i class="left chevron icon"></i>
@@ -66,9 +66,9 @@ $.ajaxSetup({
 $(document).ready(function(){
     init();
     //validation setting
-    $('.ui.form').form.settings.prompt.empty = "請填寫{name}";
-    $('.ui.form').form.settings.prompt.number = "{name}應為數字";
-    $('.ui.form').form({
+    $('#this_form').form.settings.prompt.empty = "請填寫{name}";
+    $('#this_form').form.settings.prompt.number = "{name}應為數字";
+    $('#this_form').form({
         inline : true,
         fields: {
             supplier: 'empty',
@@ -80,7 +80,7 @@ $(document).ready(function(){
     });
 
     $("#submit").click(function(){
-        if( $('.ui.form').form('is valid')) {
+        if( $('#this_form').form('is valid')) {
             let data = {
                 "set_id": get_url_id(),
                 "supplier_id": $("#supplier").val(),

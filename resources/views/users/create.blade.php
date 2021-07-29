@@ -17,7 +17,7 @@
 @endsection
 @section('content')
 <h3 class="ui block header">新增帳號</h3>
-    <div class="ui form">
+    <div id="this_form" class="ui form">
         <div style="text-align:right;">
             <a class="ui button" href="/users/index">
                 <i class="left chevron icon"></i>
@@ -83,8 +83,10 @@ $(document).ready(function(){
     $('#branch').dropdown();
 
     //validation setting
-    $('.ui.form').form.settings.prompt.empty = "請填寫{name}";
-    $('.ui.form').form({
+    $('#this_form').form.settings.prompt.empty = "請填寫{name}";
+    $('#this_form').form.settings.prompt.minLength = '{name} 長度至少 {ruleValue} 碼以上';
+
+    $('#this_form').form({
         inline : true,
         fields: {
             name: 'empty',
@@ -96,7 +98,7 @@ $(document).ready(function(){
     });
 
     $("#submit").click(function(){
-        if( $('.ui.form').form('is valid')) {
+        if( $('#this_form').form('is valid')) {
 
 
             let roles = [];

@@ -21,7 +21,7 @@
     {{-- 廠商進貨維護 --}}
 </h3>
 
-    <div class="ui form">
+    <div id="this_form" class="ui form">
         <div style="text-align:right;">
             <a class="ui button" href="/purchases/index">
                 <i class="left chevron icon"></i>
@@ -198,8 +198,8 @@ $(document).ready(function(){
     } ).draw();
 
     //validation setting
-    $('.ui.form').form.settings.prompt.empty = "請填寫{name}";
-    $('.ui.form').form({
+    $('#this_form').form.settings.prompt.empty = "請填寫{name}";
+    $('#this_form').form({
         inline : true,
         fields: {
             payment_type: 'empty',
@@ -243,7 +243,7 @@ $(document).ready(function(){
     })
 
     $("#submit").click(function(){
-        if( $('.ui.form').form('is valid')) {
+        if( $('#this_form').form('is valid')) {
             let data = {
                 "voucher_date": $("#voucher_date").val(),
                 "supplier": $("#supplier").val(),

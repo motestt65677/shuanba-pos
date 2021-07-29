@@ -10,7 +10,7 @@
 @section('content')
 <h3 class="ui block header">新增廠商</h3>
 
-    <div class="ui form">
+    <div id="this_form" class="ui form">
 
         <div style="text-align:right;">
             <a class="ui button" href="/suppliers/index">
@@ -73,8 +73,8 @@ $(document).ready(function(){
     hideLoading();
 
     //validation setting
-    $('.ui.form').form.settings.prompt.empty = "請填寫{name}";
-    $('.ui.form').form({
+    $('#this_form').form.settings.prompt.empty = "請填寫{name}";
+    $('#this_form').form({
         inline : true,
         fields: {
             supplier_name: 'empty'
@@ -82,7 +82,7 @@ $(document).ready(function(){
     });
 
     $("#submit").click(function(){
-        if( $('.ui.form').form('is valid')) {
+        if( $('#this_form').form('is valid')) {
             let data = {
                 "supplier_name": $("#supplier_name").val(),
                 "supplier_phone": $("#supplier_phone").val(),

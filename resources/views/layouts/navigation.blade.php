@@ -197,28 +197,34 @@
                     </div>
                 </div> --}}
             </div>
-            
         </div>
+        
         <div id="changePasswordModal" class="ui modal">
                 <i class="close icon"></i>
                 <div class="header">
                     變更密碼
                 </div>
                 <div class="content">
-                    <form class="ui form">
-                        <div class="field">
-                            <label>舊密碼</label>
-                            <input id="old_password" type="password">
+                    <div id="nav_form" class="ui form">
+                        <div class=" fields">
+                            <div class="eight wide field">
+                                <label>舊密碼</label>
+                                <input id="old_password" type="password" value="">
+                            </div>
                         </div>
-                        <div class="field">
-                          <label>新密碼</label>
-                          <input id="new_password" type="password">
+                        <div class=" fields">
+                            <div class="eight wide field">
+                                <label>新密碼</label>
+                                <input id="new_password" type="password" value="">
+                            </div>
                         </div>
-                        <div class="field">
-                          <label>新密碼確認</label>
-                          <input id="new_password_check" type="password">
+                        <div class=" fields">
+                            <div class="eight wide field">
+                                <label>新密碼確認</label>
+                                <input id="new_password_check" type="password" value="">
+                            </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="actions">
                 <div class="ui black deny button">
@@ -234,43 +240,60 @@
 window.onload = function() {
     $('#app_branch').dropdown();
     $('.ui.dropdown').dropdown();
-    
-    $("#changePasswordConfirm").click(function(){
-        if($("#new_password").val() != $("#new_password_check").val()){
-            alert("新密碼不一致");
-            return;
-        }
 
-        let data = {
-            "old_password": $("#old_password").val(),
-            "new_password": $("#new_password").val()
-        };
-        $.ajax({
-            type: "POST",
-            url: "/users/changePassword",
-            contentType: "application/json",
-            dataType: "json",
-            // beforeSend: showLoading,
-            // complete: hideLoading,
-            data: JSON.stringify(data),
-            success: function(response) {
-                // console.log(response);
-                if(response["error"].length > 0){
-                    error_message = "";
-                    for(let i = 0 ; i < response["error"].length; i ++){
-                        error_message += response["error"][i] + "\r\n";
-                    }
-                    alert(error_message);
-                } else {
-                    alert("密碼變更完成，請用新的密碼重新登入");
-                    $('#logout_form').submit();
-                }
-                // window.location.href = "/purchases/create";
-            },
-            error: function(response) {
-                // console.log(response);
+    $('#nav_form').form.settings.prompt.empty = "請填寫{name}";
+    $('#nav_form').form.settings.prompt.number = "{name}應為數字";
+    $('#nav_form').form.settings.prompt.minLength = '{name} 長度至少 {ruleValue} 碼以上';
+
+    
+    $('#nav_form').form({
+        inline: true,
+        fields: {
+            old_password: ['empty', 'minLength[6]'],
+            new_password: ['empty', 'minLength[6]'],
+            new_password_check: ['empty', 'minLength[6]']
+        }
+    });
+
+
+    $("#changePasswordConfirm").click(function(){
+        $('#nav_form').form('validate form');
+        if($('#nav_form').form('is valid')) {
+            if($("#new_password").val() != $("#new_password_check").val()){
+                alert("新密碼不一致");
+                return;
             }
-        });
+            let data = {
+                "old_password": $("#old_password").val(),
+                "new_password": $("#new_password").val()
+            };
+            $.ajax({
+                type: "POST",
+                url: "/users/changePassword",
+                contentType: "application/json",
+                dataType: "json",
+                // beforeSend: showLoading,
+                // complete: hideLoading,
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // console.log(response);
+                    if(response["error"].length > 0){
+                        error_message = "";
+                        for(let i = 0 ; i < response["error"].length; i ++){
+                            error_message += response["error"][i] + "\r\n";
+                        }
+                        alert(error_message);
+                    } else {
+                        alert("密碼變更完成，請用新的密碼重新登入");
+                        $('#logout_form').submit();
+                    }
+                    // window.location.href = "/purchases/create";
+                },
+                error: function(response) {
+                    // console.log(response);
+                }
+            });
+        }
     })
 };
         </script>
