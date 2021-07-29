@@ -40,7 +40,7 @@
         </div>
         <div class="eight wide field">
             <label>預設單價</label>
-            <input id="material_unit_price" type="text" value="" placeholder="50, 8.5">
+            <input id="material_unit_price" type="text" value="0" placeholder="50, 8.5">
         </div>
     </div>
 </div>

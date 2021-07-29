@@ -153,7 +153,7 @@
                         <span class="link-title" >商品管理</span>
                     </a>
                 </div> --}}
-                @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("維護工具", $appRoles))
+                @if($appUser->role == "mis" || in_array("維護工具", $appRoles))
                 <div>
                     <a href="/mis/index" class="link-container {{ Request::segment(1) === 'mis' ? 'current' : null }}">
                         <i class="fas fa-tools fa-fw"></i>
@@ -181,21 +181,6 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="dropup" style="width: 100%;">
-                    <button class="dropbtn">
-                        <span id="navigation_name" style="margin:1rem; display:none;">{{$appUser->name}}</span><i class="fas fa-angle-right fa-fw"></i>
-                    </button>
-                    <div class="dropup-content">
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <x-responsive-nav-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                            {{ __('登出') }}
-                            </x-responsive-nav-link>
-                        </form>
-                    </div>
-                </div> --}}
             </div>
         </div>
         
