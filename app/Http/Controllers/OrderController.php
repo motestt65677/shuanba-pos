@@ -16,8 +16,12 @@ class OrderController extends Controller
 	{
         $this->orderService = app()->make('OrderService');
         $this->productService = app()->make('ProductService');
+        $this->purchaseService = app()->make('PurchaseService');
 	}
-
+    public function qlieerImport(Request $request)
+    {
+        return view('orders.qlieerImport');
+    }
     public function bulkImportQlieer(Request $request){
 
         $purchaseDict = [];
@@ -52,13 +56,14 @@ class OrderController extends Controller
             } 
 
             foreach($productMaterials as $productMaterial){
+                $purchaseUnitPrice = $this->purchaseService-> getAveragePurchaseUnitPriceOfMaterial($productMaterial -> material_id, $request->user->branch_id);
                 OrderItem::create([
                     "material_id" => $productMaterial -> material_id,
                     "product_id" => $product->id,
                     "order_id" => $order->id,
                     "amount" => floatval($item["product_count"]) * floatval($productMaterial -> material_count),
-                    "unit_price" => 0,
-                    "total" => 0
+                    "unit_price" => floatval($purchaseUnitPrice),
+                    "total" => floatval($purchaseUnitPrice) * floatval($item["product_count"]) * floatval($productMaterial -> material_count)
                 ]);
                 $returnItems[$key]["message"] = "Success";
                 $orderItemCount++;

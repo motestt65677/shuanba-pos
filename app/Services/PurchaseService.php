@@ -4,6 +4,7 @@ namespace App\Services;
 
 use DateTime;
 use DateInterval;
+use App\Models\Branch;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
 use App\Models\PurchaseReturnItem;
@@ -241,12 +242,18 @@ class PurchaseService
         
     }
 
-    public function getAveragePurchaseUnitPriceOfMaterial($materialId){
+    public function getAveragePurchaseUnitPriceOfMaterial($materialId, $branchId=""){
         //claculate average unit price of the material
         $totalMaterialAmount = 0;
         $totalMaterialPrice = 0;
 
-        $allPurchaseItems = PurchaseItem::where("material_id",$materialId)->get();
+        $allPurchaseItemsQuery = PurchaseItem::where("material_id",$materialId);
+        
+        $branch = Branch::find($branchId);
+        if($branch)
+            $allPurchaseItemsQuery->where("branch_id", $branchId);
+
+        $allPurchaseItems = $allPurchaseItemsQuery ->get();
         foreach($allPurchaseItems as $item){
             $totalMaterialAmount += floatval($item->amount);
             $totalMaterialPrice += floatval($item->total);

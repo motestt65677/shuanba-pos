@@ -55,7 +55,7 @@ class CloseMonthJob implements ShouldQueue
                     "order_count" => 0, 
                     "order_total" => 0, //cannot be calculated since order_items total cannot be caluclated
                     "order_cost" => 0, 
-                    "purchase_unit_price" => $this->purchaseService-> getAveragePurchaseUnitPriceOfMaterial($material->id), 
+                    // "purchase_unit_price" => $this->purchaseService-> getAveragePurchaseUnitPriceOfMaterial($material->id), 
                     "starting_count" => 0, 
                     "starting_total" => 0,
                     "closing_count" => 0, 
@@ -95,7 +95,7 @@ class CloseMonthJob implements ShouldQueue
 
                 foreach($allOrderItems as $item){
                     $closing_item["starting_count"] -= floatval($item->amount);
-                    $closing_item["starting_total"] -= floatval($item->amount) * $closing_item["purchase_unit_price"];
+                    $closing_item["starting_total"] -= floatval($item->total);
                 }
 
 
@@ -134,7 +134,7 @@ class CloseMonthJob implements ShouldQueue
                 foreach($order_items as $item){
                     $closing_item["order_count"] += floatval($item->amount);
                     //temperarily use material_unit_price as unit_cost of material, should maybe use average purchase price of material
-                    $closing_item["order_cost"] += floatval($item->amount)* $closing_item["purchase_unit_price"];
+                    $closing_item["order_cost"] += floatval($item->total);
                 }
 
                 $closing_item["closing_count"] = $closing_item["starting_count"] + $closing_item["purchase_count"] - $closing_item["purchase_return_count"] - $closing_item["order_count"];

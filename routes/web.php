@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function () {
         Route::group(['prefix' => 'orders'], function () {
             Route::post('/bulkImportQlieerOrders', 'OrderController@bulkImportQlieer');
             Route::post('/bulkImportProductCheck', 'OrderController@bulkImportProductCheck');
-
+            Route::get('/qlieerImport', 'OrderController@qlieerImport');
         });
 
         Route::group(['prefix' => 'materials'], function () {

@@ -85,6 +85,16 @@
                     </a>
                 </div>
                 @endif
+
+                @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("單據異動分析", $appRoles))
+                <div>
+                    <a href="/orders/qlieerImport" class="link-container {{ Request::segment(1) === 'orders' ? 'current' : null }}">
+                        <i class="fas fa-file-import fa-fw"></i>
+                        <span class="link-title" >Qlieer產品報表匯入</span>
+                    </a>
+                </div>
+                @endif
+
                 <div class="ui divider"></div>
                 @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("廠商管理", $appRoles))
                 <div>
