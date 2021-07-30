@@ -7,25 +7,32 @@
         </style>
     </head>
     <body>
+        
         <div id="my-side-nav" class="sidenav container" style="width:75px; overflow: visible;">
             <a  class="nav-toggle-btn" onclick="toggleNav()"><i id="nav-btn-arrow" class="fas fa-chevron-right" style="color: gray;"></i></a>
-        
-            <div id="nav-header" class="mb-5" style="">
-                <img src="/image/chef-icon-white.png" alt="" style="color:gray; display: block; margin-left: auto; margin-right: auto; width: 30%;">
-            
+            <div style="height: 151px;">
+                <div id="nav-header" class="mb-5" style="">
+                    <img src="/image/chef-icon-white.png" alt="" style="color:gray; display: block; margin-left: auto; margin-right: auto; max-width: 50px;">
+                
+                </div>
+                <div id="navigation_branch_container" style="text-align: center; padding:1rem; display:none;  ">
+                @if($appUser->role == "mis" || $appUser->role == "admin" )
+                    <select name="" id="app_branch">
+                    @foreach($appBranches as $branch)
+                    <option value="{{$branch->id}}" @if($branch->id == $appUser->branch_id) selected @endif>{{$branch->name}}</option>
+                    @endforeach
+                    </select>
+                @else
+                    <h4 style="text-align: center;">{{$appBranches[0]["name"]}}</h4>
+                @endif
+                </div>
+                <div id="navigation_branch_container_close" style="text-align: center; padding:1.2rem; display:none;  ">
+                    <h4 id="app_now_branch" style="text-align: center; ">{{$appUser->branch->name}}</h4>
+                </div>
             </div>
-            <div id="navigation_branch_container" style="text-align: center; padding:1rem; display:none;  ">
-            @if($appUser->role == "mis" || $appUser->role == "admin" )
-                <select name="" id="app_branch">
-                @foreach($appBranches as $branch)
-                <option value="{{$branch->id}}" @if($branch->id == $appUser->branch_id) selected @endif>{{$branch->name}}</option>
-                @endforeach
-                </select>
-            @else
-                <h3 style="text-align: center;">{{$appBranches[0]["name"]}}</h3>
-            @endif
-            </div>
-            <div id="nav-body" style="overflow-x:hidden;"> 
+            <div class="ui divider"></div>
+
+            <div id="nav-body" style="height: calc(100% - 212px); overflow-x:hidden; overflow-y:auto;"> 
                 {{-- <div>
                     <a href="/purchases/create" class="link-container">
                         <i class="fas fa-shipping-fast"></i>
@@ -132,14 +139,14 @@
                 </div>
                 @endif
 
-                @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("進貨產品管理(Google)", $appRoles))
+                {{-- @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("進貨產品管理(Google)", $appRoles))
                 <div>
                     <a href="/imports/index" class="link-container {{ Request::segment(1) === 'imports' ? 'current' : null }}">
                         <i class="fas fa-box-open fa-fw"></i>
                         <span class="link-title" >進貨產品管理(Google)</span>
                     </a>
                 </div>
-                @endif
+                @endif --}}
 
                 {{-- <div>
                     <a href="/material_sets/index" class="link-container">
@@ -153,14 +160,14 @@
                         <span class="link-title" >商品管理</span>
                     </a>
                 </div> --}}
-                @if($appUser->role == "mis" || in_array("維護工具", $appRoles))
+                {{-- @if($appUser->role == "mis" || $appUser->role == "admin" || in_array("維護工具", $appRoles))
                 <div>
                     <a href="/mis/index" class="link-container {{ Request::segment(1) === 'mis' ? 'current' : null }}">
                         <i class="fas fa-tools fa-fw"></i>
                         <span class="link-title" >維護工具</span>
                     </a>
                 </div>
-                @endif
+                @endif --}}
                 
             </div>
             <form id="logout_form" method="POST" action="{{ route('logout') }}">

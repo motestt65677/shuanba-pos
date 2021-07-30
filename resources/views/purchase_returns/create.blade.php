@@ -23,7 +23,7 @@
 <h3 class="ui block header">退貨單</h3>
     <div class="ui form">
         <div style="text-align:right;">
-            <a class="ui button" href="/purchases/index">
+            <a class="ui button" href="/purchase_returns/index">
                 <i class="left chevron icon"></i>
                 返回
             </a>
@@ -303,27 +303,33 @@ $(document).ready(function(){
     function bind_purchase_no_select(){
         return $.ajax({
             type: "POST",
-            url: "/purchases/queryPurchases",
+            url: "/purchases/queryPurchaseItemsWithReturns",
             contentType: "application/json",
             dataType: "json",
             data:JSON.stringify({search: {}, order: {}}),
             // beforeSend: showLoading,
             // complete: hideLoading,
             success: function(response) {
-                const purchases = response["data"]
+                let purchases = {};
+                for(let i = 0; i < response["data"].length; i++){
+                    //remove amount = 0 items;
+                    let this_data = response["data"][i];
+                    if(this_data.item_amount > 0){
+                        purchases[this_data.purchase_id] = this_data.purchase_no;
+                    }
+                }
+
                 const select = $("#purchase_no")[0];
-                
-                // select.classList = "ui search selection dropdown";
                 select.appendChild(get_empty_option());
 
-                for(var i = 0; i < purchases.length; i++){
-                    const this_purchase = purchases[i];
+                for (const key in purchases) {
+                    const purchase_no = purchases[key];
                     const option = document.createElement("option");
-                    option.value = this_purchase.id;
-                    option.innerHTML = this_purchase.purchase_no;
-                    // option.setAttribute("data-material-unit", this_purchase["material_unit"]);
+                    option.value = key;
+                    option.innerHTML = purchase_no;
                     select.appendChild(option);
                 }
+
             },
             error: function(response) {
                 // console.log(response);

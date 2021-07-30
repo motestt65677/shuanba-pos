@@ -10,7 +10,7 @@
 @section('content')
 
 <h3 class="ui block header" style="position:inline-block;">
-    進貨產品維護
+    進貨產品管理
 </h3>
 <div style="text-align:right;">
     <a href="/imports/create" class="ui secondary button">新增進貨產品</a>

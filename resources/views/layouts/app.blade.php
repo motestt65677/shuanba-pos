@@ -96,12 +96,14 @@
                     $("#nav-btn-arrow").removeClass('rotated');
                     document.getElementById("my-side-nav").style.width = "75px";
                     document.getElementById("main").style.marginLeft= "75px";
+                    $("#navigation_branch_container_close").show();
                     $("#navigation_name").hide();
                     $("#navigation_branch_container").hide();
                 } else {
                     $("#nav-btn-arrow").addClass('rotated');
                     document.getElementById("my-side-nav").style.width = "300px";
                     document.getElementById("main").style.marginLeft = "300px";
+                    $("#navigation_branch_container_close").hide();
                     $("#navigation_name").show();
                     $("#navigation_branch_container").show();
                 }
@@ -146,6 +148,8 @@
             function toggleNav(){
                 if(getCookie("sidebar") == "open"){
                     $("#navigation_branch_container").hide();
+                    $("#navigation_branch_container_close").show();
+
                     $("#navigation_name").hide();
 
                     $("#nav-btn-arrow").toggleClass('rotated');
@@ -154,7 +158,10 @@
                     setCookie("sidebar", "close", 1);
                 } else {
                     setTimeout(function(){
+                        $("#navigation_branch_container_close").hide();
                         $("#navigation_branch_container").show();
+
+                        
                         $("#navigation_name").show();
                     }, 250);
 

@@ -33,7 +33,7 @@
     </div>
 
     <div class="ui secondary segment" style="width: 100%; display:inline-block; ">
-        <div class="ui warning message">
+        <div class="ui message">
             <div class="header">
                 <pre style="text-align: center;"> 期初 + 進貨 - 退貨 - 銷貨 = 期末</pre>
                 <pre style="text-align: center;"> 銷貨單價以進貨平均價格計算</pre>

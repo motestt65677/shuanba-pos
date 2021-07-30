@@ -114,9 +114,15 @@ class PurchaseController extends Controller
     
 
     public function paid(Request $request){
-
         foreach($request->ids as $id){
             Purchase::where("id", $id)->update(["is_paid" => true]);
+        }
+        return \Response::json(["status"=> "200"]);
+    }
+
+    public function unpay(Request $request){
+        foreach($request->ids as $id){
+            Purchase::where("id", $id)->update(["is_paid" => false]);
         }
         return \Response::json(["status"=> "200"]);
     }

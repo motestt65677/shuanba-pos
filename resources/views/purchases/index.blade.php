@@ -33,6 +33,7 @@
             <div class="right floated column" style="text-align:right;">
                 <a href="/purchases/create" class="ui secondary button">進貨單</a>
                 <button id="paid" class="ui button">單據付款</button>
+                <button id="unpay" class="ui button">取消付款</button>
                 <button id="delete_btn" class="ui button negative">刪除</button>
             </div>
         </div>
@@ -53,7 +54,11 @@
             </tr>
         </thead>
     </table>
-
+    <div class="ui message">
+        <div class="header">
+            <pre style="text-align: center;">滑鼠左鍵點一下表格資料列查看明細</pre>
+        </div>
+    </div>
     <div id="infoModal" class="ui modal large">
         <i class="close icon"></i>
         <div id="modal_title" class="header">
@@ -210,6 +215,35 @@ $(document).ready(function(){
             });
         }
     });
+    $("#unpay").on('click', function(event){
+        const all_data = data_table.rows().data();
+        let checked_row_id = [];
+        data_table.rows().every(function(index, element) {
+            let row = $(this.node());
+            //eq(col # of checkbox)
+            let checkbox = row.find('td').eq(0).children("input:checkbox");
+            if(checkbox.prop("checked")){
+                checked_row_id.push(all_data[index]["id"]);
+            }
+        });
+
+        if(checked_row_id.length > 0){
+            $.ajax({
+                type: "POST",
+                url: "/purchases/unpay",
+                data: JSON.stringify({
+                        ids: checked_row_id
+                }),
+                contentType: "application/json",
+                dataType: "json",
+                beforeSend: showLoading,
+                complete: hideLoading,
+                success: function(response) {
+                    data_table.ajax.reload(hideLoading);
+                }
+            });
+        }
+    });
 
     $("#delete_btn").click(function(){
         const all_data = data_table.rows().data();
@@ -260,7 +294,9 @@ $(document).ready(function(){
         } 
     })
 
-    $('#thisTable tbody').on('click', 'td', function () {
+    $('#thisTable tbody').on('click', 'td', function (event) {
+        if(window.getSelection().toString().length > 0)
+            return;
         if($(this).find("input:checkbox").length == 0){
             var data = data_table.row($(this).closest("tr")).data();
             if(data["id"] == undefined)

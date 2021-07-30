@@ -10,7 +10,7 @@
 @section('content')
 
 <h3 class="ui block header" style="position:inline-block;">
-    產品維護
+    銷貨產品管理(Qlieer)
 </h3>
 <div style="text-align:right;">
     <button id="delete_btn" class="ui button negative">刪除</button>

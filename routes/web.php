@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
             
             
             Route::post('/paid', 'PurchaseController@paid');
+            Route::post('/unpay', 'PurchaseController@unpay');
             Route::post('/bulk_import', 'PurchaseController@bulk_import');
 
         });

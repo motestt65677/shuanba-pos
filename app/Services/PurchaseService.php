@@ -164,6 +164,7 @@ class PurchaseService
         ->leftJoin("materials", 'materials.id', '=', 'purchase_items.material_id')
         ->leftJoin("suppliers", 'suppliers.id', '=', 'materials.supplier_id')
         ->select(
+            "purchases.id AS purchase_id",
             "purchases.purchase_no AS purchase_no",
             "suppliers.supplier_no AS supplier_no",
             "suppliers.name AS supplier_name",

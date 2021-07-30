@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\PurchaseItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -96,6 +97,15 @@ class MaterialService
             $item->material_unit_price = round($item->set_unit_price / $item->material_count, 2);
         }
         return $items;
+    }
+
+    public function getHasPurchasedMaterials($branchId){
+        $materials = PurchaseItem::select("purchase_items.material_id as id", "materials.name as name")
+        ->leftJoin("materials", "materials.id", "=", "purchase_items.material_id")
+        ->where("branch_id", $branchId)
+        ->distinct()
+        ->get();
+        return $materials;
     }
 
 }

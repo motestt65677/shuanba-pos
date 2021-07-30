@@ -52,7 +52,11 @@
             </tr>
         </thead>
     </table>
-
+    <div class="ui message">
+        <div class="header">
+            <pre style="text-align: center;">滑鼠左鍵點一下表格資料列查看明細</pre>
+        </div>
+    </div>
     <div id="infoModal" class="ui modal large">
         <i class="close icon"></i>
         <div id="modal_title" class="header">
