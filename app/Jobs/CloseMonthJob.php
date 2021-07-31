@@ -2,10 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Models\Order;
 use App\Models\Closing;
 use App\Models\Material;
+use App\Models\Purchase;
 use App\Models\ClosingItem;
 use Illuminate\Bus\Queueable;
+use App\Models\PurchaseReturn;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
@@ -63,20 +66,20 @@ class CloseMonthJob implements ShouldQueue
                 ];
 
                 //calculate closing values prior this month to get starting_count and starting_total
-                $allPurchaseItems = DB::table('purchases')
-                ->leftJoin("purchase_items", 'purchases.id', '=', 'purchase_items.purchase_id')
+                $allPurchaseItems = Purchase::
+                leftJoin("purchase_items", 'purchases.id', '=', 'purchase_items.purchase_id')
                 ->where("purchases.voucher_date", "<", $this->yearMonth . "-01")
                 ->where("purchase_items.material_id", $material->id)
                 ->where("purchases.branch_id", $branchId)
                 ->get();
-
+                
                 foreach($allPurchaseItems as $item){
                     $closing_item["starting_count"] += floatval($item->amount);
                     $closing_item["starting_total"] += floatval($item->total);
                 }
 
-                $allReturnItems = DB::table('purchase_returns')
-                ->leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
+                $allReturnItems = PurchaseReturn::
+                leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
                 ->where("purchase_returns.voucher_date", "<", $this->yearMonth . "-01")
                 ->where("purchase_return_items.material_id", $material->id)
                 ->where("purchase_returns.branch_id", $branchId)
@@ -86,8 +89,8 @@ class CloseMonthJob implements ShouldQueue
                     $closing_item["starting_total"] -= floatval($item->total);
                 }
 
-                $allOrderItems = DB::table('orders')
-                ->leftJoin("order_items", 'orders.id', '=', 'order_items.order_id')
+                $allOrderItems = Order::
+                leftJoin("order_items", 'orders.id', '=', 'order_items.order_id')
                 ->where("orders.voucher_date", "<", $this->yearMonth . "-01")
                 ->where("order_items.material_id", $material->id)
                 ->where("orders.branch_id", $branchId)
@@ -100,8 +103,8 @@ class CloseMonthJob implements ShouldQueue
 
 
                 //calculate closing values of this month
-                $purchase_items = DB::table('purchases')
-                ->leftJoin("purchase_items", 'purchases.id', '=', 'purchase_items.purchase_id')
+                $purchase_items = Purchase::
+                leftJoin("purchase_items", 'purchases.id', '=', 'purchase_items.purchase_id')
                 ->where("purchases.voucher_date", "like", $this->yearMonth . "%")
                 ->where("purchase_items.material_id", $material->id)
                 ->where("purchases.branch_id", $branchId)
@@ -112,8 +115,8 @@ class CloseMonthJob implements ShouldQueue
                     $closing_item["purchase_total"] += floatval($item->total);
                 }
 
-                $purchase_return_items = DB::table('purchase_returns')
-                ->leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
+                $purchase_return_items = PurchaseReturn::
+                leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
                 ->where("purchase_returns.voucher_date", "like", $this->yearMonth . "%")
                 ->where("purchase_return_items.material_id", $material->id)
                 ->where("purchase_returns.branch_id", $branchId)
@@ -124,8 +127,8 @@ class CloseMonthJob implements ShouldQueue
                     $closing_item["purchase_return_total"] += floatval($item->total);
                 }
 
-                $order_items = DB::table('orders')
-                ->leftJoin("order_items", 'orders.id', '=', 'order_items.order_id')
+                $order_items = Order::
+                leftJoin("order_items", 'orders.id', '=', 'order_items.order_id')
                 ->where("orders.voucher_date", "<", $this->yearMonth . "-01")
                 ->where("order_items.material_id", $material->id)
                 ->where("orders.branch_id", $branchId)

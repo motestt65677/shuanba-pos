@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Order;
+use App\Models\Purchase;
+use App\Models\PurchaseReturn;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -12,7 +15,8 @@ class TransactionService
 
     public function queryData($search = [], $order = []){
         
-        $purchaseItemsQuery = DB::table('purchases')->select(
+        $purchaseItemsQuery = Purchase::
+        select(
             DB::raw("'進貨' as type"),
             "purchases.purchase_no AS no",
             "purchases.voucher_date AS voucher_date",
@@ -29,7 +33,8 @@ class TransactionService
         if(isset($search["branch_id"]))
             $purchaseItemsQuery->where("purchases.branch_id", $search["branch_id"]);
 
-        $purchaseReturnItemsQuery = DB::table('purchase_returns')->select(
+        $purchaseReturnItemsQuery = PurchaseReturn::
+        select(
             DB::raw("'退貨' as type"),
             "purchase_returns.purchase_return_no AS no",
             "purchase_returns.voucher_date AS voucher_date",
@@ -46,7 +51,8 @@ class TransactionService
         if(isset($search["branch_id"]))
             $purchaseReturnItemsQuery->where("purchase_returns.branch_id", $search["branch_id"]);
 
-        $orderItemsQuery = DB::table('orders')->select(
+        $orderItemsQuery = Order::
+        select(
             DB::raw("'銷貨' as type"),
             "orders.order_no AS no",
             "orders.voucher_date AS voucher_date",

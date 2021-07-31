@@ -79,6 +79,13 @@ class PurchaseController extends Controller
     public function delete(Request $request){
         $error = [];
         foreach($request->purchase_ids as $id){
+            $purchase = Purchase::find($id);
+            if(!$purchase)
+                continue;
+            if($purchase->is_paid){
+                array_push($error, "單據編號:".$purchase->purchase_no."，已付款無法刪除");
+                continue;
+            }
             PurchaseItem::where("purchase_id", $id)->delete();
             Purchase::find($id)->delete();
         }
@@ -199,7 +206,7 @@ class PurchaseController extends Controller
                 $thisPurchase->total = $puchase_total;
                 $thisPurchase->save();
             } else {
-                $thisPurchase->delete();
+                $thisPurchase->forceDelete();
             }
         }
         

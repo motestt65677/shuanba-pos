@@ -36,8 +36,8 @@ class PurchaseService
     }
 
     public function queryPurchases($search = null, $order = []){
-        $query = DB::table('purchases')
-        ->select(
+        $query = Purchase::
+        select(
             'id',
             'purchase_no',
             DB::raw("IFNULL((SELECT `supplier_no` FROM `suppliers` WHERE `id`=`purchases`.`supplier_id` ), '') AS `supplier_no`"),
@@ -46,7 +46,9 @@ class PurchaseService
             'voucher_date',
             'total',
             'is_paid'
-        )->where("total", ">", 0);
+        )
+        ->whereNull("deleted_at")
+        ->where("total", ">", 0);
 
         if(isset($search["payment_type"])){
             $query->where("payment_type", $search["payment_type"]);
@@ -79,8 +81,8 @@ class PurchaseService
     }
 
     public function queryPurchaseItems($search = [], $order = []){
-        $query = DB::table('purchase_items')
-        ->select(
+        $query = PurchaseItem::
+        select(
             DB::raw("IFNULL((SELECT `material_no` FROM `materials` WHERE `id`=`purchase_items`.`material_id` ), '') AS `material_no`"),
             DB::raw("IFNULL((SELECT `name` FROM `materials` WHERE `id`=`purchase_items`.`material_id` ), '') AS `material_name`"),
             DB::raw("IFNULL((SELECT `unit` FROM `materials` WHERE `id`=`purchase_items`.`material_id` ), '') AS `material_unit`"),
@@ -89,6 +91,7 @@ class PurchaseService
             'total',
             'created_at'
         );
+        
         if(isset($search["count"]))
             $query->take($search["count"]);
 
@@ -110,8 +113,8 @@ class PurchaseService
     }
 
     public function queryPurchaseItemsWithSupplier($search = [], $order = []){
-        $query = DB::table('purchase_items')
-        ->leftJoin("purchases", 'purchases.id', '=', 'purchase_items.purchase_id')
+        $query = PurchaseItem::
+        leftJoin("purchases", 'purchases.id', '=', 'purchase_items.purchase_id')
         ->leftJoin("materials", 'materials.id', '=', 'purchase_items.material_id')
         ->leftJoin("suppliers", 'suppliers.id', '=', 'materials.supplier_id')
         ->select(
@@ -159,8 +162,8 @@ class PurchaseService
     }
 
     public function queryPurchaseItemsWithReturns($search = [], $order = []){
-        $query = DB::table('purchase_items')
-        ->leftJoin("purchases", 'purchases.id', '=', 'purchase_items.purchase_id')
+        $query = PurchaseItem::
+        leftJoin("purchases", 'purchases.id', '=', 'purchase_items.purchase_id')
         ->leftJoin("materials", 'materials.id', '=', 'purchase_items.material_id')
         ->leftJoin("suppliers", 'suppliers.id', '=', 'materials.supplier_id')
         ->select(
@@ -179,7 +182,8 @@ class PurchaseService
             "purchase_items.amount AS item_amount",
             "purchase_items.unit_price AS item_unit_price",
             "purchase_items.total AS item_total"
-        );
+        )
+        ;
         if(isset($search["material_id"]))
             $query->where("purchase_items.material_id", $search["material_id"]);
         if(isset($search["purchase_id"]))

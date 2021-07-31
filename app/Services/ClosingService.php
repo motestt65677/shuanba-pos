@@ -2,10 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\Order;
 use App\Models\Closing;
 use App\Models\Material;
+use App\Models\Purchase;
 use App\Jobs\CloseMonthJob;
 use App\Models\ClosingItem;
+use App\Models\PurchaseReturn;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -19,9 +22,9 @@ class ClosingService
     }
 
     public function closableYearMonth($branchId){
-        $orderQuery = DB::table('orders')->select('voucher_date')->where("branch_id", $branchId);
-        $purchaseReturnQuery = DB::table('purchase_returns')->select('voucher_date')->where("branch_id", $branchId);
-        $purchaseQuery = DB::table('purchases')->select('voucher_date')->where("branch_id", $branchId)->union($orderQuery)->union($purchaseReturnQuery);
+        $orderQuery = Order::select('voucher_date')->where("branch_id", $branchId);
+        $purchaseReturnQuery = PurchaseReturn::select('voucher_date')->where("branch_id", $branchId);
+        $purchaseQuery = Purchase::select('voucher_date')->where("branch_id", $branchId)->union($orderQuery)->union($purchaseReturnQuery);
 
         $queryData = $purchaseQuery->get();
         $yearMonthArray = [];
