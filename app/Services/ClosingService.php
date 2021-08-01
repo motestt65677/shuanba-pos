@@ -159,7 +159,6 @@ class ClosingService
                 "closing_total" => round($item->closing_total,2),
                 "starting_count" => round($item->starting_count,2),
                 "starting_total" => round($item->starting_total,2)
-
                 // "purchase_unit_price" => $item->purchase_unit_price,
             ];
             array_push($thisClosing["items"], $thisItem);
