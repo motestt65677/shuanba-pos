@@ -38,7 +38,7 @@
                         <i class="fas fa-shipping-fast"></i>
                         <span class="link-title" >廠商進貨維護</span>
                     </a>
-                </div> --}}QQQ
+                </div> --}}QQQQ
                 @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("儀表板", $appRoles))
                 <div>
                     <a href="/dashboard" class="link-container {{ Request::segment(1) === 'dashboard' ? 'current' : null }}">
