@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class PurchaseService
 {
-    public function newPurchaseNo(){
+    public function newPurchaseNo($branch_id){
         $char = "";
         $year = date("Y");
         $month = date("m");
@@ -23,6 +23,7 @@ class PurchaseService
 
         $sql = "SELECT RIGHT(purchase_no,5) AS num FROM `purchases`
                 WHERE purchase_no LIKE '{$char}%'
+                AND branch_id = '{$branch_id}'
                 ORDER BY purchase_no DESC
                 LIMIT 1
         ";
@@ -188,6 +189,8 @@ class PurchaseService
             $query->where("purchase_items.material_id", $search["material_id"]);
         if(isset($search["purchase_id"]))
             $query->where("purchase_items.purchase_id", $search["purchase_id"]);
+        if(isset($search["branch_id"]))
+            $query->where("purchase_items.branch_id", $search["branch_id"]);
         if(isset($search["count"]))
             $query->take($search["count"]);
 

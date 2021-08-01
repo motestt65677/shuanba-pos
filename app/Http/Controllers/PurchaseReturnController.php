@@ -42,7 +42,7 @@ class PurchaseReturnController extends Controller
                 "purchase_id" => $purchase->id,
                 "supplier_id" => $purchase->supplier_id,
                 "voucher_date" => $request->voucher_date,
-                "purchase_return_no" => $this->purchaseReturnService->newPurchaseReturnNo()
+                "purchase_return_no" => $this->purchaseReturnService->newPurchaseReturnNo($request->user->branch_id)
             ]);
 
             $total = 0;
@@ -82,7 +82,7 @@ class PurchaseReturnController extends Controller
 
     public function queryData(Request $request){
         $order = isset($request["order"]) ? $request["order"] : [];
-        $search = isset($request["order"]) ? $request["order"] : [];
+        $search = isset($request["search"]) ? $request["search"] : [];
         $search["branch_id"] = $request->user->branch_id;
         $items = $this->purchaseReturnService->queryData($search, $order);
         return \Response::json(["data"=> $items]);

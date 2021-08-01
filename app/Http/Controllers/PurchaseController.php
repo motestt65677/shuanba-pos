@@ -48,7 +48,7 @@ class PurchaseController extends Controller
             "branch_id" => $user->branch_id,
             "supplier_id" => $request->supplier,
             "voucher_date" => $request->voucher_date,
-            "purchase_no" => $this->purchaseService->newPurchaseNo(),
+            "purchase_no" => $this->purchaseService->newPurchaseNo($user->branch_id),
             "payment_type" => $request->payment_type,
             "note1" => $request->note1,
             "note2" => $request->note2,
@@ -87,6 +87,7 @@ class PurchaseController extends Controller
                 continue;
             }
             PurchaseItem::where("purchase_id", $id)->delete();
+            PurchaseReturn::where("purchase_id", $id) ->delete();
             Purchase::find($id)->delete();
         }
         return \Response::json(["status"=> 200, "error"=>$error]);
@@ -115,7 +116,10 @@ class PurchaseController extends Controller
     }
 
     public function queryPurchaseItemsWithReturns(Request $request){
-        $items = $this->purchaseService->queryPurchaseItemsWithReturns($request["search"], $request["order"]);
+        $order = isset($request["order"]) ? $request["order"] : [];
+        $search = isset($request["search"]) ? $request["search"] : [];
+        $search["branch_id"] = $request->user->branch_id;
+        $items = $this->purchaseService->queryPurchaseItemsWithReturns($search, $order);
         return \Response::json(["data"=> $items]);
     }
     
@@ -168,7 +172,7 @@ class PurchaseController extends Controller
                 "branch_id" => $user->branch_id,
                 "supplier_id" => $supplier->id,
                 "voucher_date" => $voucherDate,
-                "purchase_no" => $this->purchaseService->newPurchaseNo(),
+                "purchase_no" => $this->purchaseService->newPurchaseNo($user->branch_id),
                 "payment_type" => "monthly",
                 "note1" => "",
                 "note2" => "",

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 class PurchaseReturnService
 {
-    public function newPurchaseReturnNo(){
+    public function newPurchaseReturnNo($branch_id){
         $char = "";
         $year = date("Y");
         $month = date("m");
@@ -22,6 +22,7 @@ class PurchaseReturnService
 
         $sql = "SELECT RIGHT(purchase_return_no,4) AS num FROM `purchase_returns`
                 WHERE purchase_return_no LIKE '{$char}%'
+                AND branch_id = '{$branch_id}'
                 ORDER BY purchase_return_no DESC
                 LIMIT 1
         ";
@@ -35,8 +36,8 @@ class PurchaseReturnService
     }
 
     public function queryData($search = [], $order = []){
-        $query = DB::table('purchase_returns')
-        ->select(
+        $query = PurchaseReturn::
+        select(
             'id',
             'purchase_return_no',
             DB::raw("IFNULL((SELECT `supplier_no` FROM `suppliers` WHERE `id`=`purchase_returns`.`supplier_id` ), '') AS `supplier_no`"),
@@ -44,7 +45,6 @@ class PurchaseReturnService
             'voucher_date',
             'total'
         )->where("total", ">", 0);
-
         if(isset($search["voucher_year_month"])){
             $query->whereRaw("LEFT(`voucher_date`, 7) = '" . $search["voucher_year_month"] . "'");
         }
@@ -65,8 +65,8 @@ class PurchaseReturnService
     }
 
     public function queryPurchaseReturnWithItems($search=[], $order=[]){
-        $query = DB::table('purchase_returns')
-        ->leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
+        $query = PurchaseReturn::
+        leftJoin("purchase_return_items", 'purchase_returns.id', '=', 'purchase_return_items.purchase_return_id')
         ->select(
             "purchase_returns.purchase_return_no",
             "purchase_returns.voucher_date",

@@ -19,4 +19,9 @@ class Purchase extends Model
     {
         return $this->hasMany(PurchaseItems::class);
     }
+
+    public function purchaseReturns()
+    {
+        return $this->hasMany(PurchaseReturns::class);
+    }
 }

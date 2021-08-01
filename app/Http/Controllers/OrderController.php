@@ -29,7 +29,7 @@ class OrderController extends Controller
             "prep_by" => $request->user->id,
             "branch_id" => $request->user->branch_id,
             "voucher_date" => $request->voucher_date,
-            "order_no" => $this->orderService->newOrderNo(),
+            "order_no" => $this->orderService->newOrderNo($request->user->branch_id),
             "payment_type" => "credit",
             "total" => $request->qlieer_order_total,
         ]);

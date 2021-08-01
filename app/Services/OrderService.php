@@ -3,12 +3,13 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 
 
 class OrderService
 {
-    public function newOrderNo(){
+    public function newOrderNo($branch_id){
         $char = "";
         $year = date("Y");
         $month = date("m");
@@ -18,6 +19,7 @@ class OrderService
 
         $sql = "SELECT RIGHT(order_no,7) AS num FROM `orders`
                 WHERE order_no LIKE '{$char}%'
+                AND branch_id = '{$branch_id}'
                 ORDER BY order_no DESC
                 LIMIT 1
         ";
@@ -29,37 +31,5 @@ class OrderService
         }
         return $char . $year . $month . $numStr;
     }
-
-    public function queryData($search = [], $order = []){
-        $query = DB::table('materials')
-        ->select(
-            "materials.id AS material_id",
-            "materials.material_no AS material_no",
-            "materials.name AS material_name",
-            "materials.unit AS material_unit",
-            "materials.unit_price AS material_unit_price",
-            DB::raw("IFNULL((SELECT `name` FROM `suppliers` WHERE `id`=`materials`.`supplier_id` ), '') AS `supplier_name`"),
-            DB::raw("IFNULL((SELECT `supplier_no` FROM `suppliers` WHERE `id`=`materials`.`supplier_id` ), '') AS `supplier_no`"),
-            "supplier_id AS supplier_id"
-        );
-        if(isset($search["material_id"]))
-            $query->where("materials.id", $search["material_id"]);
-        if(isset($search["supplier_id"]))
-            $query->where("materials.supplier_id", $search["supplier_id"]);
-
-        // if(isset($search["count"]))
-        //     $query->take($search["count"]);
-
-        foreach($order as $key=>$value){
-            $query->orderBy($key, $value);
-        }
-
-        $items = $query->get();
-        foreach($items as $item){
-            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
-        }
-        return $items;
-    }
-
 
 }
