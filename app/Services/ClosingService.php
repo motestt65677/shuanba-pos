@@ -148,17 +148,17 @@ class ClosingService
             $thisClosing = &$closings[$item->closing_year_month][$item->closing_id];
             $thisItem = [
                 "material_name_and_no" => $item->material_no . ' ('. $item->material_name . ')',
-                "purchase_count" => $item->purchase_count,
-                "purchase_total" => $item->purchase_total,
-                "purchase_return_count" => $item->purchase_return_count,
-                "purchase_return_total" => $item->purchase_return_total,
-                "order_count" => $item->order_count,
-                "order_total" => $item->order_total,
-                "order_cost" => $item->order_cost,
-                "closing_count" => $item->closing_count,
-                "closing_total" => $item->closing_total,
-                "starting_count" => $item->starting_count,
-                "starting_total" => $item->starting_total
+                "purchase_count" => round($item->purchase_count,2),
+                "purchase_total" => round($item->purchase_total,2),
+                "purchase_return_count" => round($item->purchase_return_count,2),
+                "purchase_return_total" => round($item->purchase_return_total,2),
+                "order_count" => round($item->order_count,2),
+                "order_total" => round($item->order_total,2),
+                "order_cost" => round($item->order_cost,2),
+                "closing_count" => round($item->closing_count,2),
+                "closing_total" => round($item->closing_total,2),
+                "starting_count" => round($item->starting_count,2),
+                "starting_total" => round($item->starting_total,2)
 
                 // "purchase_unit_price" => $item->purchase_unit_price,
             ];
