@@ -157,7 +157,7 @@ $(document).ready(function(){
                 select = material_select.cloneNode(true);
                 select.setAttribute("data-material", "");
                 td.appendChild(select);
-                $(select).dropdown({selectedfullTextSearch: true, placeholder: false});
+                $(select).dropdown({fullTextSearch: true, placeholder: false});
                 select.onchange = material_changed;
                 setTimeout(function(){
                     if("material_id" in data){

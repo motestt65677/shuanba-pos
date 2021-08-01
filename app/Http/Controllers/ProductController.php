@@ -57,7 +57,7 @@ class ProductController extends Controller
         $error = [];
         foreach($request->product_ids as $id){
             $product = Product::find($id)->delete();
-            $productMaterials = ProductMaterial::where("product_id", $product->id)->delete();
+            $productMaterials = ProductMaterial::where("product_id", $id)->delete();
         }
         
         return \Response::json(["status"=> 200, "error"=>$error]);

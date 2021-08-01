@@ -65,6 +65,12 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/bulkImportQlieerOrders', 'OrderController@bulkImportQlieer');
             Route::post('/bulkImportProductCheck', 'OrderController@bulkImportProductCheck');
             Route::get('/qlieerImport', 'OrderController@qlieerImport');
+            Route::get('/index', 'OrderController@index');
+            Route::get('/create', 'OrderController@create');
+            Route::post('/store', 'OrderController@store');
+            Route::post('/queryData', 'OrderController@queryData');
+            Route::post('/queryOrderWithItems', 'OrderController@queryOrderWithItems');
+            Route::post('/delete', 'OrderController@delete');
         });
 
         Route::group(['prefix' => 'materials'], function () {

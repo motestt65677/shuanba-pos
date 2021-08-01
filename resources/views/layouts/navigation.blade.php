@@ -66,6 +66,15 @@
                 </div>
                 @endif
 
+                @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("廠商退貨分析", $appRoles))
+                <div>
+                    <a href="/orders/index" class="link-container {{ Request::segment(1) === 'orders' && Request::segment(2) === 'index' ? 'current' : null }}">
+                        <i class="fas fa-money-check-alt fa-fw"></i>
+                        <span class="link-title" >Qlieer銷貨分析</span>
+                    </a>
+                </div>
+                @endif
+
                 @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("材料進貨分析", $appRoles))
                 <div>
                     <a href="/purchase_items/index" class="link-container {{ Request::segment(1) === 'purchase_items' ? 'current' : null }}">
@@ -95,7 +104,7 @@
 
                 @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("單據異動分析", $appRoles))
                 <div>
-                    <a href="/orders/qlieerImport" class="link-container {{ Request::segment(1) === 'orders' ? 'current' : null }}">
+                    <a href="/orders/qlieerImport" class="link-container {{ Request::segment(1) === 'orders' && Request::segment(2) === 'qlieerImport' ? 'current' : null }}">
                         <i class="fas fa-file-import fa-fw"></i>
                         <span class="link-title" >Qlieer產品報表匯入</span>
                     </a>
