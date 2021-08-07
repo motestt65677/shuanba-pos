@@ -108,8 +108,8 @@ class ProductService
 
         $items = $query->get();
         foreach($items as $item){
-            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
-            $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
+            $item->supplier_name_and_no = $item->supplier_no . ' - '. $item->supplier_name;
+            $item->material_name_and_no = $item->material_no . ' - '. $item->material_name;
             $item->material_unit_price = round($item->set_unit_price / $item->material_count, 2);
         }
         return $items;

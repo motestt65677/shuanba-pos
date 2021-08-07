@@ -52,7 +52,7 @@ class SupplierService
 
         $items = $query->get();
         foreach($items as $item){
-            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
+            $item->supplier_name_and_no = $item->supplier_no . ' - '. $item->supplier_name ;
 
             // $item->item_amount = round($item->item_amount);
             // $item->item_unit_price = round($item->item_unit_price);

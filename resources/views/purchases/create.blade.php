@@ -49,14 +49,14 @@
             </div>
             <div class="six wide field">
                 <label>廠商</label>
-                <select name="" id="supplier" class="ui search selection dropdown">
+                <select name="" id="supplier" class="ui fluid search selection dropdown">
 
                 </select>
             </div>
             <div class="six wide field">
                 <label>付款方式</label>
-                <select name="" id="payment_type" class="ui search selection dropdown">
-                    <option value="" selected></option>
+                <select name="" id="payment_type" class="ui fluid search selection dropdown">
+                    <option value="" selected>請選擇</option>
                     <option value="cash">現金</option>
                     <option value="monthly">月底結算</option>
                 </select>
@@ -220,27 +220,14 @@ $(document).ready(function(){
     $('#voucher_date').val(getymd());
     // $("#supplier").select2();
     bind_supplier_select();
-    $('#supplier').dropdown();
-    $('#supplier').change(function(){
-        if($("#supplier").val() != ""){
-            $("#add_item_btn").removeClass("disabled");
-        } else {
-            $("#add_item_btn").addClass("disabled");
-        }
-        // set_material_set_select();
 
-        if($("[data-tr]").length != 0){
-            row_number = 0;
-            $("[data-tr]").remove();
-        } 
-        set_row_dropdowns();
-    })
+
 
 
     $('#payment_type').dropdown({
-        // clearable: true,
-        fullTextSearch: true
-    })
+        fullTextSearch: true,
+        placeholder: false
+    });
 
     $("#submit").click(function(){
         if( $('#this_form').form('is valid')) {
@@ -611,15 +598,13 @@ $(document).ready(function(){
                 const select = document.createElement("select");
                 
                 select.classList = "ui search selection dropdown fluid";
-                            
-
                 select.appendChild(get_empty_option());
 
                 for(var i = 0; i < materials.length; i++){
                     const this_material = materials[i];
                     const option = document.createElement("option");
                     option.value = this_material.material_id;
-                    option.innerHTML = this_material.material_name;
+                    option.innerHTML = this_material.material_name_and_no;
                     option.setAttribute('data-material-unit-price', this_material.material_unit_price);
                     option.setAttribute('data-material-unit', this_material.material_unit);
                     select.appendChild(option);
@@ -688,13 +673,36 @@ $(document).ready(function(){
                 const data = response["data"];
                 let select = document.getElementById('supplier');
                 select.innerHTML = "";
+                select.appendChild(get_empty_option());
+
                 for(let i = 0; i < data.length; i++){
                     let this_supplier = data[i];
                     let option = document.createElement('option');
                     option.value = this_supplier.supplier_id;
-                    option.innerHTML = this_supplier.supplier_no + '(' + this_supplier.supplier_name + ')';
+                    option.innerHTML = this_supplier.supplier_name_and_no;
                     select.appendChild(option);
                 }
+
+                $('#supplier').dropdown({
+                    fullTextSearch: true,
+                    placeholder: false
+                });
+
+                $('#supplier').change(function(){
+                    if($("#supplier").val() != ""){
+                        $("#add_item_btn").removeClass("disabled");
+                    } else {
+                        $("#add_item_btn").addClass("disabled");
+                    }
+                    // set_material_set_select();
+
+                    if($("[data-tr]").length != 0){
+                        row_number = 0;
+                        $("[data-tr]").remove();
+                    } 
+                    set_row_dropdowns();
+                })
+                
                 $("#add_item_btn").removeClass("disabled");
                 
                 set_row_dropdowns();                

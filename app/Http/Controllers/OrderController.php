@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderItem;
@@ -100,5 +101,40 @@ class OrderController extends Controller
 
         return \Response::json(["status"=> "200", "qlieer_order_items"=>$returnItems]);
 
+    }
+
+    public function index(Request $request)
+    {
+        return view('orders.index')->with([
+            "yearMonthSelect" => $this->orderService->getYearMonthSelect(),
+            "nowMonthYear" => (new DateTime())->format('Y-m'),
+        ]);
+    }
+
+    public function create(Request $request)
+    {
+        return view('orders.create');
+    }
+
+    public function delete(Request $request){
+        $error = [];
+        foreach($request->order_ids as $id){
+            Order::find($id)->delete();
+            OrderItem::where("order_id", $id)->delete();
+        }
+        return \Response::json(["status"=> 200, "error"=>$error]);
+    }
+
+    public function queryData(Request $request){
+        $order = isset($request["order"]) ? $request["order"] : [];
+        $search = isset($request["search"]) ? $request["search"] : [];
+        $search["branch_id"] = $request->user->branch_id;
+        $items = $this->orderService->queryData($search, $order);
+        return \Response::json(["data"=> $items]);
+    }
+    public function queryOrderWithItems(Request $request){
+        $order = isset($request["order"]) ? $request["order"] : [];
+        $items = $this->orderService->queryOrderWithItems($request["search"], $order);
+        return \Response::json(["data"=> $items]);
     }
 }

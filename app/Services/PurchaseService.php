@@ -153,8 +153,8 @@ class PurchaseService
             $item->item_unit_price = round($item->item_unit_price,2);
             $item->item_total = round($item->item_total,2);
             $item->purchase_total = round($item->purchase_total,2);
-            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
-            $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
+            $item->supplier_name_and_no = $item->supplier_no . ' - '. $item->supplier_name;
+            $item->material_name_and_no = $item->material_no . ' - '. $item->material_name;
             $item->payment_type_text = $item->payment_type == "monthly" ? "月結" : "現金";
 
             // $item->created_date = substr($item->created_at, 0, 10);
@@ -204,8 +204,8 @@ class PurchaseService
             $item->item_amount = round($item->item_amount,2);
             $item->item_unit_price = round($item->item_unit_price,2);
             $item->item_total = round($item->item_total,2);
-            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
-            $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
+            $item->supplier_name_and_no = $item->supplier_no . ' - '. $item->supplier_name;
+            $item->material_name_and_no = $item->material_no . ' - '. $item->material_name;
             $item->payment_type_text = $item->payment_type == "monthly" ? "月結" : "現金";
 
             $returnItems = PurchaseReturnItem::where("purchase_item_id", $item->purchase_item_id)->get();

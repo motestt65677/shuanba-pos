@@ -86,7 +86,7 @@ class TransactionService
         $items = $query->get();
         foreach($items as $item){
             // $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
-            $item->material_name_and_no = '('. $item->material_no . ') ' .$item->material_name;
+            $item->material_name_and_no = $item->material_no . ' - ' .$item->material_name;
             
         }
         return $items;

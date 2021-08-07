@@ -356,7 +356,7 @@ $(document).ready(function(){
             // maxDate: lastDay,
             scrollMonth : false
         });
-        $("#purchase_no").dropdown({selectedfullTextSearch: true});
+        $("#purchase_no").dropdown({fullTextSearch: true});
         $("#purchase_no").change(purchase_no_changed);
         $('#voucher_date').val(getymd());
         // await set_import_conversion_select();

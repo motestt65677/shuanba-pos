@@ -66,6 +66,15 @@
                 </div>
                 @endif
 
+                @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("廠商退貨分析", $appRoles))
+                <div>
+                    <a href="/orders/index" class="link-container {{ Request::segment(1) === 'orders' && Request::segment(2) === 'index' ? 'current' : null }}">
+                        <i class="fas fa-money-check-alt fa-fw"></i>
+                        <span class="link-title" >Qlieer銷貨分析</span>
+                    </a>
+                </div>
+                @endif
+
                 @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("材料進貨分析", $appRoles))
                 <div>
                     <a href="/purchase_items/index" class="link-container {{ Request::segment(1) === 'purchase_items' ? 'current' : null }}">
@@ -95,7 +104,7 @@
 
                 @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("單據異動分析", $appRoles))
                 <div>
-                    <a href="/orders/qlieerImport" class="link-container {{ Request::segment(1) === 'orders' ? 'current' : null }}">
+                    <a href="/orders/qlieerImport" class="link-container {{ Request::segment(1) === 'orders' && Request::segment(2) === 'qlieerImport' ? 'current' : null }}">
                         <i class="fas fa-file-import fa-fw"></i>
                         <span class="link-title" >Qlieer產品報表匯入</span>
                     </a>
@@ -175,7 +184,7 @@
             </form>
 
             <div id="nav-footer" class="container" style="position: absolute; bottom: 0rem; color: white;">
-                <div class="fluid ui bottom pointing dropdown button black">
+                <div id="navigation_footer_dropdown" class="fluid ui bottom pointing dropdown button black">
                     <div style="text-align: center;">
                         <span id="navigation_name" style="margin:1rem; display:none;">{{$appUser->name}}</span><i class="fas fa-angle-right fa-fw"></i>
                     </div>
@@ -231,7 +240,7 @@
 
 window.onload = function() {
     $('#app_branch').dropdown();
-    $('.ui.dropdown').dropdown();
+    $('#navigation_footer_dropdown').dropdown();
 
     $('#nav_form').form.settings.prompt.empty = "請填寫{name}";
     $('#nav_form').form.settings.prompt.number = "{name}應為數字";

@@ -31,6 +31,7 @@ class RoleSeeder extends Seeder
         $roles = ["儀表板",
         "廠商進貨分析",
         "廠商退貨分析",
+        "Qlieer銷貨分析",
         "材料進貨分析",
         "進耗存別關帳",
         "單據異動分析",
@@ -41,6 +42,7 @@ class RoleSeeder extends Seeder
         "進貨產品管理(Google)",
         "維護工具"];
         
+        Role::query()->truncate();
 
         foreach($roles as $role){
             $exists = Role::where("role", $role)->first();
