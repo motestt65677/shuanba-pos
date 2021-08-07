@@ -57,8 +57,9 @@ class MaterialService
 
         $items = $query->get();
         foreach($items as $item){
-            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
-            $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
+            $item->supplier_name_and_no = $item->supplier_no . ' - '. $item->supplier_name;
+            $item->material_name_and_no = $item->material_no . ' - '. $item->material_name;
+
             
         }
         return $items;
@@ -92,19 +93,22 @@ class MaterialService
 
         $items = $query->get();
         foreach($items as $item){
-            $item->supplier_name_and_no = $item->supplier_name . ' ('. $item->supplier_no . ')';
-            $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
+            $item->supplier_name_and_no = $item->supplier_no . ' - '. $item->supplier_name;
+            $item->material_name_and_no = $item->material_no . ' - '. $item->material_name;
             $item->material_unit_price = round($item->set_unit_price / $item->material_count, 2);
         }
         return $items;
     }
 
     public function getHasPurchasedMaterials($branchId){
-        $materials = PurchaseItem::select("purchase_items.material_id as id", "materials.name as name")
+        $materials = PurchaseItem::select("purchase_items.material_id as id", "materials.name as name", "materials.material_no")
         ->leftJoin("materials", "materials.id", "=", "purchase_items.material_id")
         ->where("branch_id", $branchId)
         ->distinct()
         ->get();
+        foreach($materials as $item){
+            $item->material_name_and_no = $item->material_no . ' - '. $item->name;
+        }
         return $materials;
     }
 

@@ -86,7 +86,7 @@ class OrderService
 
         $items = $query->get();
         foreach($items as $item){
-            $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
+            $item->material_name_and_no = $item->material_no . ' - '. $item->material_name;
         }
         return $items;
     }

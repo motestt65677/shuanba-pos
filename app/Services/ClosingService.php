@@ -88,7 +88,7 @@ class ClosingService
 
         $items = $query->get();
         foreach($items as $item){
-            $item->material_name_and_no = $item->material_name . ' ('. $item->material_no . ')';
+            $item->material_name_and_no = $item->material_no . ' - '. $item->material_name;
         }
         return $items;
     }
@@ -147,7 +147,7 @@ class ClosingService
             }
             $thisClosing = &$closings[$item->closing_year_month][$item->closing_id];
             $thisItem = [
-                "material_name_and_no" => $item->material_no . ' ('. $item->material_name . ')',
+                "material_name_and_no" => $item->material_no . ' - '. $item->material_name,
                 "purchase_count" => round($item->purchase_count,2),
                 "purchase_total" => round($item->purchase_total,2),
                 "purchase_return_count" => round($item->purchase_return_count,2),

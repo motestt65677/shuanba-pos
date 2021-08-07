@@ -184,7 +184,7 @@
             </form>
 
             <div id="nav-footer" class="container" style="position: absolute; bottom: 0rem; color: white;">
-                <div class="fluid ui bottom pointing dropdown button black">
+                <div id="navigation_footer_dropdown" class="fluid ui bottom pointing dropdown button black">
                     <div style="text-align: center;">
                         <span id="navigation_name" style="margin:1rem; display:none;">{{$appUser->name}}</span><i class="fas fa-angle-right fa-fw"></i>
                     </div>
@@ -240,7 +240,7 @@
 
 window.onload = function() {
     $('#app_branch').dropdown();
-    $('.ui.dropdown').dropdown();
+    $('#navigation_footer_dropdown').dropdown();
 
     $('#nav_form').form.settings.prompt.empty = "請填寫{name}";
     $('#nav_form').form.settings.prompt.number = "{name}應為數字";

@@ -12,9 +12,9 @@
 <div class="ui grid" style="margin-bottom: 1rem;">
     <div class="four column row">
         <div class="left floated column">
-            <select id="material" class="ui search selection dropdown">
+            <select id="material" class="ui search selection dropdown fluid">
                 @foreach($materials as $item)
-                    <option value="{{$item->id}}">{{$item->name}}</option>
+                    <option value="{{$item->id}}">{{$item->material_name_and_no}} </option>
                 @endforeach
             </select>
         </div>
@@ -31,7 +31,7 @@
             <th>單據日期</th>
             {{-- <th>原料編號</th> --}}
             {{-- <th>原料名稱</th> --}}
-            <th>原料</th>
+            <th>材料</th>
             <th>數量</th>
             <th>庫存單位</th>
             <th>單價</th>
@@ -49,7 +49,12 @@ $(document).ready(function(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    $('#material').dropdown();
+    $('#material').dropdown(
+        {        
+            fullTextSearch: true,
+            placeholder: false
+        }
+    );
     $('#material').change(function(){
         data_table.ajax.reload(hideLoading);
     })
