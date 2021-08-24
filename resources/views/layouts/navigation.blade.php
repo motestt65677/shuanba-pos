@@ -75,6 +75,15 @@
                 </div>
                 @endif
 
+                @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("庫存盤點分析", $appRoles))
+                <div>
+                    <a href="/adjustments/index" class="link-container {{ Request::segment(1) === 'adjustments' ? 'current' : null }}">
+                        <i class="fas fa-sliders-h fa-fw"></i>
+                        <span class="link-title" >庫存盤點分析</span>
+                    </a>
+                </div>
+                @endif
+
                 @if($appUser->role == "mis" ||$appUser->role == "admin" || in_array("材料進貨分析", $appRoles))
                 <div>
                     <a href="/purchase_items/index" class="link-container {{ Request::segment(1) === 'purchase_items' ? 'current' : null }}">

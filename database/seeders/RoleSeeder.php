@@ -40,7 +40,9 @@ class RoleSeeder extends Seeder
         "帳號管理",
         "銷貨產品管理(Qlieer)",
         "進貨產品管理(Google)",
-        "維護工具"];
+        "維護工具",
+        "庫存盤點分析"    
+    ];
         
         Role::query()->truncate();
 

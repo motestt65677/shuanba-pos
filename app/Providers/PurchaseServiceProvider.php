@@ -67,6 +67,10 @@ class PurchaseServiceProvider extends ServiceProvider
             return new \App\Services\OrderService($app);
         });
 
+        $this->app->singleton('AdjustmentService', function ($app) {
+            return new \App\Services\AdjustmentService($app);
+        });
+
         $this->app->singleton('ImportConversionService', function ($app) {
             return new \App\Services\ImportConversionService($app);
         });

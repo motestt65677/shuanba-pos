@@ -73,6 +73,16 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/delete', 'OrderController@delete');
         });
 
+        Route::group(['prefix' => 'adjustments'], function () {
+            Route::get('/index', 'AdjustmentController@index');
+            Route::get('/create', 'AdjustmentController@create');
+            Route::post('/store', 'AdjustmentController@store');
+            Route::post('/queryData', 'AdjustmentController@queryData');
+            Route::post('/delete', 'AdjustmentController@delete');
+        });
+
+        
+
         Route::group(['prefix' => 'materials'], function () {
             Route::get('/{id}/edit', 'MaterialController@edit');
             Route::get('/index', 'MaterialController@index');
