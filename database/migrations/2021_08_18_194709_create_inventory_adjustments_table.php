@@ -19,7 +19,7 @@ class CreateInventoryAdjustmentsTable extends Migration
             $table->unsignedBigInteger('branch_id')->nullable();
             $table->date('voucher_date');
             $table->string('adjustment_no', 14);
-            $table->string('note');
+            $table->string('note')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

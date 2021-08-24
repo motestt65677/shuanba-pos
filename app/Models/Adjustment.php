@@ -15,6 +15,10 @@ class Adjustment extends Model
         'prep_by', 'branch_id', 'voucher_date', 'adjustment_no', 'note'
     ];
 
+    public function adjustmentItems()
+    {
+        return $this->hasMany(AdjustmentItem::class);
+    }
 
 
 }

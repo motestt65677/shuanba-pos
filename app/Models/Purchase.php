@@ -17,11 +17,11 @@ class Purchase extends Model
 
     public function purchaseItems()
     {
-        return $this->hasMany(PurchaseItems::class);
+        return $this->hasMany(PurchaseItem::class);
     }
 
     public function purchaseReturns()
     {
-        return $this->hasMany(PurchaseReturns::class);
+        return $this->hasMany(PurchaseReturn::class);
     }
 }

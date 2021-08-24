@@ -62,7 +62,35 @@ class AdjustmentService
 
         return $items;
     }
+    public function queryAdjustmentWithItems($search=[], $order=[]){
+        $query = Adjustment::
+        leftJoin("adjustment_items", 'adjustments.id', '=', 'adjustment_items.adjustment_id')
+        ->select(
+            "adjustments.adjustment_no",
+            "adjustments.voucher_date",
+            DB::raw("IFNULL((SELECT `material_no` FROM `materials` WHERE `id`=`adjustment_items`.`material_id` ), '') AS `material_no`"),
+            DB::raw("IFNULL((SELECT `name` FROM `materials` WHERE `id`=`adjustment_items`.`material_id` ), '') AS `material_name`"),
+            DB::raw("IFNULL((SELECT `unit` FROM `materials` WHERE `id`=`adjustment_items`.`material_id` ), '') AS `material_unit`"),
+            "adjustment_items.amount",
+            "adjustment_items.unit_price",
+            "adjustment_items.total as adjustment_item_total"
+        );
 
+        if(isset($search["adjustment_id"]))
+            $query->where("adjustments.id", $search["adjustment_id"]);
+
+        foreach($order as $key=>$value){
+            $query->orderBy($key, $value);
+        }
+
+        $items = $query->get();
+        foreach($items as $item){
+            $item->material_name_and_no = $item->material_no . ' - '. $item->material_name;
+        }
+        return $items;
+    }
+
+    
     public function getYearMonthSelect(){
         $first = Adjustment::orderBy("voucher_date", "ASC")
         -> first();

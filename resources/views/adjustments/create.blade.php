@@ -8,11 +8,11 @@
 </style>
 @endsection
 @section('content')
-<h3 class="ui block header">新增庫存盤點</h3>
+<h3 class="ui block header">庫存調整</h3>
 
 <div id="this_form" class="ui form">
     <div style="text-align:right;">
-        <a class="ui button" href="/materials/index">
+        <a class="ui button" href="/adjustments/index">
             <i class="left chevron icon"></i>
             返回
         </a>
@@ -51,6 +51,7 @@
                 <tr>
                     <th>序號</th>
                     <th>材料</th>
+                    <th>單位</th>
                     <th>調增/調減</th>
                     <th>數量</th>
                 </tr>
@@ -78,18 +79,15 @@ $(document).ready(function(){
     $('#voucher_date').val(getymd());
 
     //validation setting
-    $('#this_form').form.settings.prompt.empty = "請填寫{name}";
-    $('#this_form').form.settings.prompt.number = "{name}應為數字";
+    // $('#this_form').form.settings.prompt.empty = "請填寫{name}";
+    // $('#this_form').form.settings.prompt.number = "{name}應為數字";
 
-    $('#this_form').form({
-        inline : true,
-        fields: {
-            material_name: 'empty',
-            material_name: 'empty',
-            material_unit_price: ['number', 'empty'],
-            material_unit: 'empty'
-        }
-    });
+    // $('#this_form').form({
+    //     inline : true,
+    //     fields: {
+    //         voucher_date: 'empty',
+    //     }
+    // });
 
     $("#submit").click(function(){
         let data = {
@@ -113,10 +111,10 @@ $(document).ready(function(){
                     "adjustment_type": data_adjust_type[0].value, 
                     "material_id": data_material[0].value
                 };
-
                 items.push(this_item);
             }
         }
+
         data.items = items;
 
         $.ajax({
@@ -128,6 +126,11 @@ $(document).ready(function(){
             complete: hideLoading,
             data: JSON.stringify(data),
             success: function(response) {
+                if("message" in response){
+                    alert(response["message"]);
+                    return;
+                }
+
                 window.location.href = "/adjustments/index";
             },
             error: function(response) {
@@ -146,7 +149,7 @@ $(document).ready(function(){
 
     function add_adjustment_row (data = {}){
         const table_name = "adjustments";
-        const columns = ["#", "materials", "adjust_type", "amount"];
+        const columns = ["#", "materials", "material_unit", "adjust_type", "amount"];
         const body = document.getElementById(table_name).getElementsByTagName('tbody')[0];
         const tr = document.createElement("tr");
         let select;
@@ -161,7 +164,7 @@ $(document).ready(function(){
             } else if (thisColumn == "materials"){
                 select = material_select.cloneNode(true);
                 select.setAttribute("data-material", "");
-                // select.onchange = material_changed;
+                select.onchange = material_changed;
 
                 // td.className = "warning";
                 td.appendChild(select);
@@ -206,6 +209,10 @@ $(document).ready(function(){
                 div.style.width = "100%";
                 div.appendChild(input);
                 td.appendChild(div);
+            } else if (thisColumn == "material_unit"){
+                const label = document.createElement("label");
+                label.setAttribute("data-unit", "");
+                td.appendChild(label);
             }
 
             tr.appendChild(td);
@@ -240,7 +247,6 @@ $(document).ready(function(){
                     const option = document.createElement("option");
                     option.value = this_material.material_id;
                     option.innerHTML = this_material.material_name_and_no;
-                    option.setAttribute('data-material-unit-price', this_material.material_unit_price);
                     option.setAttribute('data-material-unit', this_material.material_unit);
                     select.appendChild(option);
                     select.onchange = "set_import_conversion_select(this.id)";
@@ -250,6 +256,21 @@ $(document).ready(function(){
             }
         });
         return true;
+    }
+
+    function material_changed(event){
+        update_unit(event.target)
+    }
+
+    function update_unit(select){
+        let selected_option = $(select).find(":selected")[0];
+        if(selected_option == undefined)
+            selected_option = select.options[0];
+        const material_unit = selected_option.getAttribute('data-material-unit');
+        const tr = $(select).closest("tr");
+        const row_unit = tr.find("[data-unit]")[0];
+
+        row_unit.innerHTML = material_unit;
     }
 
     function get_empty_option(){

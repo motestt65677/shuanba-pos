@@ -65,21 +65,15 @@
                 <div class=" fields">
                     <div class="eight wide field">
                         <label>單據編號</label>
-                        <span id="order_no">PR2016101001</span>
+                        <span id="adjustment_no">PR2016101001</span>
                     </div>
                     <div class="eight wide field">
                         <label>單據日期</label>
                         <span id="voucher_date">2021-07-01</span>
                     </div>
                 </div>
-                <div class=" fields">
-                    <div class="eight wide field">
-                        <label>銷貨總額</label>
-                        <span id="total">2400</span>
-                    </div>
-                </div>
             </div>
-            <table id="return_table" class="ui celled table">
+            <table id="adjustment_table" class="ui celled table">
                 <thead>
                     <tr>
                         <th>序號</th>
@@ -185,11 +179,11 @@ $(document).ready(function(){
         if(checked_row_id.length > 0){
             if(confirm("確定要刪除?")){
                 let data = {
-                    "order_ids": checked_row_id,
+                    "adjustment_ids": checked_row_id,
                 };
                 $.ajax({
                     type: "POST",
-                    url: "/orders/delete",
+                    url: "/adjustments/delete",
                     contentType: "application/json",
                     dataType: "json",
                     beforeSend: showLoading,
@@ -222,14 +216,14 @@ $(document).ready(function(){
             var data = data_table.row($(this).closest("tr")).data();
             if(data["id"] == undefined)
                 return;
-            load_purchase_return_info(data["id"]);
+            load_info(data["id"]);
             $('#infoModal').modal("show");
         } 
     } );
 
     function set_info_table(data){
-        const table_name = "return_table";
-        const columns = ["#", "material_name_and_no", "material_unit", "amount", "unit_price", "order_item_total"];
+        const table_name = "adjustment_table";
+        const columns = ["#", "material_name_and_no", "material_unit", "amount", "unit_price", "adjustment_item_total"];
         const body = document.getElementById(table_name).getElementsByTagName('tbody')[0];
         let row_number = 0;
         $("#"+table_name+" tbody").html('');
@@ -254,22 +248,20 @@ $(document).ready(function(){
         }
     }
 
-    function load_purchase_return_info(order_id){
+    function load_info(adjustment_id){
         return $.ajax({
             type: "POST",
-            url: "/orders/queryOrderWithItems",
+            url: "/adjustments/queryAdjustmentWithItems",
             contentType: "application/json",
             dataType: "json",
             beforeSend: showLoading,
             complete: hideLoading,
-            data: JSON.stringify({"search": {"order_id": order_id}}),
+            data: JSON.stringify({"search": {"adjustment_id": adjustment_id}}),
             success: function(response) {
                 if(response["data"].length > 0){
                     const first_row = response["data"][0];
-                    $("#order_no").html(first_row["order_no"]);
+                    $("#adjustment_no").html(first_row["adjustment_no"]);
                     $("#voucher_date").html(first_row["voucher_date"]);
-                    $("#total").html(first_row["order_total"]);
-                    console.log(first_row);
                     set_info_table(response["data"]);
                 }
             },

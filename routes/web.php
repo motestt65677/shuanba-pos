@@ -79,6 +79,9 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/store', 'AdjustmentController@store');
             Route::post('/queryData', 'AdjustmentController@queryData');
             Route::post('/delete', 'AdjustmentController@delete');
+            Route::post('/queryAdjustmentWithItems', 'AdjustmentController@queryAdjustmentWithItems');
+
+            
         });
 
         

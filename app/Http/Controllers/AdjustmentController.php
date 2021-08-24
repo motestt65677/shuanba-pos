@@ -6,6 +6,7 @@ use DateTime;
 use App\Models\Adjustment;
 use Illuminate\Http\Request;
 use App\Models\AdjustmentItem;
+use Illuminate\Support\Facades\Log;
 
 class AdjustmentController extends Controller
 {
@@ -32,12 +33,10 @@ class AdjustmentController extends Controller
 
     public function store(Request $request)
     {
-
         $user = $request->user;
-
         if(count($request->items) == 0)
-            return \Response::json(["status"=> 200, "message"=> "no item"]);
-            
+            return \Response::json(["status"=> 200, "message"=> "無調增/調減材料"]);
+        
         $adjustment = Adjustment::create([
             "prep_by" => $user->id,
             "branch_id" => $user->branch_id,
@@ -47,16 +46,22 @@ class AdjustmentController extends Controller
         ]);
 
         foreach($request->items as $item){
-            if($item["amount"] == "" || $item["adjustment_type"] == "" || $item["material_id"])
+            if($item["amount"] == "" || $item["adjustment_type"] == "" || $item["material_id"] == "")
                 continue;
+            $averagePurchaseUnitPrice = $this->purchaseService-> getAveragePurchaseUnitPriceOfMaterial($item["material_id"], $request->user->branch_id);
             AdjustmentItem::create([
                 "adjustment_id" => $adjustment->id,
-                "material_id" => $item["item_id"],
+                "material_id" => $item["material_id"],
                 "amount" => floatval($item["amount"]),
-                "unit_price" => $this->purchaseService-> getAveragePurchaseUnitPriceOfMaterial($item["material_id"], $request->user->branch_id),
-                "total" => $item["total"],
-                "adjustment_type" => $item["payment_type"]
+                "unit_price" => $averagePurchaseUnitPrice,
+                "total" => $averagePurchaseUnitPrice * floatval($item["amount"]),
+                "adjustment_type" => $item["adjustment_type"]
             ]);
+        }
+
+        if(count($adjustment->adjustmentItems) == 0){
+            $adjustment->delete();
+            return \Response::json(["status"=> 200, "message"=> "無調增/調減材料"]);
         }
 
         return \Response::json(["status"=> 200]);
@@ -65,9 +70,9 @@ class AdjustmentController extends Controller
 
     public function delete(Request $request){
         $error = [];
-        foreach($request->order_ids as $id){
-            Order::find($id)->delete();
-            OrderItem::where("order_id", $id)->delete();
+        foreach($request->adjustment_ids as $id){
+            Adjustment::where("id", $id)->delete();
+            AdjustmentItem::where("adjustment_id", $id)->delete();
         }
         return \Response::json(["status"=> 200, "error"=>$error]);
     }
@@ -79,4 +84,12 @@ class AdjustmentController extends Controller
         $items = $this->adjustmentService->queryData($search, $order);
         return \Response::json(["data"=> $items]);
     }
+
+    public function queryAdjustmentWithItems(Request $request){
+        $order = isset($request["order"]) ? $request["order"] : [];
+        $items = $this->adjustmentService->queryAdjustmentWithItems($request["search"], $order);
+        return \Response::json(["data"=> $items]);
+    }
+
+
 }
