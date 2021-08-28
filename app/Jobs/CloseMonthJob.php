@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Closing;
 use App\Models\Material;
 use App\Models\Purchase;
+use App\Models\Adjustment;
 use App\Models\ClosingItem;
 use Illuminate\Bus\Queueable;
 use App\Models\PurchaseReturn;
@@ -58,6 +59,8 @@ class CloseMonthJob implements ShouldQueue
                     "order_count" => 0, 
                     "order_total" => 0, //cannot be calculated since order_items total cannot be caluclated
                     "order_cost" => 0, 
+                    "adjustment_count" => 0, 
+                    "adjustment_total" => 0, 
                     // "purchase_unit_price" => $this->purchaseService-> getAveragePurchaseUnitPriceOfMaterial($material->id), 
                     "starting_count" => 0, 
                     "starting_total" => 0,
@@ -101,6 +104,24 @@ class CloseMonthJob implements ShouldQueue
                     $closing_item["starting_total"] -= floatval($item->total);
                 }
 
+                $allAdjustmentItems = adjustment::
+                select("adjustment_items.amount as amount", "adjustment_items.total as total", "adjustment_items.adjustment_type as adjustment_type")
+                ->leftJoin("adjustment_items", 'adjustments.id', '=', 'adjustment_items.adjustment_id')
+                ->where("adjustments.voucher_date", "<", $this->yearMonth . "-01")
+                ->where("adjustment_items.material_id", $material->id)
+                ->where("adjustments.branch_id", $branchId)
+                ->get();
+
+                foreach($allAdjustmentItems as $item){
+                    if($item->adjustment_type == "increase"){
+                        $closing_item["starting_count"] += floatval($item->amount);
+                        $closing_item["starting_total"] += floatval($item->total);
+                    } else if($item->adjustment_type == "decrease"){
+                        $closing_item["starting_count"] -= floatval($item->amount);
+                        $closing_item["starting_total"] -= floatval($item->total);
+                    }
+                }
+
 
                 //calculate closing values of this month
                 $purchase_items = Purchase::
@@ -129,7 +150,7 @@ class CloseMonthJob implements ShouldQueue
 
                 $order_items = Order::
                 leftJoin("order_items", 'orders.id', '=', 'order_items.order_id')
-                ->where("orders.voucher_date", "<", $this->yearMonth . "-01")
+                ->where("orders.voucher_date", "like", $this->yearMonth . "%")
                 ->where("order_items.material_id", $material->id)
                 ->where("orders.branch_id", $branchId)
                 ->get();
@@ -140,8 +161,31 @@ class CloseMonthJob implements ShouldQueue
                     $closing_item["order_cost"] += floatval($item->total);
                 }
 
-                $closing_item["closing_count"] = $closing_item["starting_count"] + $closing_item["purchase_count"] - $closing_item["purchase_return_count"] - $closing_item["order_count"];
-                $closing_item["closing_total"] = $closing_item["starting_total"] + $closing_item["purchase_total"] - $closing_item["purchase_return_total"] - $closing_item["order_cost"];
+                $adjustment_items = Adjustment::
+                select(
+                    "adjustment_items.amount as amount", 
+                    "adjustment_items.total as total", 
+                    "adjustment_items.adjustment_type as adjustment_type",
+                    "adjustment_items.material_id"
+                    )
+                ->leftJoin("adjustment_items", 'adjustments.id', '=', 'adjustment_items.adjustment_id')
+                ->where("adjustments.voucher_date", "like", $this->yearMonth . "%")
+                ->where("adjustment_items.material_id", $material->id)
+                ->where("adjustments.branch_id", $branchId)
+                ->get();
+
+                foreach($adjustment_items as $item){
+                    if($item->adjustment_type == "increase"){
+                        $closing_item["adjustment_count"] += floatval($item->amount);
+                        $closing_item["adjustment_total"] += floatval($item->total);
+                    } else if($item->adjustment_type == "decrease"){
+                        $closing_item["adjustment_count"] -= floatval($item->amount);
+                        $closing_item["adjustment_total"] -= floatval($item->total);
+                    }
+                }
+
+                $closing_item["closing_count"] = $closing_item["starting_count"] + $closing_item["purchase_count"] - $closing_item["purchase_return_count"] - $closing_item["order_count"] + $closing_item["adjustment_count"];
+                $closing_item["closing_total"] = $closing_item["starting_total"] + $closing_item["purchase_total"] - $closing_item["purchase_return_total"] - $closing_item["order_cost"] + $closing_item["adjustment_total"];
 
                 $closing_item_dict[$material->id] = $closing_item;
             }

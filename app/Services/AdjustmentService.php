@@ -73,7 +73,8 @@ class AdjustmentService
             DB::raw("IFNULL((SELECT `unit` FROM `materials` WHERE `id`=`adjustment_items`.`material_id` ), '') AS `material_unit`"),
             "adjustment_items.amount",
             "adjustment_items.unit_price",
-            "adjustment_items.total as adjustment_item_total"
+            "adjustment_items.total as adjustment_item_total",
+            "adjustment_items.adjustment_type"
         );
 
         if(isset($search["adjustment_id"]))
@@ -86,6 +87,11 @@ class AdjustmentService
         $items = $query->get();
         foreach($items as $item){
             $item->material_name_and_no = $item->material_no . ' - '. $item->material_name;
+            if($item->adjustment_type == "increase")
+                $item->adjustment_type_text = "庫存調增";
+            else
+                $item->adjustment_type_text = "庫存調減";
+
         }
         return $items;
     }

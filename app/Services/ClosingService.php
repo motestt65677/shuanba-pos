@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Closing;
 use App\Models\Material;
 use App\Models\Purchase;
+use App\Models\Adjustment;
 use App\Jobs\CloseMonthJob;
 use App\Models\ClosingItem;
 use App\Models\PurchaseReturn;
@@ -24,8 +25,8 @@ class ClosingService
     public function closableYearMonth($branchId){
         $orderQuery = Order::select('voucher_date')->where("branch_id", $branchId);
         $purchaseReturnQuery = PurchaseReturn::select('voucher_date')->where("branch_id", $branchId);
-        $purchaseQuery = Purchase::select('voucher_date')->where("branch_id", $branchId)->union($orderQuery)->union($purchaseReturnQuery);
-
+        $adjustmentQuery = Adjustment::select('voucher_date')->where("branch_id", $branchId);
+        $purchaseQuery = Purchase::select('voucher_date')->where("branch_id", $branchId)->union($orderQuery)->union($purchaseReturnQuery)->union($adjustmentQuery);
         $queryData = $purchaseQuery->get();
         $yearMonthArray = [];
         foreach($queryData as $data){
@@ -109,6 +110,8 @@ class ClosingService
             'closing_items.order_count as order_count',
             'closing_items.order_total as order_total',
             'closing_items.order_cost as order_cost',
+            'closing_items.adjustment_total as adjustment_total',
+            'closing_items.adjustment_count as adjustment_count',
             'closing_items.closing_count as closing_count',
             'closing_items.closing_total as closing_total',
             'closing_items.starting_count as starting_count',
@@ -155,6 +158,8 @@ class ClosingService
                 "order_count" => round($item->order_count,2),
                 "order_total" => round($item->order_total,2),
                 "order_cost" => round($item->order_cost,2),
+                "adjustment_count" => round($item->adjustment_count,2),
+                "adjustment_total" => round($item->adjustment_total,2),
                 "closing_count" => round($item->closing_count,2),
                 "closing_total" => round($item->closing_total,2),
                 "starting_count" => round($item->starting_count,2),

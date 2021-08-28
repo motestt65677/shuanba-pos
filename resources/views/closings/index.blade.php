@@ -35,7 +35,7 @@
     <div class="ui secondary segment" style="width: 100%; display:inline-block; ">
         <div class="ui message">
             <div class="header">
-                <pre style="text-align: center;"> 期初 + 進貨 - 退貨 - 銷貨 = 期末</pre>
+                <pre style="text-align: center;"> 期初 + 進貨 - 退貨 - 銷貨 + 調整= 期末</pre>
                 <pre style="text-align: center;"> 銷貨單價以進貨平均價格計算</pre>
 
             </div>
@@ -44,14 +44,15 @@
             <thead>
                 <tr>
                     <th rowspan="2">材料</th>
-                    <th colspan="5" style="text-align:center;">數量</th>
-                    <th colspan="5" style="text-align:center;">金額</th>
+                    <th colspan="6" style="text-align:center;">數量</th>
+                    <th colspan="6" style="text-align:center;">金額</th>
                 </tr>
                 <tr>
                     <th>期初</th>
                     <th>進貨</th>
                     <th>退貨</th>
                     <th>銷貨</th>
+                    <th>調整</th>
                     <th>期末</th>
                     {{-- <th>期初數量</th>
                     <th>進貨數量</th>
@@ -62,6 +63,7 @@
                     <th>進貨</th>
                     <th>退貨</th>
                     <th>銷貨</th>
+                    <th>調整</th>
                     <th>期末</th>
                 </tr>
             </thead>
@@ -214,12 +216,14 @@ function bind_item_table(year_month, closing_id){
                 { data: "purchase_count"},
                 { data: "purchase_return_count"},
                 { data: "order_count"},
+                { data: "adjustment_count"},
                 { data: "closing_count"},
 
                 { data: "starting_total"},
                 { data: "purchase_total"},
                 { data: "purchase_return_total"},
                 { data: "order_cost"},
+                { data: "adjustment_total"},
                 { data: "closing_total"}
 
                 // { data: "purchase_unit_price", orderable:false},

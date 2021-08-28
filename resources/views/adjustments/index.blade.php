@@ -78,6 +78,7 @@
                     <tr>
                         <th>序號</th>
                         <th>材料</th>
+                        <th>調增/調減</th>
                         <th>庫存單位</th>
                         <th>材料數量</th>
                         <th>單價</th>
@@ -223,7 +224,7 @@ $(document).ready(function(){
 
     function set_info_table(data){
         const table_name = "adjustment_table";
-        const columns = ["#", "material_name_and_no", "material_unit", "amount", "unit_price", "adjustment_item_total"];
+        const columns = ["#", "material_name_and_no", "adjustment_type_text", "material_unit", "amount", "unit_price", "adjustment_item_total"];
         const body = document.getElementById(table_name).getElementsByTagName('tbody')[0];
         let row_number = 0;
         $("#"+table_name+" tbody").html('');
