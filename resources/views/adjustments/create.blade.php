@@ -183,7 +183,7 @@ $(document).ready(function(){
 
                 const decrease_option = document.createElement("option");
                 decrease_option.innerHTML = "調減";
-                increase_option.value = "decrease";
+                decrease_option.value = "decrease";
 
                 select.appendChild(empty_option);
                 select.appendChild(increase_option);

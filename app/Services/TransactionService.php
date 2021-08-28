@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\Purchase;
+use App\Models\Adjustment;
 use App\Models\PurchaseReturn;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -70,7 +71,53 @@ class TransactionService
         if(isset($search["branch_id"]))
             $orderItemsQuery->where("orders.branch_id", $search["branch_id"]);
         
-        $query = $purchaseItemsQuery->union($orderItemsQuery)->union($purchaseReturnItemsQuery);
+
+        $adjustmentItemsIncreaseQuery = Adjustment::
+        select(
+            DB::raw("'庫存調增' as type"),
+            "adjustments.adjustment_no AS no",
+            "adjustments.voucher_date AS voucher_date",
+            "adjustment_items.unit_price AS unit_price",
+            "adjustment_items.amount AS amount",
+            "adjustment_items.total AS total",
+            "materials.material_no AS material_no",
+            "materials.name AS material_name",
+            "materials.unit AS material_unit"
+        )
+        ->leftJoin("adjustment_items", 'adjustments.id', '=', 'adjustment_items.adjustment_id')
+        ->leftJoin("materials", 'adjustment_items.material_id', '=', 'materials.id')
+        ->whereNotNull('materials.id')
+        ->where("adjustment_items.adjustment_type", "increase");
+
+        if(isset($search["branch_id"]))
+            $orderItemsQuery->where("orders.branch_id", $search["branch_id"]);
+            
+        $adjustmentItemsDecreaseQuery = Adjustment::
+        select(
+            DB::raw("'庫存調減' as type"),
+            "adjustments.adjustment_no AS no",
+            "adjustments.voucher_date AS voucher_date",
+            "adjustment_items.unit_price AS unit_price",
+            "adjustment_items.amount AS amount",
+            "adjustment_items.total AS total",
+            "materials.material_no AS material_no",
+            "materials.name AS material_name",
+            "materials.unit AS material_unit"
+        )
+        ->leftJoin("adjustment_items", 'adjustments.id', '=', 'adjustment_items.adjustment_id')
+        ->leftJoin("materials", 'adjustment_items.material_id', '=', 'materials.id')
+        ->whereNotNull('materials.id')
+        ->where("adjustment_items.adjustment_type", "decrease");
+
+        if(isset($search["branch_id"]))
+            $orderItemsQuery->where("orders.branch_id", $search["branch_id"]);
+
+
+        $query = $purchaseItemsQuery->union($orderItemsQuery)
+        ->union($purchaseReturnItemsQuery)
+        ->union($adjustmentItemsIncreaseQuery)
+        ->union($adjustmentItemsDecreaseQuery)
+        ;
         // if(isset($search["material_id"]))
         //     $query->where("materials.id", $search["material_id"]);
         // if(isset($search["supplier_id"]))
