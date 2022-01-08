@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Providers\RouteServiceProvider;
+use App\Http\Requests\Auth\LoginRequest;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -18,6 +19,11 @@ class AuthenticatedSessionController extends Controller
     public function create()
     {
         return view('auth.login');
+    }
+
+    public function demoLogin(){
+        $return = Auth::attempt(['username' => "david", 'password' => "123456"], true);
+        return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
